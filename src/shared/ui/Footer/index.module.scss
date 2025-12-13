@@ -1,0 +1,82 @@
+.footer {
+	background: var(--main-theme-color);
+	padding: 40px 0 0px 0;
+	width: 100%;
+	flex-shrink: 0;
+	.footerCont {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		gap: 15px;
+		.buyBtn {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+			border: none;
+			background: var(--additional-theme-color);
+			border-radius: 12px;
+			padding: 12px 0;
+			width: 360px;
+			@media (max-width: 768px) {
+				width: 320px;
+			}
+			.text {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				gap: 8px;
+				p {
+					font-size: 18px;
+					color: var(--main-theme-color);
+					&:last-child {
+						border-left: 1px solid var(--main-theme-color);
+						padding-left: 8px;
+					}
+				}
+			}
+		}
+		.footerRow {
+			width: 100%;
+			padding: 46px 0;
+			justify-content: space-between;
+			align-items: center;
+			color: var(--additional-theme-color);
+			font-size: 14px;
+			.linksRow {
+				gap: 24px;
+				p {
+					font-size: 14px;
+					text-decoration: underline 1px solid var(--additional-theme-color);
+				}
+			}
+			.ageBlock {
+				width: 36px;
+				height: 36px;
+				border-radius: 50%;
+				display: flex;
+				flex-direction: row;
+				justify-content: center;
+				align-items: center;
+				background: var(--additional-theme-color);
+				color: var(--additional-theme-color-2);
+				font-size: 18px;
+				font-weight: 500;
+				p {
+					display: flex;
+					flex-direction: row;
+					justify-content: center;
+					align-items: center;
+					.plus {
+						display: block;
+						font-size: 16px;
+						margin-bottom: 0px;
+					}
+				}
+			}
+		}
+	}
+}
+

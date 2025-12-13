@@ -1,0 +1,24 @@
+.infoPartners {
+	h2 {
+		margin-bottom: 20px;
+	}
+	.partnersSliderBtns {
+		top: 62%;
+		@media (max-width: 768px) {
+			width: 97%;
+		}
+	}
+	.partnerSlider {
+		img {
+			width: 100%;
+			object-fit: contain;
+			@media (max-width: 499px) {
+				height: 100%;
+				object-fit: none;
+			}
+		}
+		@media (max-width: 768px) {
+			margin: 0 20px;
+		}
+	}
+}

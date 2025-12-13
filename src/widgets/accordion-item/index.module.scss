@@ -1,0 +1,50 @@
+.accordion {
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 0 10px 0 rgba(105, 119, 132, 0.25);
+
+  :global {
+    ._triggerOpen {
+      & > svg {
+        transform: rotate(180deg);
+
+        path {
+          fill: #ED1C24;
+        }
+      }
+    }
+  }
+}
+
+.accordionTrigger {
+  padding: 15px 45px 10px 15px;
+  cursor: pointer;
+  user-select: none;
+  text-align: left;
+  position: relative;
+  width: 100%;
+  line-height: 1.2;
+
+
+  & > svg {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    width: 16px;
+    height: 10px;
+    transition: all .3s ease;
+    @media (max-width: 768px) {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+}
+
+.accordionContent {
+  overflow: hidden;
+  transition: max-height .3s ease;
+}
+
+.accordionContentInner {
+  padding: 0 65px 10px 15px;
+}

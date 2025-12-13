@@ -1,0 +1,15 @@
+.selectWrapper {
+  position: relative;
+  select {
+    font-size: 14px;
+    padding: 6px 15px 6px 7px;border-radius: 3px;
+    border: 1px solid #B8B8B8;
+    background: #FFF;
+  }
+  svg {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 6px;
+  }
+}

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/x-icon" href="src/assets/img/favicon.png" />
+		<title>Атмановские Кулачки</title>
+	</head>
+	<body>
+		<div id="modal-root"></div>
+		<div id="root"></div>
+		<script type="module" src="/src/main.tsx"></script>
+	</body>
+	<script>
+		;(function (w, d, u) {
+			if (window.location.href.indexOf('/terminal') === -1) {
+				var s = d.createElement('script')
+				s.async = true
+				s.src = u + '?' + ((Date.now() / 60000) | 0)
+				var h = d.getElementsByTagName('script')[0]
+				h.parentNode.insertBefore(s, h)
+			}
+		})(window, document, 'https://cdn-ru.bitrix24.ru/b16316366/crm/site_button/loader_8_n7vluk.js')
+	</script>
+</html>
+

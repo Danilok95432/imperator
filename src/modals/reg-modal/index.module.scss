@@ -1,0 +1,285 @@
+div.regModal {
+  width: 650px;
+
+  @media (max-width: 700px) {
+    width: 85vw;
+  }
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 15px;
+  h2 {
+    color: #e30613;
+    font-size: 36px;
+    font-weight: 500;
+    text-align: center;
+  }
+  .regForm {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    ._last {
+      margin-bottom: 20px;
+      .groupInputs {
+        width: 100%;
+        .selectForm {
+          width: 100%;
+        }
+      }
+    }
+    .formSection:first-child {
+      @media (max-width: 768px) {
+        padding-top: 5px;
+      }
+    }
+    .formSection {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding-top: 10px;
+      @media (max-width: 768px) {
+        gap: 15px;
+        padding-top: 25px;
+      }
+      .title {
+        font-size: 26px;
+        font-weight: 500;
+        margin-bottom: 10px;
+        @media (max-width: 768px) {
+          font-size: 24px;
+          margin-bottom: 0px;
+        }
+      }
+      .shortInput {
+        max-width: 80px;
+      }
+      .groupInputs {
+        gap: 15px;
+        align-items: center;
+        flex-wrap: nowrap;
+        @media (max-width: 768px) {
+          flex-direction: column;
+        }
+      }
+      .groupInputsStart {
+        gap: 15px;
+        align-items: start;
+        flex-wrap: nowrap;
+        width: 100%;
+        @media (max-width: 768px) {
+          flex-direction: column;
+        }
+        .phoneSpan {
+          @media (max-width: 768px) {
+            margin-bottom: 40px;
+          }
+        }
+      }
+      .inputwithLabel {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-bottom: 15px;
+        @media (max-width: 768px) {
+          margin-bottom: 0;
+        }
+        .warningMessage {
+          color: #E30613;
+          font-weight: 500;
+          font-size: 15px;
+        }
+        .noMargin {
+          margin-bottom: 0;
+        }
+        span {
+          color: #707070;
+          font-size: 15px;
+        }
+      }
+      .shortCode {
+        max-width: 220px;
+        @media (max-width: 768px) {
+          max-width: 100%;
+        }
+      }
+      .checkBoxWrapper:last-child {
+        @media (max-width: 768px) {
+          margin-bottom: 0px;
+        }
+      }
+      .checkBoxWrapper {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 10px;
+        .headBox {
+          background: #ebe9f4;
+          font-size: 18px;
+          display: flex;
+          align-items: center;
+          padding: 12px 15px 8px 15px;
+          border-radius: 5px 5px 0 0;
+        }
+        .footerBox {
+          background: #f2f1f780;
+          font-size: 15px;
+          padding: 12px 15px 8px 15px;
+          border-radius: 0 0 5px 5px;
+          @media (max-width: 768px) {
+            padding: 12px 15px 8px 15px;
+          }
+          a {
+            color: #e30613;
+          }
+          .selectForm {
+            width: 100%;
+            height: 100%;
+            min-height: 50px;
+            margin-bottom: 15px;
+            @media (max-width: 768px) {
+              margin-bottom: 0;
+            }
+          }
+          .carsList {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+          }
+        }
+      }
+    }
+  }
+  .eventInfoLine {
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    justify-content: center;
+    .ageRating {
+      position: relative;
+    }
+
+    .dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #000000;
+    }
+
+    ._red {
+      background: #de0008;
+    }
+  }
+
+  .disclaimer {
+    gap: 10px;
+    @media (max-width: 768px) {
+      padding-top: 25px;
+    }
+    .title {
+      font-size: 26px;
+      font-weight: 500;
+      @media (max-width: 768px) {
+        font-size: 24px;
+      }
+    }
+    .grayBox {
+      background: #f2f1f7;
+      padding: 10px;
+      font-size: 18px;
+      @media (max-width: 768px) {
+        font-size: 15px;
+      }
+      a {
+        font-size: 18px;
+        text-decoration: underline;
+        color: #E30613;
+        @media (max-width: 768px) {
+          font-size: 15px;
+        }
+      }
+    }
+  }
+
+  .adminDateInput {
+    width: 100%;
+    min-height: 50px;
+    margin-bottom: 15px;
+    @media (max-width: 768px) {
+      margin-bottom: 0;
+    }
+    label {
+      display: block;
+      height: 50px;
+    }
+    :global {
+      .react-datepicker-popper {
+        z-index: 50;
+      }
+
+      .react-datepicker {
+        border: 1px solid #113770;
+      }
+
+      .react-datepicker__day-name {
+        font-size: 11px;
+        color: #98a5a3;
+        text-transform: capitalize;
+      }
+
+      .react-datepicker__header {
+        background: none;
+        border: none;
+      }
+
+      .react-datepicker__triangle {
+        display: none;
+      }
+
+      .react-datepicker__day {
+        font-size: 13px;
+      }
+
+      .react-datepicker__navigation-icon--next {
+        width: 9px;
+        height: 15px;
+        background: url('data:image/svg+xml,<svg width="9" height="15" viewBox="0 0 9 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.169473 0.169473C0.223057 0.115753 0.286714 0.0731311 0.356796 0.0440502C0.426879 0.0149692 0.50201 0 0.577886 0C0.653763 0 0.728894 0.0149692 0.798976 0.0440502C0.869058 0.0731311 0.932715 0.115753 0.9863 0.169473L7.90856 7.09174C7.96228 7.14532 8.0049 7.20898 8.03399 7.27906C8.06307 7.34914 8.07804 7.42427 8.07804 7.50015C8.07804 7.57603 8.06307 7.65116 8.03399 7.72124C8.0049 7.79132 7.96228 7.85498 7.90856 7.90857L0.9863 14.8308C0.877982 14.9391 0.731071 15 0.577886 15C0.424701 15 0.277791 14.9391 0.169473 14.8308C0.0611546 14.7225 0.000302023 14.5756 0.000302023 14.4224C0.000302023 14.2692 0.0611546 14.1223 0.169473 14.014L6.68448 7.50015L0.169473 0.9863C0.115752 0.932715 0.0731306 0.869059 0.0440496 0.798977C0.0149687 0.728894 0 0.653763 0 0.577887C0 0.50201 0.0149687 0.426879 0.0440496 0.356797C0.0731306 0.286715 0.115752 0.223058 0.169473 0.169473Z" fill="black"/></svg>')
+          no-repeat;
+
+        &::before {
+          border: none;
+        }
+      }
+
+      .react-datepicker__current-month {
+        margin-bottom: 10px;
+        font-size: 13px;
+        text-transform: capitalize;
+      }
+
+      .react-datepicker__input-container {
+        &::after {
+          content: '';
+          width: 13px;
+          height: 10px;
+          z-index: 0;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          position: absolute;
+          background: url('data:image/svg+xml,<svg width="13" height="9" viewBox="0 0 13 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 2.25C4.79837 2.25 5.08452 2.13147 5.2955 1.92049C5.50647 1.70952 5.625 1.42337 5.625 1.125C5.625 0.826631 5.50647 0.540484 5.2955 0.329505C5.08452 0.118527 4.79837 0 4.5 0C4.20163 0 3.91548 0.118527 3.7045 0.329505C3.49353 0.540484 3.375 0.826631 3.375 1.125C3.375 1.42337 3.49353 1.70952 3.7045 1.92049C3.91548 2.13147 4.20163 2.25 4.5 2.25ZM7.875 2.25C8.17337 2.25 8.45952 2.13147 8.6705 1.92049C8.88147 1.70952 9 1.42337 9 1.125C9 0.826631 8.88147 0.540484 8.6705 0.329505C8.45952 0.118527 8.17337 0 7.875 0C7.57663 0 7.29048 0.118527 7.0795 0.329505C6.86853 0.540484 6.75 0.826631 6.75 1.125C6.75 1.42337 6.86853 1.70952 7.0795 1.92049C7.29048 2.13147 7.57663 2.25 7.875 2.25ZM11.25 2.25C11.5484 2.25 11.8345 2.13147 12.0455 1.92049C12.2565 1.70952 12.375 1.42337 12.375 1.125C12.375 0.826631 12.2565 0.540484 12.0455 0.329505C11.8345 0.118527 11.5484 0 11.25 0C10.9516 0 10.6655 0.118527 10.4545 0.329505C10.2435 0.540484 10.125 0.826631 10.125 1.125C10.125 1.42337 10.2435 1.70952 10.4545 1.92049C10.6655 2.13147 10.9516 2.25 11.25 2.25ZM1.125 5.625C1.42337 5.625 1.70952 5.50647 1.92049 5.2955C2.13147 5.08452 2.25 4.79837 2.25 4.5C2.25 4.20163 2.13147 3.91548 1.92049 3.7045C1.70952 3.49353 1.42337 3.375 1.125 3.375C0.826631 3.375 0.540483 3.49353 0.329505 3.7045C0.118526 3.91548 0 4.20163 0 4.5C0 4.79837 0.118526 5.08452 0.329505 5.2955C0.540483 5.50647 0.826631 5.625 1.125 5.625ZM4.5 5.625C4.79837 5.625 5.08452 5.50647 5.2955 5.2955C5.50647 5.08452 5.625 4.79837 5.625 4.5C5.625 4.20163 5.50647 3.91548 5.2955 3.7045C5.08452 3.49353 4.79837 3.375 4.5 3.375C4.20163 3.375 3.91548 3.49353 3.7045 3.7045C3.49353 3.91548 3.375 4.20163 3.375 4.5C3.375 4.79837 3.49353 5.08452 3.7045 5.2955C3.91548 5.50647 4.20163 5.625 4.5 5.625ZM7.875 5.625C8.17337 5.625 8.45952 5.50647 8.6705 5.2955C8.88147 5.08452 9 4.79837 9 4.5C9 4.20163 8.88147 3.91548 8.6705 3.7045C8.45952 3.49353 8.17337 3.375 7.875 3.375C7.57663 3.375 7.29048 3.49353 7.0795 3.7045C6.86853 3.91548 6.75 4.20163 6.75 4.5C6.75 4.79837 6.86853 5.08452 7.0795 5.2955C7.29048 5.50647 7.57663 5.625 7.875 5.625ZM11.25 5.625C11.5484 5.625 11.8345 5.50647 12.0455 5.2955C12.2565 5.08452 12.375 4.79837 12.375 4.5C12.375 4.20163 12.2565 3.91548 12.0455 3.7045C11.8345 3.49353 11.5484 3.375 11.25 3.375C10.9516 3.375 10.6655 3.49353 10.4545 3.7045C10.2435 3.91548 10.125 4.20163 10.125 4.5C10.125 4.79837 10.2435 5.08452 10.4545 5.2955C10.6655 5.50647 10.9516 5.625 11.25 5.625ZM1.125 9C1.42337 9 1.70952 8.88147 1.92049 8.6705C2.13147 8.45952 2.25 8.17337 2.25 7.875C2.25 7.57663 2.13147 7.29048 1.92049 7.0795C1.70952 6.86853 1.42337 6.75 1.125 6.75C0.826631 6.75 0.540483 6.86853 0.329505 7.0795C0.118526 7.29048 0 7.57663 0 7.875C0 8.17337 0.118526 8.45952 0.329505 8.6705C0.540483 8.88147 0.826631 9 1.125 9ZM4.5 9C4.79837 9 5.08452 8.88147 5.2955 8.6705C5.50647 8.45952 5.625 8.17337 5.625 7.875C5.625 7.57663 5.50647 7.29048 5.2955 7.0795C5.08452 6.86853 4.79837 6.75 4.5 6.75C4.20163 6.75 3.91548 6.86853 3.7045 7.0795C3.49353 7.29048 3.375 7.57663 3.375 7.875C3.375 8.17337 3.49353 8.45952 3.7045 8.6705C3.91548 8.88147 4.20163 9 4.5 9ZM7.875 9C8.17337 9 8.45952 8.88147 8.6705 8.6705C8.88147 8.45952 9 8.17337 9 7.875C9 7.57663 8.88147 7.29048 8.6705 7.0795C8.45952 6.86853 8.17337 6.75 7.875 6.75C7.57663 6.75 7.29048 6.86853 7.0795 7.0795C6.86853 7.29048 6.75 7.57663 6.75 7.875C6.75 8.17337 6.86853 8.45952 7.0795 8.6705C7.29048 8.88147 7.57663 9 7.875 9Z" fill="black"/></svg>')
+            no-repeat;
+        }
+
+        input {
+          padding-right: 25px;
+        }
+      }
+    }
+  }
+}

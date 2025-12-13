@@ -1,0 +1,15 @@
+.head {
+  position: relative;
+}
+.headProgram {
+  align-items: center;
+  justify-content: space-between;
+  @media (max-width: 768px) {
+    margin-bottom: 15px;
+  }
+  .hiddenMobile {
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+}

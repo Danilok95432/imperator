@@ -1,0 +1,272 @@
+div.regModal {
+	width: 830px;
+
+	@media (max-width: 840px) {
+    width: 85vw;
+  }
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 15px;
+  h2 {
+    color: #e30613;
+    font-size: 36px;
+    font-weight: 500;
+    text-align: center;
+    @media (max-width: 768px) {
+      font-size: 20px;
+    }
+  }
+  .regForm {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+    ._last {
+      margin-bottom: 20px;
+      .groupInputs {
+        width: 100%;
+        .selectForm {
+          width: 100%;
+        }
+      }
+    }
+    .formSection:first-child {
+      @media (max-width: 768px) {
+        padding-top: 5px;
+        margin-bottom: 20px;
+      }
+    }
+    .formSection {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding-top: 10px;
+      @media (max-width: 768px) {
+        gap: 15px;
+        padding-top: 25px;
+      }
+      .title {
+        font-size: 26px;
+        font-weight: 500;
+        margin-bottom: 10px;
+        @media (max-width: 768px) {
+          font-size: 24px;
+          margin-bottom: 0px;
+        }
+      }
+      .shortInput {
+        max-width: 80px;
+      }
+      .groupInputs {
+        gap: 15px;
+        align-items: center;
+        flex-wrap: nowrap;
+        @media (max-width: 768px) {
+          align-items: start;
+          flex-direction: column;
+        }
+        .inputWrapperContainer {
+          width: 49%;
+          @media (max-width: 768px) {
+            width: 100%;
+          }
+        }
+        .shortInput {
+          max-width: 135px;
+          @media (max-width: 768px) {
+            max-width: 100%;
+          }
+        }
+      }
+      .groupInputsStart {
+        gap: 15px;
+        align-items: start;
+        flex-wrap: nowrap;
+        width: 100%;
+        @media (max-width: 768px) {
+          flex-direction: column;
+        }
+        .phoneSpan {
+          @media (max-width: 768px) {
+            margin-bottom: 40px;
+          }
+        }
+      }
+      .groupGuestsInputsStart {
+        gap: 15px;
+        align-items: start;
+        flex-wrap: nowrap;
+        width: 100%;
+        padding-top: 10px;
+        @media (max-width: 768px) {
+          flex-wrap: wrap;
+        }
+        .groupGuestInputMain {
+          width: 100%;
+        }
+        .groupGuestsInputsStartInner {
+          align-items: start;
+          flex-wrap: nowrap;
+          width: 100%;
+          gap: 15px;
+          @media (max-width: 768px) {
+            gap: fluid(15, 5);
+          }
+        }
+        .shortInput {
+          @media (max-width: 768px) {
+            max-width: 60px;
+          }
+        }
+      }
+      .inputwithLabel {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-bottom: 15px;
+        @media (max-width: 768px) {
+          margin-bottom: 0px;
+        }
+        .noMargin {
+          margin-bottom: 0;
+        }
+        span {
+          color: #707070;
+          font-size: 15px;
+        }
+        .warningMessage {
+          color: #E30613;
+          font-weight: 500;
+          font-size: 15px;
+        }
+      }
+      .checkBoxWrapper:last-child {
+        @media (max-width: 768px) {
+          margin-bottom: 0px;
+        }
+      }
+      .checkBoxWrapper {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 10px;
+        .headBox {
+          background: #EBE9F4;
+          font-size: 18px;
+          display: flex;
+          align-items: center;
+          padding: 12px 15px 8px 15px;
+          border-radius: 5px 5px 0 0;
+          @media (max-width: 768px) {
+            align-items: start;
+          }
+        }
+        .footerBox {
+          background: #f2f1f780;
+          font-size: 15px;
+          padding: 12px 15px 8px 15px;
+          border-radius: 0 0 5px 5px;
+          @media (max-width: 768px) {
+            padding: 12px 15px 15px 15px;
+          }
+          a {
+            color: #e30613;
+          }
+          .selectForm {
+            width: 100%;
+            height: 100%;
+            min-height: 50px;
+            margin-bottom: 15px;
+            @media (max-width: 768px) {
+              margin-bottom: 0;
+            }
+          }
+          .carsList {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0px;
+            @media (max-width: 768px) {
+              gap: 20px;
+              padding-top: 5px;
+            }
+          }
+          .guestsList {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0px;
+            @media (max-width: 768px) {
+              gap: 20px;
+              padding-top: 20px;
+            }
+          }
+          .guestWrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+          }
+        }
+      }
+    }
+	}
+	.eventInfoLine {
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    justify-content: center;
+    .infoString {
+      font-size: 18px;
+      @media (max-width: 768px) {
+        font-size: 15px;
+      }
+    }
+    .ageRating {
+      position: relative;
+      color: #E30613;
+    }
+
+    .dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #000000;
+    }
+
+    ._red {
+      background: #de0008;
+    }
+  }
+
+  .disclaimer {
+    gap: 10px;
+    .title {
+      font-size: 26px;
+      font-weight: 500;
+      @media (max-width: 768px) {
+        font-size: 24px;
+      }
+    }
+    .grayBox {
+      background: #f2f1f7;
+      padding: 10px;
+      font-size: 18px;
+      @media (max-width: 768px) {
+        font-size: 15px;
+      }
+      a {
+        font-size: 18px;
+        text-decoration: underline;
+        color: #E30613;
+        @media (max-width: 768px) {
+          font-size: 15px;
+        }
+      }
+    }
+  }
+}

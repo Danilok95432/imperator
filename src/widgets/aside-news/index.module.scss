@@ -1,0 +1,78 @@
+.asideNews {
+	padding-top: 2px;
+	.asideNewsTitle {
+		font-size: 24px;
+		margin-bottom: 24px;
+    font-weight: 500;
+	}
+	@media (max-width: 768px) {
+		min-width: auto;
+		width: 100%;
+	}
+	.newsList {
+		display: flex;
+		flex-direction: row;
+		gap: 20px;
+		// max-height: 1050px;
+		// overflow-y: scroll;
+		.asideNewsCard {
+			display: flex;
+			flex-direction: column;
+			width: 290px;
+			gap: 5px;
+			img {
+				width: 100%;
+				aspect-ratio: 3 / 2;
+				object-fit: cover;
+				border-radius: 5px;
+				height: 163px;
+			}
+			.asideNewsCardTitle {
+				font-size: 16px;
+        color: var(--main-link-color);
+			}
+			.asideNewsCardDate {
+				font-size: 16px;
+				color: var(--color-gray-03);
+        margin-top: 12px;
+			}
+		}
+	}
+  .newsSliderBtns {
+		@media (max-width: 768px) {
+			top: 40%;
+			width: 70%;
+		}
+		@media (max-width: 440px) {
+			top: 40%;
+			width: 280px;
+		}
+	}
+}
+
+.asideNewsCard {
+	display: flex;
+	flex-direction: column;
+	width: 245px;
+	gap: 5px;
+	@media (max-width: 768px) {
+		width: 300px!important;
+		margin: 0 auto;
+	}
+	img {
+		width: 100%;
+		aspect-ratio: 3 / 2;
+		object-fit: cover;
+		border-radius: 5px;
+		@media (max-width: 768px) {
+			height: 200px !important;
+		}
+	}
+	.asideNewsCardTitle {
+		font-size: 16px;
+	}
+	.asideNewsCardDate {
+		font-size: 16px;
+		color: #949494;
+	}
+}

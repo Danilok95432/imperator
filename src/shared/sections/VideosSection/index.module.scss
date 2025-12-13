@@ -1,0 +1,33 @@
+.videos {
+	.videotapeSectionRow {
+		margin: 0 0 20px 0;
+		align-items: center;
+		justify-content: space-between;
+		gap: 17px;
+	}
+
+	@media (max-width: 768) {
+		padding: 0px 0 37px;
+	}
+
+	h4 {
+		@media (max-width: 550px) {
+			margin-bottom: 1px;
+		}
+	}
+
+	.videotapeTop {
+		@media (max-width: 550px) {
+			margin-bottom: 17px;
+		}
+	}
+
+	.videoSliderBtns {
+		top: 40%;
+		width: calc(100% + 80px);
+		@media (max-width: 768px) {
+			display: none;
+		}
+	}
+}
+

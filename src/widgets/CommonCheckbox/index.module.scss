@@ -1,0 +1,52 @@
+// Checkbox.module.scss
+.checkboxContainer {
+  display: inline-flex;
+  align-items: center;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 8px;
+
+  &:hover {
+    .customCheckbox {
+      border-color: #0077cc;
+    }
+  }
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  
+  &:disabled + .customCheckbox {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+
+}
+
+.customCheckbox {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.labelText {
+  font-size: 16px;
+  color: #000000;
+  font-weight: 500;
+}

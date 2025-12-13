@@ -1,0 +1,28 @@
+.awards {
+  padding: 30px 0 25px 0;
+  @media (max-width: 768px) {
+    display: none;
+  }
+  .awardsList {
+    gap: 19px;
+    flex-wrap: nowrap;
+    .awardEl {
+      max-width: 170px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      p {
+        font-size: 15px;
+      }
+      p:first-child {
+        color: #CC1746;
+      }
+    }
+    .eventsSliderBtns {
+      top: 40%;
+      button {
+        background: #ffffff79;
+      }
+    }
+  }
+}

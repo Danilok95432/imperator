@@ -1,0 +1,43 @@
+@import "src/assets/styles/vars";
+
+.selectWrapper {
+  position: relative;
+  label {
+    position: absolute;
+    left: 12px;
+    top: 4px;
+    color: #00000096;
+    font-size: 12px;
+    transition: all 0.2s ease-out;
+    pointer-events: none;
+  }
+
+  :global {
+    .react-dropdown-select {
+      border: 1px solid #00000031;
+      border-radius: 8px;
+      padding: 12px 10px 0;
+      min-height: 50px;
+      font-size: 16px;
+      @media (max-width: 768px) {
+        padding: 22px 10px 0;
+      }
+    }
+
+    .react-dropdown-select-dropdown-handle {
+      background: url("data:image/svg+xml,%3Csvg width='10' height='7' viewBox='0 0 16 9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath transform='rotate(180 8 4.5)' d='M7.88457 9C7.65353 9 7.30685 8.88498 7.19132 8.65495L0.259927 1.754C-0.0866424 1.40895 -0.0866424 0.718849 0.259927 0.258786C0.606497 -0.0862619 1.29969 -0.0862619 1.76179 0.258786L8.00007 6.46964L14.2384 0.258786C14.5849 -0.0862619 15.278 -0.0862619 15.7401 0.258786C16.0866 0.603833 16.0866 1.29393 15.7401 1.754L8.80868 8.65495C8.46211 8.88498 8.11562 9 7.88457 9Z' fill='black'/%3E%3C/svg%3E") no-repeat;
+      width: 10px;
+      height: 6.25px;
+      margin-bottom: 7px;
+      svg {
+        display: none;
+      }
+    }
+  }
+}
+.warningMessage {
+  color: #F00000;
+  font-size: 14px;
+  line-height: 1;
+  padding-top: 5px;
+}

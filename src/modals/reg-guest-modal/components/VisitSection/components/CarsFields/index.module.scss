@@ -1,0 +1,14 @@
+.carsWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 5px;
+  }
+  .selectForm {
+    width: 100%;
+    height: 100%;
+  }
+}

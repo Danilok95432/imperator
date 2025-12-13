@@ -1,0 +1,134 @@
+.printPage {
+	max-width: 1280px;
+	width: 100%;
+	height: 100%;
+	margin: auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background: #ffffff;
+	border-radius: 5px;
+	.desc {
+		font-size: 25px;
+		text-align: center;
+		padding: 25px 0 60px 0;
+		max-width: 850px;
+	}
+	.backBtn {
+		margin: 25px 0 0 0;
+		width: 100%;
+		max-width: 300px;
+		background: #cc1746;
+		padding: 12px 0;
+		font-size: 24px;
+		height: auto;
+		color: #ffffff;
+		border-radius: 5px;
+		border: none;
+		text-decoration: none;
+		font-weight: 400;
+		cursor: pointer;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		transition: all .3s;
+	}
+	.formRow {
+		flex-direction: column;
+		gap: 30px;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		max-width: 768px;
+		margin: 0 auto;
+		form {
+			width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+			.inputwithLabel {
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				gap: 5px;
+				@media (max-width: 768px) {
+					margin-bottom: 0;
+				}
+				input {
+					font-size: 25px;
+				}
+				.warningMessage {
+					color: #e30613;
+					font-weight: 500;
+					font-size: 15px;
+				}
+				.noMargin {
+					margin-bottom: 0;
+				}
+				.sendCode {
+					font-size: 20px;
+					padding: 12px 20px;
+					height: 40px;
+				}
+				span {
+					color: #707070;
+					font-size: 18px;
+				}
+			}
+		}
+	}
+	.printBlock {
+		padding: 50px 0;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		gap: 40px;
+		p {
+			font-size: 35px;
+			text-align: center;
+			max-width: 850px;
+		}
+		.error {
+			color: #cc1746;
+		}
+		.regBtns {
+			width: 100%;
+			max-width: 1024px;
+			gap: 30px;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			.sendBtn {
+				width: 100%;
+				background: #cc1746;
+				padding: 20px 0;
+				font-size: 35px;
+				height: auto;
+			}
+		}
+		.printBtn {
+			width: 100%;
+			max-width: 425px;
+			background: #cc1746;
+			padding: 25px 0;
+			font-size: 40px;
+			height: auto;
+			color: #ffffff;
+			border-radius: 5px;
+			border: none;
+			text-decoration: none;
+			font-weight: 400;
+			cursor: pointer;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			transition: all .3s;
+			@media (max-width: 768px) {
+				font-size: 32px;
+			}
+			@media (max-width: 500px) {
+				font-size: 20px;
+			}
+		}
+	}
+}

@@ -1,0 +1,145 @@
+.header {
+	padding: 40px 0;
+	@media (max-width: 1340px) {
+		padding: 20px 0 15px 0;
+	}
+	.headerRow {
+		@media (max-width: 1340px) {
+			align-items: center;
+			justify-content: space-around;
+		}
+		@media (max-width: 768px) {
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+		}
+		.infoBlock {
+			display: flex;
+			flex-direction: column;
+			gap: 5px;
+			margin: 0 auto 0 20px;
+			@media (max-width: 1340px) {
+				justify-content: center;
+				align-items: center;
+				margin: 0;
+			}
+			.dates {
+				color: #cc1746;
+				font-size: 20px;
+				border: 1px solid #cc1746;
+				padding: 8px 10px;
+				border-radius: 5px;
+			}
+			p {
+				font-size: 20px;
+				span {
+					color: #cc1746;
+				}
+			}
+		}
+		.controlsSmallRow {
+			flex-direction: column;
+			justify-content: flex-end;
+			align-items: flex-end;
+			@media (max-width: 1340px) {
+				align-items: center;
+				justify-content: center;
+			}
+			.modalsRow {
+				.starts {
+					color: #cc1746;
+					font-size: 14px;
+					border: 1px solid #cc1746;
+					border-radius: 5px;
+          padding: 0px 10px;
+				}
+				@media (max-width: 440px) {
+					justify-content: center;
+					align-items: center;
+					flex-direction: column;
+				}
+			}
+			.enterLK {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				border: none;
+				font-size: 20px;
+				color: #cc1746;
+				gap: 10px;
+				.vector {
+					border-radius: 50%;
+					width: 30px;
+					height: 30px;
+					background: #cc1746;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+				}
+			}
+		}
+		.controlsRow {
+			flex-direction: column;
+			justify-content: flex-end;
+			align-items: flex-end;
+			.starts {
+				color: #cc1746;
+				font-size: 14px;
+				border: 1px solid #cc1746;
+        padding: 0px 10px;
+				border-radius: 5px;
+			}
+			@media (max-width: 1340px) {
+				flex-direction: row;
+				align-items: center;
+				justify-content: center;
+			}
+			.enterLK {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				border: none;
+				font-size: 20px;
+				color: #cc1746;
+				gap: 10px;
+				.vector {
+					border-radius: 50%;
+					width: 30px;
+					height: 30px;
+					background: #cc1746;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+				}
+			}
+		}
+		.linksRow {
+			gap: 15px;
+			@media (max-width: 440px) {
+				display: none;
+				align-items: center;
+			}
+			.linkEl {
+				display: flex;
+				gap: 5px;
+				align-items: center;
+				@media (max-width: 440px) {
+					align-items: start;
+				}
+				span {
+					font-size: 13px;
+					color: #cc1746;
+					padding-top: 2px;
+					@media (max-width: 440px) {
+						max-width: 200px;
+						padding-top: 0;
+						text-align: left;
+					}
+				}
+			}
+		}
+	}
+	.headerBtn {
+		background: #cc1746;
+	}
+}

@@ -1,0 +1,50 @@
+div.authModal {
+	width: 500px;
+
+	@media (max-width: 590px) {
+		width: 85vw;
+	}
+	.forgetPassword {
+		a {
+			color: #E30613;
+		}
+	}
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  h2 {
+    font-size: 32px;
+    font-weight: 500;
+  }
+	.authForm {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		@media (max-width: 768px) {
+			gap: 15px;
+		}
+	}
+}
+
+.loginInputWrapper {
+	position: relative;
+
+	button {
+		position: absolute;
+		right: 7px;
+		top: 32px;
+
+		@media (max-width: 768px) {
+			right: 3px;
+			padding: 0 2px;
+			height: 30px;
+			top: 30px;
+			max-width: 80px;
+		}
+	}
+}

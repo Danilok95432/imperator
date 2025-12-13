@@ -1,0 +1,92 @@
+div.reqModal {
+  width: 500px;
+
+  @media (max-width: 590px) {
+    width: 85vw;
+  }
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  padding-bottom: 15px;
+  h2 {
+    color: #000;
+    font-size: 36px;
+    font-weight: 500;
+  }
+
+  .infoMessage {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    p {
+      font-size: 20px;
+    }
+    a {
+      color: #E30613;
+      cursor: pointer;
+    }
+    span {
+      font-size: 17px;
+      color: #00000080;
+    }
+    .underDecorSpan {
+      text-decoration: underline;
+      font-size: 20px;
+      color: #000;
+    }
+
+    .lowP {
+      font-size: 17px;
+    }
+  }
+
+  .controlsWrapper {
+    display: flex;
+    flex-direction: column;
+    .sendBtn:first-child {
+      margin-bottom: 10px;
+    }
+    button {
+      font-size: 22px;
+      font-weight: 400;
+      @media (max-width: 768px) {
+        font-size: 15px;
+      }
+    }
+    .closeBtn {
+      font-size: 18px;
+    }
+  }
+
+  .disclaimer {
+    gap: 10px;
+    padding-bottom: 10px;
+    .title {
+      font-size: 26px;
+      font-weight: 500;
+    }
+    .grayBox {
+      background: #f2f1f7;
+      padding: 10px;
+      font-size: 18px;
+    }
+  }
+
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    .sendBtn {
+      padding: 10px 12px;
+    }
+    .closeBtn {
+      padding: 10px 12px;
+      background: #fff;
+      color: #E30613;
+    }
+  }
+}
