@@ -1,8 +1,11 @@
 section.mainImgSection {
 	padding: 0;
   background: var(--main-theme-color);
-	.mainCont {
+	div.mainCont {
 		max-width: 1920px;
+		@media (max-width: 768px) {
+			padding: 0;
+		}
 		.sectionRow {
       display: flex;
       justify-content: center;
@@ -31,11 +34,19 @@ section.mainImgSection {
 					color: #fff;
 					font-weight: 400;
 					font-family: "Tinos";
+					@media (max-width: 768px) {
+						font-size: 48px;
+						text-align: center;
+					}
 				}
 				p {
 					font-size: 24px;
 					color: #fff;
 					font-family: "Tinos-Bold";
+					@media (max-width: 768px) {
+						font-size: 20px;
+						text-align: center;
+					}
 				}
 			}
 		}

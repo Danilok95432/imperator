@@ -1,0 +1,111 @@
+section.mainSlider {
+	padding: 0;
+	background: var(--main-theme-color);
+	.sliderCont {
+		max-width: 1920px;
+    @media (max-width: 768px) {
+      padding: 0;
+    }
+		.sectionRow {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background: #000;
+			max-width: 1220px;
+			padding: 48px 0;
+			height: 546px;
+			margin: 0 auto;
+			background-image: url('src/assets/img/slider-bg-2k.png');
+			background-position: center;
+			background-repeat: no-repeat;
+			@media (max-width: 1920px) {
+				max-width: 100%;
+				background-image: url('src/assets/img/slider-bg.png');
+				background-position: center;
+				background-repeat: no-repeat;
+			}
+			@media (max-width: 768px) {
+				height: max-content;
+        padding: 32px 0;
+        background-size: auto 100%;
+			}
+			.sliderMain {
+				width: 1220px;
+				margin: 0 auto;
+				position: relative;
+				.slideRow {
+					flex-direction: row;
+					align-items: center;
+					justify-content: center;
+					flex-wrap: nowrap;
+					gap: 48px;
+					padding: 48px 0;
+					@media (max-width: 1920px) {
+						gap: 92px;
+						padding: 0;
+					}
+					@media (max-width: 768px) {
+						flex-direction: column-reverse;
+					}
+					.imgWrapper {
+						width: 380px;
+						height: 380px;
+						@media (max-width: 1920px) {
+							width: 450px;
+							height: 450px;
+						}
+						@media (max-width: 768px) {
+							width: 67%;
+							height: auto;
+						}
+						img {
+							width: 100%;
+							height: 100%;
+						}
+					}
+					.contentSlide {
+						max-width: 678px;
+						flex-direction: column;
+						gap: 24px;
+						@media (max-width: 768px) {
+							width: 67%;
+						}
+						.slideTitle {
+							color: var(--main-theme-color-2);
+							font-family: 'Tinos';
+							font-size: 44px;
+							@media (max-width: 768px) {
+								font-size: 32px;
+							}
+						}
+						.slideDesc {
+							font-size: 18px;
+							font-family: 'PT Sans';
+							color: #fff;
+							margin-bottom: 15px;
+						}
+						.infoBtn {
+							background: var(--main-theme-color-2);
+							padding: 8px 32px;
+							font-size: 20px;
+							font-family: 'Tinos';
+							border-radius: 4px;
+						}
+					}
+				}
+			}
+			.sliderBtns {
+				top: 50%;
+				width: calc(1220px + 128px);
+				@media (max-width: 768px) {
+          top: 30%;
+					width: 80%;
+				}
+        @media (max-width: 440px) {
+          top: 20%;
+					width: 90%;
+				}
+			}
+		}
+	}
+}

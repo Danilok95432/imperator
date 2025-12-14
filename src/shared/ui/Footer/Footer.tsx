@@ -23,7 +23,7 @@ export const Footer = () => {
 	]
 	return (
 		<footer className={styles.footer}>
-			<Container>
+			<Container className={styles.cont}>
 				<FlexRow className={styles.footerCont}>
 					<p>
 						Фабрика Император

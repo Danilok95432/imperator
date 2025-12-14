@@ -4,7 +4,6 @@ import React, { type SelectHTMLAttributes } from 'react'
 
 import styles from './index.module.scss'
 import cn from 'classnames'
-import { SelectArrowSvg } from '../icons/selectArrowSVG'
 
 type MainSelectProps = {
 	items: SelOption[]
@@ -22,7 +21,6 @@ export const MainSelect = React.forwardRef<HTMLSelectElement, MainSelectProps>(
 						</option>
 					))}
 				</select>
-				<SelectArrowSvg />
 			</div>
 		)
 	},

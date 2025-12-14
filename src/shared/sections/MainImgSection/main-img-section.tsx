@@ -1,5 +1,4 @@
 import { Container } from 'src/shared/ui/Container/Container'
-import mainImg from 'src/assets/img/main-img.png'
 import styles from './index.module.scss'
 import { Section } from 'src/shared/ui/Section/section'
 import { FlexRow } from 'src/shared/ui/FlexRow/FlexRow'
