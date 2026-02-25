@@ -1,7 +1,7 @@
 export const navigationElements = [
 	{
 		title: 'Шоколад',
-		link: 'chocolate',
+		link: '/chocolate',
 	},
 	{
 		title: 'Конфеты',

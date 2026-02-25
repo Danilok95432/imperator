@@ -21,6 +21,9 @@
 			flex-wrap: nowrap;
 			justify-content: space-between;
 		}
+		.logo {
+			cursor: pointer;
+		}
 		.controls {
 			width: 100%;
 			flex-wrap: nowrap;
@@ -32,6 +35,21 @@
 				width: max-content;
 				justify-content: end;
 				align-items: end;
+			}
+			.langSwitcher {
+				gap: 16px;
+				align-items: center;
+				flex-wrap: nowrap;
+				max-width: 143px;
+				p {
+					font-size: 18px;
+					font-weight: 400;
+					color: #fff;
+					cursor: pointer;
+				}
+				.activeLang {
+					color: var(--main-theme-color-2);
+				}
 			}
 			.blankBlock {
 				width: 143px;
@@ -50,4 +68,3 @@
 		}
 	}
 }
-
