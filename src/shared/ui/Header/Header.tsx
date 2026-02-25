@@ -10,7 +10,7 @@ import { MainNavigation } from 'src/widgets/main-navigation/main-navigation'
 export const Header = () => {
 	return (
 		<header className={styles.header}>
-			<Container>
+			<Container className={styles.headerCont}>
 				<FlexRow className={styles.headerRow}>
 					<img src={logo} alt='logo' />
 					<FlexRow className={styles.controls}>

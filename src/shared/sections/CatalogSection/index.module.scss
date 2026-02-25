@@ -2,7 +2,7 @@ section.catalog {
 	background: var(--main-theme-color);
 	padding: 48px 0;
 	@media (max-width: 768px) {
-		padding: 24px 0 0 0;
+		padding: 0;
 	}
 	.headRow {
 		justify-content: center;
@@ -26,8 +26,13 @@ section.catalog {
 		width: 100%;
 		flex-wrap: nowrap;
 		gap: 24px;
+		@media (max-width: 1330px) {
+			flex-wrap: wrap;
+			justify-content: center;
+		}
 		@media (max-width: 768px) {
 			flex-direction: column;
+			flex-wrap: nowrap;
 			max-width: 320px;
 			justify-content: center;
 			align-items: center;
@@ -38,11 +43,13 @@ section.catalog {
 			align-items: center;
 			justify-content: center;
 			width: 100%;
+			max-width: 320px;
 			padding: 24px 3.5px;
 			gap: 0;
 			border-radius: 12px;
 			border: 1px solid #c09f3d6b;
 			@media (max-width: 768px) {
+				max-width: max-content;
 				flex-direction: column-reverse;
 			}
 			.imgWrapper {

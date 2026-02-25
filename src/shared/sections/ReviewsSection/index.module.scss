@@ -2,7 +2,7 @@ section.reviewSlider {
 	padding: 48px 0 64px;
 	background: var(--main-theme-color);
 	@media (max-width: 768px) {
-		padding: 24px 0 48px;
+		padding: 0px 0 48px;
 	}
 	.sliderCont {
 		max-width: 1920px;
@@ -42,11 +42,11 @@ section.reviewSlider {
 						margin-top: 16px;
 						display: flex;
 						justify-content: center;
-						gap: 10px;
+						gap: 16px;
             display: none;
             @media (max-width: 768px) {
               display: flex;
-              margin-top: 8px;
+              margin-top: 0px;
             }
 					}
 
@@ -63,7 +63,6 @@ section.reviewSlider {
 
 					.swiper-pagination-bullet-active {
 						background: var(--main-theme-color-2);
-						transform: scale(1.15);
 					}
 				}
 				.slideRow {
@@ -177,7 +176,7 @@ section.reviewSlider {
 			.sliderBtns {
 				top: 50%;
 				width: calc(730px + 128px);
-				@media (max-width: 768px) {
+				@media (max-width: 885px) {
 					display: none;
 				}
 			}

@@ -3,7 +3,7 @@
 	background: var(--main-theme-color);
 	padding: 48px 0 72px;
 	@media (max-width: 768px) {
-		padding: 48px 0 16px;
+		padding: 16px 0 16px;
 	}
 }
 
@@ -84,6 +84,12 @@
 	.sliderBtns {
 		width: calc(100% + 128px);
 		top: 50%;
+		@media (max-width: 1400px) {
+			width: calc(100% + 64px);
+		}
+		@media (max-width: 1310px) {
+			width: calc(95%);
+		}
 		@media (max-width: 768px) {
 			width: 90%;
 		}

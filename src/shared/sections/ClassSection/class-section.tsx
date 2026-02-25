@@ -6,7 +6,7 @@ import { FlexRow } from 'src/shared/ui/FlexRow/FlexRow'
 export const ClassSection = () => {
 	return (
 		<Section className={styles.class}>
-			<Container>
+			<Container className={styles.classCont}>
 				<FlexRow className={styles.headRow}>
 					<h2>Класс элит</h2>
 				</FlexRow>

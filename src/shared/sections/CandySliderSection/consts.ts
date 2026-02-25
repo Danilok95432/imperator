@@ -9,7 +9,7 @@ export const sliderOptions: SwiperProps = {
 	breakpoints: {
 		0: { slidesPerView: 1, spaceBetween: 24 },
 		560: { slidesPerView: 2, spaceBetween: 36 },
-		920: { slidesPerView: 3, spaceBetween: 56 },
-		1200: { slidesPerView: 4, spaceBetween: 24 },
+		1310: { slidesPerView: 3, spaceBetween: 24 },
+		1400: { slidesPerView: 4, spaceBetween: 24 },
 	},
 }

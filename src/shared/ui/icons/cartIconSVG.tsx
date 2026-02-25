@@ -5,7 +5,6 @@ type CartProps = {
 }
 
 export const CartIconSVG: FC<CartProps> = ({ positions }) => {
-	console.log(positions)
 	return (
 		<svg
 			width='24px'
