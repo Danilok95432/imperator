@@ -38,7 +38,7 @@ export const CatalogSection = () => {
 				},
 			],
 			linkTitle: 'В каталог шоколада',
-			linkTo: '/',
+			linkTo: '/chocolate',
 			img: 'src/assets/img/catalog(1).png',
 		},
 		{

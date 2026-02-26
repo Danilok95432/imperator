@@ -44,9 +44,15 @@ export const Header = () => {
 						)}
 						<MainNavigation />
 						<FlexRow className={styles.btns}>
-							<SearchSVG />
-							<PersonSVG />
-							<CartIconSVG />
+							<div className={styles.vector}>
+								<SearchSVG />
+							</div>
+							<div className={styles.vector}>
+								<PersonSVG />
+							</div>
+							<div className={styles.vector}>
+								<CartIconSVG />
+							</div>
 						</FlexRow>
 					</FlexRow>
 				</FlexRow>

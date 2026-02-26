@@ -9,7 +9,7 @@ import { Section } from 'src/shared/ui/Section/section'
 export const ChocolatePage = () => {
 	return (
 		<Section className={styles.chocolatePage}>
-			<Container>
+			<Container className={styles.cont}>
 				<FlexRow className={styles.headRow}>
 					<h2 className={styles.title}>{'Шоколад'}</h2>
 				</FlexRow>

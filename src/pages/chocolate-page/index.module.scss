@@ -5,6 +5,11 @@ section.chocolatePage {
 	@media (max-width: 768px) {
 		padding: 16px 0 16px;
 	}
+	.cont {
+		@media (max-width: 768px) {
+			padding: 24px 24px 16px 24px;
+		}
+	}
 	.headRow {
 		position: relative;
 		justify-content: center;

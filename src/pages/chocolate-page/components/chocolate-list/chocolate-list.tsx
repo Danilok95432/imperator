@@ -4,11 +4,15 @@ import { mockChocolates } from 'src/mock/chocolate'
 import { Container } from 'src/shared/ui/Container/Container'
 import { ChocolateCard } from './components/chocolate-card/chocolate-card'
 import { Pagination } from 'src/widgets/pagination/pagination'
+import { useBreakPoint } from 'src/features/useBreakPoint/useBreakPoint'
 
-const ITEMS_PER_PAGE = 9
+let ITEMS_PER_PAGE = 9
 
 export const ChocolateList = () => {
 	const [currentPage, setCurrentPage] = useState(1)
+	const breakPoint = useBreakPoint()
+
+	if (breakPoint === 'S') ITEMS_PER_PAGE = 8
 
 	const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
 	const endIndex = startIndex + ITEMS_PER_PAGE
@@ -19,12 +23,10 @@ export const ChocolateList = () => {
 		window.scrollTo({ top: 0, behavior: 'smooth' })
 	}
 
-	// Функция для генерации массива страниц с троеточием
 	const paginationData = useMemo(() => {
 		const totalItems = mockChocolates.length
 		const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE)
 
-		// Получаем элементы для текущей страницы
 		const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
 		const endIndex = startIndex + ITEMS_PER_PAGE
 		const currentItems = mockChocolates.slice(startIndex, endIndex)
@@ -39,7 +41,7 @@ export const ChocolateList = () => {
 	}, [mockChocolates, currentPage, ITEMS_PER_PAGE])
 
 	return (
-		<Container className={styles.container}>
+		<Container className={styles.cont}>
 			<div className={styles.grid}>
 				{currentItems.map((chocolate) => (
 					<ChocolateCard key={chocolate.id} chocolate={chocolate} />
@@ -52,6 +54,7 @@ export const ChocolateList = () => {
 					totalPages={paginationData.totalPages}
 					onPageChange={handlePageChange}
 					className={styles.pagination}
+					maxVisiblePages={5}
 				/>
 			)}
 		</Container>
