@@ -14,9 +14,11 @@ import { AppRoute } from 'src/app/router/consts'
 
 interface ChocolateCardProps {
 	chocolate: Chocolate
+	className?: string
+	smallCard?: boolean
 }
 
-export const ChocolateCard = ({ chocolate }: ChocolateCardProps) => {
+export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCardProps) => {
 	const [filled, setFilled] = useState<boolean>(false)
 	const [isHovered, setIsHovered] = useState<boolean>(false)
 	const [count, setCount] = useState<number>(0)
@@ -32,11 +34,13 @@ export const ChocolateCard = ({ chocolate }: ChocolateCardProps) => {
 	}
 
 	const handleRemoveFromCart = (e: React.MouseEvent) => {
+		e.preventDefault()
 		e.stopPropagation()
 		setCount((prev) => Math.max(0, prev - 1))
 	}
 
 	const handleIncrease = (e: React.MouseEvent) => {
+		e.preventDefault()
 		e.stopPropagation()
 		setCount((prev) => prev + 1)
 		setIsJumping(true)
@@ -46,17 +50,98 @@ export const ChocolateCard = ({ chocolate }: ChocolateCardProps) => {
 	}
 
 	const handleFirstAdd = (e: React.MouseEvent) => {
+		e.preventDefault()
 		e.stopPropagation()
 		handleAddToCart()
 	}
+	if (smallCard) {
+		return (
+			<Link to={`${AppRoute.Chocolate}/${chocolate.id}`}>
+				<div className={cn(styles.smallCard, className)}>
+					<FlexRow className={styles.smallIcon}>
+						<div
+							className={cn(styles.vector, { [styles.filledHeart]: filled })}
+							onClick={(e: React.MouseEvent) => {
+								setFilled(!filled)
+								e.preventDefault()
+								e.stopPropagation()
+							}}
+						>
+							<HeartIconCatalogSVG filled={filled} />
+						</div>
+					</FlexRow>
+					<div className={styles.smallImage}>
+						<img src={chocolate.img} alt={chocolate.title} />
+					</div>
 
+					<FlexRow className={styles.smallContent}>
+						<FlexRow className={styles.smallInfoWrapper}>
+							<h3 className={styles.title}>{`${chocolate.price}.00 ₽`}</h3>
+							<p className={styles.subtitle}>{chocolate.title}</p>
+							<p className={styles.weight}>{`${chocolate.weight} г`}</p>
+						</FlexRow>
+
+						{breakPoint !== 'S' && (
+							<MainButton
+								className={cn(styles.smallBuyBtn, {
+									[styles.filled]: count > 0 && breakPoint === 'S',
+								})}
+								onMouseEnter={() => setIsHovered(true)}
+								onMouseLeave={() => setIsHovered(false)}
+								onClick={(e: React.MouseEvent) => {
+									e.preventDefault()
+									e.stopPropagation()
+									handleAddToCart()
+								}}
+							>
+								<CardIconCatalogSVG
+									small
+									filled={isHovered}
+									className={isJumping ? styles.jump : ''}
+								/>
+								{count > 0 && <div className={styles.counter}>{count}</div>}
+							</MainButton>
+						)}
+
+						{breakPoint === 'S' && (
+							<MainButton
+								className={cn(styles.smallBuyBtn, styles.mobileBuyBtn, {
+									[styles.filled]: count > 0,
+								})}
+							>
+								{count === 0 ? (
+									<p className={styles.btnText} onClick={handleFirstAdd}>
+										В корзину
+									</p>
+								) : (
+									<FlexRow className={styles.smallCounterCart}>
+										<div className={styles.vector} onClick={handleRemoveFromCart}>
+											<MinusSVG />
+										</div>
+										<p>{count}</p>
+										<div className={styles.vector} onClick={handleIncrease}>
+											<PlusSVG />
+										</div>
+									</FlexRow>
+								)}
+							</MainButton>
+						)}
+					</FlexRow>
+				</div>
+			</Link>
+		)
+	}
 	return (
 		<Link to={`${AppRoute.Chocolate}/${chocolate.id}`}>
-			<div className={styles.card}>
+			<div className={cn(styles.card, className)}>
 				<FlexRow className={styles.icon}>
 					<div
 						className={cn(styles.vector, { [styles.filledHeart]: filled })}
-						onClick={() => setFilled(!filled)}
+						onClick={(e: React.MouseEvent) => {
+							setFilled(!filled)
+							e.preventDefault()
+							e.stopPropagation()
+						}}
 					>
 						<HeartIconCatalogSVG filled={filled} />
 					</div>
@@ -77,7 +162,11 @@ export const ChocolateCard = ({ chocolate }: ChocolateCardProps) => {
 							className={cn(styles.buyBtn, { [styles.filled]: count > 0 && breakPoint === 'S' })}
 							onMouseEnter={() => setIsHovered(true)}
 							onMouseLeave={() => setIsHovered(false)}
-							onClick={handleAddToCart}
+							onClick={(e: React.MouseEvent) => {
+								e.preventDefault()
+								e.stopPropagation()
+								handleAddToCart()
+							}}
 						>
 							<CardIconCatalogSVG filled={isHovered} className={isJumping ? styles.jump : ''} />
 							{count > 0 && <div className={styles.counter}>{count}</div>}

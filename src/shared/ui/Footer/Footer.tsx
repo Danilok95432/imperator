@@ -9,11 +9,11 @@ import { PhoneIconSVG } from '../icons/phoneIconSVG'
 
 export const Footer = () => {
 	const infoLinks = [
-		{ id: '1', title: 'О нас', link: '/' },
-		{ id: '2', title: 'Самовывоз и доставка', link: '/' },
-		{ id: '3', title: 'Контакты', link: '/' },
-		{ id: '4', title: 'Способы оплаты', link: '/' },
-		{ id: '5', title: 'Политика конфиденциальности', link: '/' },
+		{ id: '1', title: 'О нас', link: '/about' },
+		{ id: '2', title: 'Самовывоз и доставка', link: '/about/delivery' },
+		{ id: '3', title: 'Контакты', link: '/about/contacts' },
+		{ id: '4', title: 'Способы оплаты', link: '/about/payment' },
+		{ id: '5', title: 'Политика конфиденциальности', link: '/about/politic' },
 	]
 	const LCLinks = [
 		{ id: '1', title: 'О Личный кабинет', link: '/' },

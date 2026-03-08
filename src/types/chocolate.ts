@@ -6,4 +6,7 @@ export interface Chocolate {
 	category: string
 	additives?: string[]
 	img: string
+	images: string[]
+	composition: string
+	description: string
 }

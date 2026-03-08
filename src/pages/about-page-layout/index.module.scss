@@ -1,0 +1,17 @@
+.aboutSection {
+  background: var(--main-theme-color);
+	.aboutCont {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0;
+    align-items: center;
+		.title {
+			font-size: 42px;
+			font-family: 'Tinos';
+			font-weight: 400;
+			margin-bottom: 32px;
+      color: var(--main-theme-color-2);
+		}
+	}
+}
