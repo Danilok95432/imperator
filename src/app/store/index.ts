@@ -1,4 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
+import { authApi } from 'src/features/auth/api/auth.api'
+import { homeApi } from 'src/features/home/api/home.api'
 import { modalReducer } from 'src/features/modal/store/modal.slice'
 import { NameSpace } from 'src/shared/helpers/consts'
 import { breadCrumbsReducer } from 'src/widgets/breadcrumbs/store/bread-crumbs.slice'
@@ -6,10 +8,16 @@ import { breadCrumbsReducer } from 'src/widgets/breadcrumbs/store/bread-crumbs.s
 export const store = configureStore({
 	reducer: {
 		[NameSpace.Modal]: modalReducer,
+		[homeApi.reducerPath]: homeApi.reducer,
+		[authApi.reducerPath]: authApi.reducer,
 		[NameSpace.BreadCrumbs]: breadCrumbsReducer,
 	},
 	devTools: true,
-	middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }).concat(),
+	middleware: (getDefaultMiddleware) =>
+		getDefaultMiddleware({ serializableCheck: false }).concat(
+			homeApi.middleware,
+			authApi.middleware,
+		),
 })
 
 export type RootState = ReturnType<typeof store.getState>
