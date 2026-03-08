@@ -22,4 +22,4 @@ export enum DisplayBreakpoints {
 
 export const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4020/api/v1'
 export const PROD_URL = '/api'
-export const MAIN_PROD_URL = ''
+export const MAIN_PROD_URL = 'empapi.hayecke.org'
