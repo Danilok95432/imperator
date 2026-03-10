@@ -1,6 +1,16 @@
 @import "src/assets/styles/vars";
 
 
+ul.headList {
+  flex-direction: row;
+  gap: 24px;
+  li {
+    a {
+      font-size: 16px;
+    }
+  }
+}
+
 .breadCrumbsList {
   padding: 0;
   display: flex;
@@ -20,6 +30,12 @@
       color: #fff;
       font-size: 14px;
       font-weight: 500;
+    }
+  }
+
+  .active {
+    a {
+      color: #fff;
     }
   }
 

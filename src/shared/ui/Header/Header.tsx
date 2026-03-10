@@ -47,7 +47,7 @@ export const Header = () => {
 							<div className={styles.vector}>
 								<SearchSVG />
 							</div>
-							<div className={styles.vector}>
+							<div className={styles.vector} onClick={() => navigate('/auth')}>
 								<PersonSVG />
 							</div>
 							<div className={styles.vector}>

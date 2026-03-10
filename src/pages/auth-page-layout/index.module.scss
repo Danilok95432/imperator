@@ -1,6 +1,6 @@
-.aboutSection {
+.authSection {
   background: var(--main-theme-color);
-	.aboutCont {
+	.authCont {
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -13,8 +13,11 @@
 			font-size: 42px;
 			font-family: 'Tinos';
 			font-weight: 400;
-			margin-bottom: 32px;
+			margin: 48px 0;
       color: var(--main-theme-color-2);
 		}
+    .link {
+      color: var(--main-theme-color-2);
+    }
 	}
 }

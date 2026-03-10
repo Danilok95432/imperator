@@ -11,7 +11,7 @@ export const AboutPageLayout = () => {
 		<Section className={styles.aboutSection}>
 			<Container className={styles.aboutCont}>
 				<h1 className={styles.title}>Информация</h1>
-				<BreadCrumbs crumbsLinksMap={LinksNavigation} />
+				<BreadCrumbs crumbsLinksMap={LinksNavigation} isHeadNav />
 				<Outlet />
 			</Container>
 		</Section>

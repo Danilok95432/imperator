@@ -6,4 +6,6 @@ export enum AppRoute {
 	CONTACTS = '/contacts',
 	PAYMENT = '/payment',
 	POLITIC = '/politic',
+	AUTH = '/auth',
+	REGISTRATION = 'registration',
 }

@@ -9,12 +9,14 @@ import { getAdditionalCrumbs } from './store/bread-crumbs.selectors'
 import { SeparatorIconNavigationSVG } from 'src/shared/ui/icons/separatorIconNavigationSVG'
 import { type NavigationItem } from 'src/types/navigation'
 import { NavigationHomeIconSVG } from 'src/shared/ui/icons/NavigationHomeIconSVG'
+import classNames from 'classnames'
 
 type BreadCrumbsProps = {
 	crumbsLinksMap: NavigationItem[]
+	isHeadNav?: boolean
 }
 
-export const BreadCrumbs: FC<BreadCrumbsProps> = ({ crumbsLinksMap }) => {
+export const BreadCrumbs: FC<BreadCrumbsProps> = ({ crumbsLinksMap, isHeadNav = false }) => {
 	const { pathname } = useLocation()
 	const [pathNames, setPathNames] = useState<string[]>([''])
 
@@ -37,7 +39,32 @@ export const BreadCrumbs: FC<BreadCrumbsProps> = ({ crumbsLinksMap }) => {
 			return [...filteredPathnames]
 		})
 	}, [pathname, additionalCrumbs])
+	if (isHeadNav) {
+		return (
+			<ul className={classNames(styles.headList, styles.breadCrumbsList)}>
+				<li>
+					<Link to={AppRoute.HOME}>
+						{' '}
+						<NavigationHomeIconSVG />{' '}
+					</Link>{' '}
+					<SeparatorIconNavigationSVG />
+				</li>
+				{crumbsLinksMap?.map((pathEl, idx) => {
+					const pathSegments = pathname.split('/').filter(Boolean)
+					const linkSegments = pathEl.link.split('/').filter(Boolean)
+					const isActive =
+						pathSegments.length === linkSegments.length &&
+						pathSegments.every((segment, i) => segment === linkSegments[i])
 
+					return (
+						<li key={idx} id={pathEl.title} className={classNames({ [styles.active]: isActive })}>
+							<Link to={pathEl.link}>{defineLinkTitle(pathEl.link)}</Link>
+						</li>
+					)
+				})}
+			</ul>
+		)
+	}
 	return (
 		<ul className={styles.breadCrumbsList}>
 			<li>

@@ -11,6 +11,9 @@ import { DeliveryPage } from 'src/pages/about-page-layout/layout/delivery-page/d
 import { ContactsPage } from 'src/pages/about-page-layout/layout/contacts-page/contacts-page'
 import { PaymentPage } from 'src/pages/about-page-layout/layout/payment-page/payment-page'
 import { PoliticPage } from 'src/pages/about-page-layout/layout/politic-page/politic-page'
+import { AuthPage } from 'src/pages/auth-page-layout/layout/auth-page/auth-page'
+import { RegistrationPage } from 'src/pages/auth-page-layout/layout/registration-page/registration-page'
+import { AuthPageLayout } from 'src/pages/auth-page-layout/auth-page-layout'
 
 export const MainRoutes = () => {
 	return (
@@ -20,6 +23,13 @@ export const MainRoutes = () => {
 			<Route path={'terminal/print'} element={<PrintPage />} />
 				*/}
 			<Route path='/' element={<AppLayout />}>
+				<Route path={AppRoute.AUTH} element={<AuthPageLayout />}>
+					<Route index element={<AuthPage />} />
+					<Route
+						path={`${AppRoute.AUTH}/${AppRoute.REGISTRATION}`}
+						element={<RegistrationPage />}
+					/>
+				</Route>
 				<Route index element={<HomePage />} />
 				<Route path={AppRoute.Chocolate} element={<ChocolatePage />}>
 					<Route index element={<ChocolateList />} />

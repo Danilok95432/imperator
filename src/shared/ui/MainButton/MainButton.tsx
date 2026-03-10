@@ -13,7 +13,7 @@ type ButtonComponentProps = {
 	svgNode?: ReactNode
 	classname?: string
 	disabled?: boolean
-	type?: string
+	type?: 'button' | 'submit' | 'reset' | undefined
 	$variant?: 'primary' | 'light' | 'show'
 }
 
@@ -35,7 +35,12 @@ export const MainButton: FC<ButtonComponentProps & (ButtonProps | AnchorProps | 
 
 	if (as === 'button') {
 		return (
-			<button className={containerClassName} disabled={disabled} {...(props as ButtonProps)}>
+			<button
+				className={containerClassName}
+				disabled={disabled}
+				type={type}
+				{...(props as ButtonProps)}
+			>
 				{children}
 			</button>
 		)
