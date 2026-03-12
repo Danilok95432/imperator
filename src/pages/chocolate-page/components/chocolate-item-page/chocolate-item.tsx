@@ -7,7 +7,7 @@ import { BreadCrumbs } from 'src/widgets/breadcrumbs/bread-crumbs'
 import { useAdditionalCrumbs } from 'src/app/store/hooks/additionalCrumbs'
 import { useParams } from 'react-router-dom'
 import { mockChocolates } from 'src/mock/chocolate'
-import { type Chocolate } from 'src/types/chocolate'
+import { type CardItem } from 'src/types/cardItem'
 import { ChocolateCard } from '../chocolate-list/components/chocolate-card/chocolate-card'
 import { MainButton } from 'src/shared/ui/MainButton/MainButton'
 import { type RefObject, useEffect, useRef, useState } from 'react'
@@ -26,8 +26,8 @@ export const ChocolateItem = () => {
 	const { id } = useParams()
 	const swiperRef: RefObject<SwiperRef> = useRef<SwiperRef>(null)
 	const chocolate = mockChocolates.find((el) => el.id === id)
-	const [alsoItems, setAlsoItems] = useState<Chocolate[]>([])
-	const getRandomItems = (arr: Chocolate[], count: number) => {
+	const [alsoItems, setAlsoItems] = useState<CardItem[]>([])
+	const getRandomItems = (arr: CardItem[], count: number) => {
 		const shuffled = [...arr]
 		for (let i = shuffled.length - 1; i > 0; i--) {
 			const j = Math.floor(Math.random() * (i + 1))

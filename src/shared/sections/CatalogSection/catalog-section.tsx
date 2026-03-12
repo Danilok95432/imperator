@@ -82,7 +82,7 @@ export const CatalogSection = () => {
 				},
 			],
 			linkTitle: 'В каталог конфет',
-			linkTo: '/',
+			linkTo: '/candy',
 			img: 'src/assets/img/catalog(2).png',
 		},
 		{
@@ -121,7 +121,7 @@ export const CatalogSection = () => {
 				},
 			],
 			linkTitle: 'В каталог наборов',
-			linkTo: '/',
+			linkTo: '/sets',
 			img: 'src/assets/img/catalog(3).png',
 		},
 		{
@@ -160,7 +160,7 @@ export const CatalogSection = () => {
 				},
 			],
 			linkTitle: 'В каталог коктейлей',
-			linkTo: '/',
+			linkTo: '/coctail',
 			img: 'src/assets/img/catalog(4).png',
 		},
 	]

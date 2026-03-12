@@ -1,19 +1,7 @@
 import skeleton from 'src/assets/img/choco-skeleton.png'
+import { type CardItem } from 'src/types/cardItem'
 
-interface Chocolate {
-	id: string
-	price: number
-	title: string
-	weight: number
-	category: 'белый' | 'горький' | 'молочный' | 'темный'
-	additives?: string[]
-	img: string
-	composition: string
-	description: string
-	images: string[]
-}
-
-export const mockChocolates: Chocolate[] = [
+export const mockChocolates: CardItem[] = [
 	{
 		id: '1',
 		price: 245,

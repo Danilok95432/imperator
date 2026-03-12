@@ -18,7 +18,7 @@ export const Header = () => {
 	const breakPoint = useBreakPoint()
 	const [activeLang, setActiveLang] = useState<string>('RU')
 
-	const showLangSwitcher = location.pathname.includes('/chocolate')
+	const noShowLangSwitcher = location.pathname !== '/'
 
 	return (
 		<header className={styles.header}>
@@ -26,7 +26,7 @@ export const Header = () => {
 				<FlexRow className={styles.headerRow}>
 					<img className={styles.logo} src={logo} alt='logo' onClick={() => navigate('/')} />
 					<FlexRow className={styles.controls}>
-						{showLangSwitcher && breakPoint !== 'S' && (
+						{noShowLangSwitcher && breakPoint !== 'S' && (
 							<FlexRow className={styles.langSwitcher}>
 								<p
 									className={cn({ [styles.activeLang]: activeLang === 'RU' })}

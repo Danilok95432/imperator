@@ -8,12 +8,12 @@ import cn from 'classnames'
 import { useBreakPoint } from 'src/features/useBreakPoint/useBreakPoint'
 import { MinusSVG } from 'src/shared/ui/icons/minusSvg'
 import { PlusSVG } from 'src/shared/ui/icons/plusSVG'
-import { type Chocolate } from 'src/types/chocolate'
+import { type CardItem } from 'src/types/cardItem'
 import { Link } from 'react-router-dom'
 import { AppRoute } from 'src/app/router/consts'
 
 interface ChocolateCardProps {
-	chocolate: Chocolate
+	chocolate: CardItem
 	className?: string
 	smallCard?: boolean
 }

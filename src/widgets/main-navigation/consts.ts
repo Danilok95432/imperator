@@ -9,14 +9,14 @@ export const navigationElements = [
 	},
 	{
 		title: 'Наборы',
-		link: 'pack',
+		link: 'sets',
 	},
 	{
 		title: 'Конфеты-коктейли',
-		link: 'coctails',
+		link: 'coctail',
 	},
 	{
 		title: 'Юбилейная серия',
-		link: 'ubilei',
+		link: 'special-series',
 	},
 ]

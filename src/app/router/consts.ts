@@ -1,6 +1,10 @@
 export enum AppRoute {
 	HOME = '/',
 	Chocolate = '/chocolate',
+	Candy = '/candy',
+	Coctail = '/coctail',
+	Sets = '/sets',
+	SpecialSeries = '/special-series',
 	ABOUT = '/about',
 	DELIVERY = '/delivery',
 	CONTACTS = '/contacts',
