@@ -33,7 +33,8 @@ section.catalog {
 		@media (max-width: 768px) {
 			flex-direction: column;
 			flex-wrap: nowrap;
-			max-width: 320px;
+			width: 100%;
+			min-width: 100%;
 			justify-content: center;
 			align-items: center;
 			margin: 0 auto;
@@ -49,7 +50,7 @@ section.catalog {
 			border-radius: 12px;
 			border: 1px solid #c09f3d6b;
 			@media (max-width: 768px) {
-				max-width: max-content;
+				max-width: 100%;
 				flex-direction: column-reverse;
 			}
 			.imgWrapper {

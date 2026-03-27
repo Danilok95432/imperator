@@ -9,6 +9,9 @@
 		@media (max-width: 1220px) {
 			padding: 0 24px;
 		}
+		@media (max-width: 768px) {
+			padding: 0;
+		}
 		.title {
 			font-size: 42px;
 			font-family: 'Tinos';
@@ -42,6 +45,9 @@
 				align-items: center;
 				gap: 32px;
 				margin-top: 32px;
+				@media (max-width: 768px) {
+					margin-bottom: 32px;
+				}
 				.enterBtn {
 					font-size: 20px;
 					font-family: 'Tinos';

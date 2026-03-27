@@ -6,6 +6,7 @@ import { VkIconSVG } from '../icons/vkIconSVG'
 import { LocationIconSVG } from '../icons/locationIconSVG'
 import { MailIconSVG } from '../icons/mailIconSVG'
 import { PhoneIconSVG } from '../icons/phoneIconSVG'
+import classNames from 'classnames'
 
 export const Footer = () => {
 	const infoLinks = [
@@ -16,7 +17,7 @@ export const Footer = () => {
 		{ id: '5', title: 'Политика конфиденциальности', link: '/about/politic' },
 	]
 	const LCLinks = [
-		{ id: '1', title: 'О Личный кабинет', link: '/' },
+		{ id: '1', title: 'Личный кабинет', link: '/' },
 		{ id: '2', title: 'История заказа', link: '/' },
 		{ id: '3', title: 'Закладки', link: '/' },
 		{ id: '4', title: 'Рассылка', link: '/' },
@@ -27,7 +28,7 @@ export const Footer = () => {
 				<FlexRow className={styles.footerCont}>
 					<p>
 						Фабрика Император
-						<br /> © 2025
+						<br /> © 2026
 					</p>
 					<FlexRow className={styles.footerRow}>
 						<p>Информация</p>
@@ -51,9 +52,9 @@ export const Footer = () => {
 					</FlexRow>
 					<FlexRow className={styles.footerRow}>
 						<p>О магазине</p>
-						<FlexRow className={styles.aboutElRow}>
+						<FlexRow className={classNames(styles.aboutElRow, styles.start)}>
 							<LocationIconSVG />
-							<p>Шоколадная фабрика ИМПЕРАТОРРоссия, Санкт-Петербург</p>
+							<p>Шоколадная фабрика ИМПЕРАТОР Россия, Санкт-Петербург</p>
 						</FlexRow>
 						<FlexRow className={styles.aboutElRow}>
 							<PhoneIconSVG />

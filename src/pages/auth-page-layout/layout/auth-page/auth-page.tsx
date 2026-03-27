@@ -11,8 +11,10 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { FlexRow } from 'src/shared/ui/FlexRow/FlexRow'
 import { MainButton } from 'src/shared/ui/MainButton/MainButton'
 import { ControlledCheckbox } from 'src/widgets/controlled-checkbox/controlled-checkbox'
+import { useBreakPoint } from 'src/features/useBreakPoint/useBreakPoint'
 
 export const AuthPage = () => {
+	const breakPoint = useBreakPoint()
 	const methods = useForm<AuthInputs>({
 		mode: 'onBlur',
 		resolver: yupResolver(authInputsSchema),
@@ -41,6 +43,11 @@ export const AuthPage = () => {
 							/>
 							<a href='#'>Забыли пароль?</a>
 						</FlexRow>
+						{breakPoint === 'S' && (
+							<MainButton type='submit' className={styles.enterBtnMobile}>
+								Войти
+							</MainButton>
+						)}
 						<FlexRow className={styles.controlsWrapper}>
 							<ControlledCheckbox name='remember' label='Запомнить меня' type='checkbox' />
 							<FlexRow className={styles.controls}>

@@ -54,6 +54,10 @@ section.mainImgSection {
 					@media (max-width: 768px) {
 						font-size: 20px;
 						text-align: center;
+						width: 53%;
+					}
+					@media (max-width: 440px) {
+						width: 70%;
 					}
 				}
 			}

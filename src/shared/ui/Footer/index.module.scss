@@ -12,7 +12,7 @@
 	}
 	.cont {
 		@media (max-width: 768px) {
-			padding: 0 48px 32px;
+			padding: 0 24px 32px;
 		}
 	}
 	.footerCont {
@@ -42,9 +42,15 @@
 				text-decoration: underline 1px solid #fff;
 				font-size: 14px;
 			}
+			div.start {
+				align-items: start;
+				svg {
+					margin-top: 5px;
+				}
+			}
 			.aboutElRow {
 				gap: 10px;
-				align-items: start;
+				align-items: center;
 				p {
 					color: #ffffffca;
 					text-decoration: underline 1px solid #fff;

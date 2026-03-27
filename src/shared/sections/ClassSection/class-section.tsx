@@ -10,7 +10,7 @@ export const ClassSection = () => {
 				<FlexRow className={styles.headRow}>
 					<h2>Класс элит</h2>
 				</FlexRow>
-				<FlexRow className={styles.classRow}>
+				<div className={styles.classRow}>
 					<FlexRow className={styles.classEl}>
 						<p>Создаем элитный шоколад ручной работы</p>
 					</FlexRow>
@@ -20,7 +20,7 @@ export const ClassSection = () => {
 					<FlexRow className={styles.classEl}>
 						<p>Стремимся создать ощущение личного праздника</p>
 					</FlexRow>
-				</FlexRow>
+				</div>
 			</Container>
 		</Section>
 	)
