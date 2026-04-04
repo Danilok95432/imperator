@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Container } from 'src/shared/ui/Container/Container'
 import { FlexRow } from 'src/shared/ui/FlexRow/FlexRow'
 import { Section } from 'src/shared/ui/Section/section'
@@ -7,11 +7,9 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 import 'swiper/css/pagination'
 
-import silver from 'src/assets/img/silver.png'
-import gold from 'src/assets/img/gold.png'
-
 import styles from './index.module.scss'
 import { Pagination } from 'swiper'
+import { useGetAwardsListQuery } from 'src/features/home/api/home.api'
 
 const useMediaQuery = (query: string) => {
 	const [matches, setMatches] = useState(false)
@@ -40,54 +38,7 @@ const useMediaQuery = (query: string) => {
 
 export const AwardsSection = () => {
 	const isSlider = useMediaQuery('(max-width: 768px)')
-
-	const slides = useMemo(
-		() => [
-			{
-				id: 'silver-2020',
-				img: silver,
-				alt: 'silver',
-				infoClassName: styles.infoRowSilver,
-				title: 'Серебряная медаль-2020',
-				desc: (
-					<>
-						Темный шоколад без сахара, конфеты «<a href='#'>Медный всадник</a>», «
-						<a href='#'>Алые паруса</a>», «<a href='#'>Русские</a>»
-					</>
-				),
-				location: 'XXVII Международный конкурс «Лучший продукт-2020» г. Москва',
-			},
-			{
-				id: 'gold-2021',
-				img: gold,
-				alt: 'gold',
-				infoClassName: styles.infoRow,
-				title: 'Золотая медаль-2021',
-				desc: (
-					<>
-						Конфеты «<a href='#'>Зимний дворец</a>»,«<a href='#'> Москва</a>», «
-						<a href='#'>Белый дом</a>»
-					</>
-				),
-				location: 'Конкурс Союзэкспертизы «За высокие потребительские качества» г. Москва',
-			},
-			{
-				id: 'gold-2022',
-				img: gold,
-				alt: 'gold',
-				infoClassName: styles.infoRow,
-				title: 'Золотая медаль-2022',
-				desc: (
-					<>
-						Конфеты «<a href='#'>Красный цветок</a>», «<a href='#'>Лесной орех</a>»
-					</>
-				),
-				location:
-					'Почетным призом «За лучший инновационный продукт» награжден набор конфет ассорти «Точка с запятой»',
-			},
-		],
-		[],
-	)
+	const { data } = useGetAwardsListQuery(null)
 
 	return (
 		<Section className={styles.awards}>
@@ -101,14 +52,18 @@ export const AwardsSection = () => {
 						spaceBetween={16}
 						speed={600}
 					>
-						{slides.map((s) => (
+						{data?.awards.map((s) => (
 							<SwiperSlide key={s.id} className={styles.awardsSlide}>
 								<FlexRow className={styles.awardsEl}>
-									<img src={s.img} alt={s.alt} />
-									<FlexRow className={s.infoClassName}>
+									<img src={s.img[0]?.original} alt={''} />
+									<FlexRow
+										className={
+											s.title.includes('Серебряная') ? styles.infoRowSilver : styles.infoRow
+										}
+									>
 										<p className={styles.title}>{s.title}</p>
-										<p className={styles.desc}>{s.desc}</p>
-										<p className={styles.location}>{s.location}</p>
+										<p className={styles.desc}>{s.itemname}</p>
+										<p className={styles.location}>{s.itemdesc}</p>
 									</FlexRow>
 								</FlexRow>
 							</SwiperSlide>
@@ -116,13 +71,15 @@ export const AwardsSection = () => {
 					</Swiper>
 				) : (
 					<FlexRow className={styles.awardsRow}>
-						{slides.map((s) => (
+						{data?.awards.map((s) => (
 							<FlexRow key={s.id} className={styles.awardsEl}>
-								<img src={s.img} alt={s.alt} />
-								<FlexRow className={s.infoClassName}>
+								<img src={s.img[0]?.original} alt={''} />
+								<FlexRow
+									className={s.title.includes('Серебряная') ? styles.infoRowSilver : styles.infoRow}
+								>
 									<p className={styles.title}>{s.title}</p>
-									<p className={styles.desc}>{s.desc}</p>
-									<p className={styles.location}>{s.location}</p>
+									<p className={styles.desc}>{s.itemname}</p>
+									<p className={styles.location}>{s.itemdesc}</p>
 								</FlexRow>
 							</FlexRow>
 						))}

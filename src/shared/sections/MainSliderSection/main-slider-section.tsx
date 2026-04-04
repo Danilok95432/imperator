@@ -7,40 +7,32 @@ import { type RefObject, useRef } from 'react'
 import { FlexRow } from 'src/shared/ui/FlexRow/FlexRow'
 import { SliderBtns } from 'src/widgets/Slider-btns/slider-btns'
 import { sliderOptions } from './consts'
+import { useGetSliderListQuery } from 'src/features/home/api/home.api'
 
 export const MainSliderSection = () => {
 	const swiperRef: RefObject<SwiperRef> = useRef<SwiperRef>(null)
-	const sliderInfo = [
-		{
-			id: '1',
-			title: 'Набор авторских конфет ТАТЬЯНЫ БУЛАНОВОЙ',
-			desc: 'Набор изготовлен по индивидуальному заказу и при непосредственном участии Татьяны Булановой — певицы, киноактрисы, заслуженной артистки России, двукратной обладательницы премии «Овация». В набор входят 6 уникальных конфет.',
-			original: 'src/assets/img/slider-img.png',
-		},
-		{
-			id: '2',
-			title: 'Набор авторских конфет 2',
-			desc: 'Набор изготовлен по индивидуальному заказу и при непосредственном участии Татьяны Булановой — певицы, киноактрисы, заслуженной артистки России, двукратной обладательницы премии «Овация». В набор входят 6 уникальных конфет.',
-			original: 'src/assets/img/slider-img.png',
-		},
-	]
+	const { data } = useGetSliderListQuery(null)
 	return (
 		<Section className={cn(styles.mainSlider)}>
 			<Container className={styles.sliderCont}>
 				<FlexRow className={styles.sectionRow}>
 					<Swiper {...sliderOptions} ref={swiperRef} className={styles.sliderMain}>
-						{sliderInfo.map((slideEl) => {
+						{data?.slider.map((slideEl) => {
 							return (
 								<SwiperSlide key={slideEl.id}>
 									<FlexRow className={styles.slideRow}>
 										<FlexRow className={styles.contentSlide}>
 											<p className={styles.slideTitle}>{slideEl.title}</p>
-											<p className={styles.slideDesc}>{slideEl.desc}</p>
+											<p className={styles.slideDesc}>{slideEl.itemdesc}</p>
 											<button className={styles.infoBtn}>Подробнее</button>
 										</FlexRow>
 										<div className={styles.imgWrapper}>
-											{slideEl.original && (
-												<img className={styles.sliderImg} src={slideEl.original} alt='image' />
+											{slideEl.img[0]?.original && (
+												<img
+													className={styles.sliderImg}
+													src={slideEl.img[0]?.original}
+													alt='image'
+												/>
 											)}
 										</div>
 									</FlexRow>

@@ -1,12 +1,12 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { MAIN_PROD_URL, ReducerPath } from 'src/shared/helpers/consts'
+import { createApi } from '@reduxjs/toolkit/query/react'
+import { baseQueryWithReauth } from 'src/shared/helpers/base-query'
+import { ReducerPath } from 'src/shared/helpers/consts'
+import { type SliderListResponse, type AwardsListResponse } from 'src/types/home'
 
 export const homeApi = createApi({
 	reducerPath: ReducerPath.Home,
 	tagTypes: ['Home'],
-	baseQuery: fetchBaseQuery({
-		baseUrl: MAIN_PROD_URL,
-	}),
+	baseQuery: baseQueryWithReauth,
 	endpoints: (build) => ({
 		getFaqById: build.query<null, string>({
 			query: (idEvent) => ({
@@ -16,7 +16,17 @@ export const homeApi = createApi({
 				},
 			}),
 		}),
+		getAwardsList: build.query<AwardsListResponse, null>({
+			query: () => ({
+				url: `awards/list`,
+			}),
+		}),
+		getSliderList: build.query<SliderListResponse, null>({
+			query: () => ({
+				url: `slider/list`,
+			}),
+		}),
 	}),
 })
 
-export const { useGetFaqByIdQuery } = homeApi
+export const { useGetFaqByIdQuery, useGetAwardsListQuery, useGetSliderListQuery } = homeApi

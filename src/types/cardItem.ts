@@ -9,4 +9,5 @@ export interface CardItem {
 	images: string[]
 	composition: string
 	description: string
+	type?: 'chocolate' | 'candy' | 'set' | 'coctail' | 'special'
 }

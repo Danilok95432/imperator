@@ -17,7 +17,7 @@ export const Footer = () => {
 		{ id: '5', title: 'Политика конфиденциальности', link: '/about/politic' },
 	]
 	const LCLinks = [
-		{ id: '1', title: 'Личный кабинет', link: '/' },
+		{ id: '1', title: 'Личный кабинет', link: '/lk' },
 		{ id: '2', title: 'История заказа', link: '/' },
 		{ id: '3', title: 'Закладки', link: '/' },
 		{ id: '4', title: 'Рассылка', link: '/' },

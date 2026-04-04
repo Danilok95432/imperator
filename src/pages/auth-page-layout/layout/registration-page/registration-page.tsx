@@ -36,7 +36,7 @@ export const RegistrationPage = () => {
 						<ControlledInput name='name' label='Имя*' margin='0 0 32px 0' />
 						<ControlledInput name='secondName' label='Фамилия*' margin='0 0 32px 0' />
 						<ControlledInput name='email' label='Email*' margin='0 0 32px 0' />
-						<ControlledInput name='phone' label='Телефон*' margin='0 0 32px 0' />
+						<ControlledInput name='phone' label='Телефон*' margin='0 0 32px 0' isPhone />
 						<FlexRow className={styles.inputRow}>
 							<ControlledInput
 								name='password'

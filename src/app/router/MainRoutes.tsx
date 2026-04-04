@@ -26,6 +26,12 @@ import { CoctailItem } from 'src/pages/coctail-page/components/coctail-item-page
 import { SpecialSeriesPage } from 'src/pages/special-series-page/special-series-page'
 import { SpecialSeriesList } from 'src/pages/special-series-page/components/special-series-list/special-series-list'
 import { SpecialSeriesItem } from 'src/pages/special-series-page/components/special-series-item-page/special-series-item'
+import { LkPageLayout } from 'src/pages/lk-page/lk-page-layout'
+import { LkPage } from 'src/pages/lk-page/layout/lk-page/lk-page'
+import { InfoPage } from 'src/pages/lk-page/layout/info-page/info-page'
+import { FavoriteItems } from 'src/pages/lk-page/layout/favorite-items/favorite-items'
+import { OrdersPage } from 'src/pages/lk-page/layout/orders-page/orders-page'
+import { CartPage } from 'src/pages/lk-page/layout/cart-page/cart-page'
 
 export const MainRoutes = () => {
 	return (
@@ -41,6 +47,13 @@ export const MainRoutes = () => {
 						path={`${AppRoute.AUTH}/${AppRoute.REGISTRATION}`}
 						element={<RegistrationPage />}
 					/>
+				</Route>
+				<Route path={AppRoute.LK} element={<LkPageLayout />}>
+					<Route index element={<LkPage />} />
+					<Route path={`${AppRoute.LK}/${AppRoute.LKinfo}`} element={<InfoPage />} />
+					<Route path={`${AppRoute.LK}/${AppRoute.LKfavorite}`} element={<FavoriteItems />} />
+					<Route path={`${AppRoute.LK}/${AppRoute.LKorders}`} element={<OrdersPage />} />
+					<Route path={`${AppRoute.LK}/${AppRoute.LKcart}`} element={<CartPage />} />
 				</Route>
 				<Route index element={<HomePage />} />
 				<Route path={AppRoute.Chocolate} element={<ChocolatePage />}>

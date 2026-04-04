@@ -1,5 +1,10 @@
 export enum AppRoute {
 	HOME = '/',
+	LK = '/lk',
+	LKinfo = '/info',
+	LKfavorite = '/favorite',
+	LKorders = '/orders',
+	LKcart = '/cart',
 	Chocolate = '/chocolate',
 	Candy = '/candy',
 	Coctail = '/coctail',

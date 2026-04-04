@@ -6,6 +6,7 @@ export const ImagesFormat = ['png', 'jpeg', 'jpg', 'webp', 'gif']
 export enum NameSpace {
 	Modal = 'MODAL',
 	BreadCrumbs = 'BREAD_CRUMBS',
+	Auth = 'AUTH',
 }
 
 export enum DisplayBreakpoints {
@@ -23,4 +24,4 @@ export enum DisplayBreakpoints {
 
 export const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4020/api/v1'
 export const PROD_URL = '/api'
-export const MAIN_PROD_URL = 'empapi.hayecke.org'
+export const MAIN_PROD_URL = 'https://empapi.hayecke.org'

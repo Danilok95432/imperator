@@ -5,11 +5,13 @@ import { CartIconSVG } from '../icons/cartIconSVG'
 import { PersonSVG } from '../icons/personSVG'
 import { SearchSVG } from '../icons/searchSVG'
 import styles from './index.module.scss'
-import logo from 'src/assets/img/logo.png'
 import { MainNavigation } from 'src/widgets/main-navigation/main-navigation'
 import { useState } from 'react'
 
 import cn from 'classnames'
+import { LogoSVG } from '../icons/logoSVG'
+
+const authorized = true
 
 export const Header = () => {
 	const navigate = useNavigate()
@@ -19,7 +21,9 @@ export const Header = () => {
 		<header className={styles.header}>
 			<Container className={styles.headerCont}>
 				<FlexRow className={styles.headerRow}>
-					<img className={styles.logo} src={logo} alt='logo' onClick={() => navigate('/')} />
+					<div onClick={() => navigate('/')} className={styles.logo}>
+						<LogoSVG />
+					</div>
 					<FlexRow className={styles.controls}>
 						<FlexRow className={styles.langSwitcher}>
 							<p
@@ -40,10 +44,10 @@ export const Header = () => {
 							<div className={styles.vector}>
 								<SearchSVG />
 							</div>
-							<div className={styles.vector} onClick={() => navigate('/auth')}>
+							<div className={styles.vector} onClick={() => navigate(authorized ? '/lk' : '/auth')}>
 								<PersonSVG />
 							</div>
-							<div className={styles.vector}>
+							<div className={styles.vector} onClick={() => navigate('/lk/cart')}>
 								<CartIconSVG />
 							</div>
 						</FlexRow>

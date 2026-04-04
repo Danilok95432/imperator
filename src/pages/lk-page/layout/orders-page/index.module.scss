@@ -1,0 +1,29 @@
+section.section {
+	background: var(--main-theme-color);
+	padding: 0;
+	.cont {
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+		gap: 0;
+		align-items: center;
+		@media (max-width: 1220px) {
+			padding: 0 24px;
+		}
+		@media (max-width: 768px) {
+			padding: 0;
+		}
+		.title {
+			font-size: 42px;
+			font-family: 'Tinos';
+			font-weight: 400;
+			margin: 48px 0;
+			color: var(--main-theme-color-2);
+		}
+		.link {
+			color: var(--main-theme-color-2);
+			font-family: 'Tinos';
+			font-size: 20px;
+		}
+  }
+}
