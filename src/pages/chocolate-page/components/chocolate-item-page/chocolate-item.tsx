@@ -20,7 +20,7 @@ import { SliderBtns } from 'src/widgets/Slider-btns/slider-btns'
 import { sliderOptions } from './consts'
 import 'swiper/css'
 import 'swiper/css/pagination'
-import { Pagination } from 'swiper'
+import { Pagination } from 'swiper/modules'
 
 export const ChocolateItem = () => {
 	const { id } = useParams()

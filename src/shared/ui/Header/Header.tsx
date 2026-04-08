@@ -3,19 +3,15 @@ import { Container } from '../Container/Container'
 import { FlexRow } from '../FlexRow/FlexRow'
 import { CartIconSVG } from '../icons/cartIconSVG'
 import { PersonSVG } from '../icons/personSVG'
-import { SearchSVG } from '../icons/searchSVG'
 import styles from './index.module.scss'
 import { MainNavigation } from 'src/widgets/main-navigation/main-navigation'
-import { useState } from 'react'
-
-import cn from 'classnames'
 import { LogoSVG } from '../icons/logoSVG'
 
 const authorized = true
 
 export const Header = () => {
 	const navigate = useNavigate()
-	const [activeLang, setActiveLang] = useState<string>('RU')
+	// const [activeLang, setActiveLang] = useState<string>('RU')
 
 	return (
 		<header className={styles.header}>
@@ -25,7 +21,7 @@ export const Header = () => {
 						<LogoSVG />
 					</div>
 					<FlexRow className={styles.controls}>
-						<FlexRow className={styles.langSwitcher}>
+						{/* <FlexRow className={styles.langSwitcher}>
 							<p
 								className={cn({ [styles.activeLang]: activeLang === 'RU' })}
 								onClick={() => setActiveLang('RU')}
@@ -38,12 +34,12 @@ export const Header = () => {
 							>
 								EN
 							</p>
-						</FlexRow>
+						</FlexRow> */}
 						<MainNavigation />
 						<FlexRow className={styles.btns}>
-							<div className={styles.vector}>
+							{/* <div className={styles.vector}>
 								<SearchSVG />
-							</div>
+							</div> */}
 							<div className={styles.vector} onClick={() => navigate(authorized ? '/lk' : '/auth')}>
 								<PersonSVG />
 							</div>

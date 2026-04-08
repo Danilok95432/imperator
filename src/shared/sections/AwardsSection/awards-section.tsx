@@ -6,9 +6,9 @@ import { Section } from 'src/shared/ui/Section/section'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 import 'swiper/css/pagination'
+import { Pagination } from 'swiper/modules'
 
 import styles from './index.module.scss'
-import { Pagination } from 'swiper'
 import { useGetAwardsListQuery } from 'src/features/home/api/home.api'
 
 const useMediaQuery = (query: string) => {

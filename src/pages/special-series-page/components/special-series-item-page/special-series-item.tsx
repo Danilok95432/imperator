@@ -18,7 +18,7 @@ import { SliderBtns } from 'src/widgets/Slider-btns/slider-btns'
 import { sliderOptions } from './consts'
 import 'swiper/css'
 import 'swiper/css/pagination'
-import { Pagination } from 'swiper'
+import { Pagination } from 'swiper/modules'
 import { SpecialSeriesCard } from '../special-series-list/components/special-series-card/special-series-card'
 import { mockSpecialSeries } from 'src/mock/special-series'
 

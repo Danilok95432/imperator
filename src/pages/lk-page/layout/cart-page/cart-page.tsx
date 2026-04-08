@@ -53,6 +53,7 @@ export const CartPage = () => {
 	}, [])
 
 	const selectedDelivery = deliveryOptions.find((item) => item.id === values.deliveryId)
+	const selectedPayment = paymentOptions.find((item) => item.id === values.paymentId)
 	const deliveryPrice = selectedDelivery?.price ?? 0
 	const totalPrice = itemsTotal + deliveryPrice
 
@@ -264,32 +265,19 @@ export const CartPage = () => {
 												</MainButton>
 											</FlexRow>
 										</div>
-									) : (
+									) : selectedPayment ? (
 										<PaymentCard
-											key={paymentOptions.find((item) => item.id === values.paymentId)?.id}
-											option={
-												paymentOptions.find((item) => item.id === values.paymentId) ?? {
-													id: '',
-													title: '',
-													description: '',
-												}
-											}
-											active={
-												values.paymentId ===
-												paymentOptions.find((item) => item.id === values.paymentId)?.id
-											}
+											key={selectedPayment.id}
+											option={selectedPayment}
+											active={values.paymentId === selectedPayment.id}
 											onClick={() =>
-												setValue(
-													'paymentId',
-													paymentOptions.find((item) => item.id === values.paymentId)?.id ?? '',
-													{
-														shouldValidate: true,
-														shouldDirty: true,
-													},
-												)
+												setValue('paymentId', selectedPayment.id, {
+													shouldValidate: true,
+													shouldDirty: true,
+												})
 											}
 										/>
-									)}
+									) : null}
 								</OrderStep>
 							)}
 

@@ -10,7 +10,7 @@ import { sliderOptions } from './consts'
 
 import cn from 'classnames'
 import { RatingStars } from 'src/widgets/rating-stars/rating-stars'
-import { Pagination } from 'swiper'
+import { Pagination } from 'swiper/modules'
 
 export const ReviewSection = () => {
 	const swiperRef: RefObject<SwiperRef> = useRef<SwiperRef>(null)
