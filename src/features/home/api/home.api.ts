@@ -1,7 +1,13 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWithReauth } from 'src/shared/helpers/base-query'
 import { ReducerPath } from 'src/shared/helpers/consts'
-import { type SliderListResponse, type AwardsListResponse } from 'src/types/home'
+import {
+	type SliderListResponse,
+	type AwardsListResponse,
+	type BestListResponse,
+	type EliteListResponse,
+	type ReviewListResponse,
+} from 'src/types/home'
 
 export const homeApi = createApi({
 	reducerPath: ReducerPath.Home,
@@ -26,7 +32,29 @@ export const homeApi = createApi({
 				url: `slider/list`,
 			}),
 		}),
+		getBestList: build.query<BestListResponse, null>({
+			query: () => ({
+				url: `best/list`,
+			}),
+		}),
+		getInfoEliteList: build.query<EliteListResponse, null>({
+			query: () => ({
+				url: `info_elite/list`,
+			}),
+		}),
+		getReviewsList: build.query<ReviewListResponse, null>({
+			query: () => ({
+				url: `reviews/list`,
+			}),
+		}),
 	}),
 })
 
-export const { useGetFaqByIdQuery, useGetAwardsListQuery, useGetSliderListQuery } = homeApi
+export const {
+	useGetFaqByIdQuery,
+	useGetAwardsListQuery,
+	useGetSliderListQuery,
+	useGetBestListQuery,
+	useGetInfoEliteListQuery,
+	useGetReviewsListQuery,
+} = homeApi

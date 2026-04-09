@@ -11,35 +11,37 @@ import { sliderOptions } from './consts'
 import cn from 'classnames'
 import { RatingStars } from 'src/widgets/rating-stars/rating-stars'
 import { Pagination } from 'swiper/modules'
+import { useGetReviewsListQuery } from 'src/features/home/api/home.api'
 
 export const ReviewSection = () => {
 	const swiperRef: RefObject<SwiperRef> = useRef<SwiperRef>(null)
-	const sliderInfo = [
-		{
-			id: '1',
-			customer: 'Виктория',
-			status: 'клиент',
-			rate: 5,
-			review:
-				'Прекрасный шоколад, заказывали не раз на всю нашу большую семью, и дети, и что очень немаловажно, бабушка с дедушкой в восторге. Спасибо за ваш труд!!! и за подаренную радость нам!!!',
-		},
-		{
-			id: '2',
-			customer: 'Екатерина',
-			status: 'клиент',
-			rate: 4.5,
-			review:
-				'Прекрасный шоколад, заказывали не раз на всю нашу большую семью, и дети, и что очень немаловажно, бабушка с дедушкой в восторге. Спасибо за ваш труд!!! и за подаренную радость нам!!!',
-		},
-		{
-			id: '3',
-			customer: 'Инна',
-			status: 'клиент',
-			rate: 4,
-			review:
-				'Прекрасный шоколад, заказывали не раз на всю нашу большую семью, и дети, и что очень немаловажно, бабушка с дедушкой в восторге. Спасибо за ваш труд!!! и за подаренную радость нам!!!',
-		},
-	]
+	// const sliderInfo = [
+	// 	{
+	// 		id: '1',
+	// 		customer: 'Виктория',
+	// 		status: 'клиент',
+	// 		rate: 5,
+	// 		review:
+	// 			'Прекрасный шоколад, заказывали не раз на всю нашу большую семью, и дети, и что очень немаловажно, бабушка с дедушкой в восторге. Спасибо за ваш труд!!! и за подаренную радость нам!!!',
+	// 	},
+	// 	{
+	// 		id: '2',
+	// 		customer: 'Екатерина',
+	// 		status: 'клиент',
+	// 		rate: 4.5,
+	// 		review:
+	// 			'Прекрасный шоколад, заказывали не раз на всю нашу большую семью, и дети, и что очень немаловажно, бабушка с дедушкой в восторге. Спасибо за ваш труд!!! и за подаренную радость нам!!!',
+	// 	},
+	// 	{
+	// 		id: '3',
+	// 		customer: 'Инна',
+	// 		status: 'клиент',
+	// 		rate: 4,
+	// 		review:
+	// 			'Прекрасный шоколад, заказывали не раз на всю нашу большую семью, и дети, и что очень немаловажно, бабушка с дедушкой в восторге. Спасибо за ваш труд!!! и за подаренную радость нам!!!',
+	// 	},
+	// ]
+	const { data } = useGetReviewsListQuery(null)
 	return (
 		<Section className={cn(styles.reviewSlider)}>
 			<Container className={styles.sliderCont}>
@@ -51,24 +53,22 @@ export const ReviewSection = () => {
 						modules={[Pagination]}
 						pagination={{ clickable: true }}
 					>
-						{sliderInfo.map((slideEl) => {
+						{data?.reviews.map((slideEl) => {
 							return (
 								<SwiperSlide key={slideEl.id}>
 									<FlexRow className={styles.slideRow}>
 										<FlexRow className={styles.contentSlide}>
 											<p className={styles.slideTitle}>
-												{slideEl.customer}
-												<span>{`(${slideEl.status})`}</span>
+												{slideEl.name}
+												<span>{`(${slideEl.role})`}</span>
 											</p>
 											<RatingStars
-												value={slideEl.rate}
+												value={Number(slideEl.rating)}
 												idPrefix={
-													slideEl.id
-														? `rate-${slideEl.id}`
-														: `rate-${slideEl.customer}-${slideEl.status}`
+													slideEl.id ? `rate-${slideEl.id}` : `rate-${slideEl.name}-${slideEl.role}`
 												}
 											/>
-											<p className={styles.slideDesc}>{slideEl.review}</p>
+											<p className={styles.slideDesc}>{slideEl.comment}</p>
 										</FlexRow>
 									</FlexRow>
 								</SwiperSlide>
