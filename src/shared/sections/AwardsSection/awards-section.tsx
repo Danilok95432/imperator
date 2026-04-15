@@ -11,6 +11,9 @@ import { Pagination } from 'swiper/modules'
 import styles from './index.module.scss'
 import { useGetAwardsListQuery } from 'src/features/home/api/home.api'
 
+import silver from 'src/assets/img/silver.png'
+import gold from 'src/assets/img/gold.png'
+
 const useMediaQuery = (query: string) => {
 	const [matches, setMatches] = useState(false)
 
@@ -55,14 +58,17 @@ export const AwardsSection = () => {
 						{data?.awards.map((s) => (
 							<SwiperSlide key={s.id} className={styles.awardsSlide}>
 								<FlexRow className={styles.awardsEl}>
-									<img src={s.img[0]?.original} alt={''} />
+									<img src={silver} alt={''} />
 									<FlexRow
 										className={
 											s.title.includes('Серебряная') ? styles.infoRowSilver : styles.infoRow
 										}
 									>
 										<p className={styles.title}>{s.title}</p>
-										<p className={styles.desc}>{s.itemname}</p>
+										{s.itemname && (
+											<p className={styles.desc} dangerouslySetInnerHTML={{ __html: s.itemname }} />
+										)}
+
 										<p className={styles.location}>{s.itemdesc}</p>
 									</FlexRow>
 								</FlexRow>
@@ -73,12 +79,14 @@ export const AwardsSection = () => {
 					<FlexRow className={styles.awardsRow}>
 						{data?.awards.map((s) => (
 							<FlexRow key={s.id} className={styles.awardsEl}>
-								<img src={s.img[0]?.original} alt={''} />
+								<img src={silver} alt={''} />
 								<FlexRow
 									className={s.title.includes('Серебряная') ? styles.infoRowSilver : styles.infoRow}
 								>
 									<p className={styles.title}>{s.title}</p>
-									<p className={styles.desc}>{s.itemname}</p>
+									{s.itemname && (
+										<p className={styles.desc} dangerouslySetInnerHTML={{ __html: s.itemname }} />
+									)}
 									<p className={styles.location}>{s.itemdesc}</p>
 								</FlexRow>
 							</FlexRow>
