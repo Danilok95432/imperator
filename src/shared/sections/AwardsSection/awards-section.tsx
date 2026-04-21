@@ -58,7 +58,7 @@ export const AwardsSection = () => {
 						{data?.awards.map((s) => (
 							<SwiperSlide key={s.id} className={styles.awardsSlide}>
 								<FlexRow className={styles.awardsEl}>
-									<img src={silver} alt={''} />
+									<img src={s.color === 'Серебро' ? silver : gold} alt={''} />
 									<FlexRow
 										className={
 											s.title.includes('Серебряная') ? styles.infoRowSilver : styles.infoRow
@@ -79,7 +79,7 @@ export const AwardsSection = () => {
 					<FlexRow className={styles.awardsRow}>
 						{data?.awards.map((s) => (
 							<FlexRow key={s.id} className={styles.awardsEl}>
-								<img src={silver} alt={''} />
+								<img src={s.color === 'Серебро' ? silver : gold} alt={''} />
 								<FlexRow
 									className={s.title.includes('Серебряная') ? styles.infoRowSilver : styles.infoRow}
 								>

@@ -6,7 +6,6 @@ import styles from './index.module.scss'
 import { BreadCrumbs } from 'src/widgets/breadcrumbs/bread-crumbs'
 import { useAdditionalCrumbs } from 'src/app/store/hooks/additionalCrumbs'
 import { useParams } from 'react-router-dom'
-import { mockChocolates } from 'src/mock/chocolate'
 import { type CardItem } from 'src/types/cardItem'
 import { ChocolateCard } from '../chocolate-list/components/chocolate-card/chocolate-card'
 import { MainButton } from 'src/shared/ui/MainButton/MainButton'
@@ -21,11 +20,13 @@ import { sliderOptions } from './consts'
 import 'swiper/css'
 import 'swiper/css/pagination'
 import { Pagination } from 'swiper/modules'
+import { useGetItemCatalogByIDQuery } from 'src/features/catalog/api/catalog.api'
 
 export const ChocolateItem = () => {
-	const { id } = useParams()
+	const { id = '' } = useParams()
+	const { data } = useGetItemCatalogByIDQuery(id)
 	const swiperRef: RefObject<SwiperRef> = useRef<SwiperRef>(null)
-	const chocolate = mockChocolates.find((el) => el.id === id)
+	const chocolate = data
 	const [alsoItems, setAlsoItems] = useState<CardItem[]>([])
 	const getRandomItems = (arr: CardItem[], count: number) => {
 		const shuffled = [...arr]
@@ -37,7 +38,7 @@ export const ChocolateItem = () => {
 	}
 
 	useEffect(() => {
-		setAlsoItems(getRandomItems(mockChocolates, 4))
+		setAlsoItems(getRandomItems(data?.moreitems ?? [], 4))
 	}, [id])
 
 	useAdditionalCrumbs(chocolate?.title)
@@ -102,7 +103,13 @@ export const ChocolateItem = () => {
 									<SwiperSlide key={idx}>
 										<FlexRow className={styles.slideRow}>
 											<div className={styles.imgWrapper}>
-												{slideEl && <img className={styles.sliderImg} src={slideEl} alt='image' />}
+												{slideEl && (
+													<img
+														className={styles.sliderImg}
+														src={slideEl ? slideEl.original : ''}
+														alt='image'
+													/>
+												)}
 											</div>
 										</FlexRow>
 									</SwiperSlide>
@@ -114,12 +121,12 @@ export const ChocolateItem = () => {
 					<FlexRow className={styles.infoWrapper}>
 						<FlexRow className={styles.info}>
 							<p className={styles.title}>{chocolate?.title}</p>
-							<p className={styles.weight}>{`${chocolate?.weight} г`}</p>
-							<p className={styles.desc}>{chocolate?.description}</p>
-							<p className={styles.composition}>{`Состав: ${chocolate?.composition}`}</p>
+							<p className={styles.weight}>{`${chocolate?.item_weight} г`}</p>
+							<p className={styles.desc}>{chocolate?.short}</p>
+							<p className={styles.composition}>{`Состав: ${chocolate?.item_desc}`}</p>
 						</FlexRow>
 						<FlexRow className={styles.buySection}>
-							<p className={styles.price}>{`${chocolate?.price}.00 ₽`}</p>
+							<p className={styles.price}>{`${chocolate?.item_price} ₽`}</p>
 							<MainButton
 								className={cn(styles.buyButton, {
 									[styles.filled]: count > 0,

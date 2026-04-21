@@ -71,14 +71,14 @@ export const SetCard = ({ set, className, smallCard }: SetCardProps) => {
 						</div>
 					</FlexRow>
 					<div className={styles.smallImage}>
-						<img src={set.img} alt={set.title} />
+						<img src={set.img && set.img.length > 0 ? set.img[0].original : ''} alt={set.title} />
 					</div>
 
 					<FlexRow className={styles.smallContent}>
 						<FlexRow className={styles.smallInfoWrapper}>
-							<h3 className={styles.title}>{`${set.price}.00 ₽`}</h3>
+							<h3 className={styles.title}>{`${set.item_price} ₽`}</h3>
 							<p className={styles.subtitle}>{set.title}</p>
-							<p className={styles.weight}>{`${set.weight} г`}</p>
+							<p className={styles.weight}>{`${set.item_weight} г`}</p>
 						</FlexRow>
 
 						{breakPoint !== 'S' && (
@@ -147,14 +147,14 @@ export const SetCard = ({ set, className, smallCard }: SetCardProps) => {
 					</div>
 				</FlexRow>
 				<div className={styles.image}>
-					<img src={set.img} alt={set.title} />
+					<img src={set.img && set.img.length > 0 ? set.img[0].original : ''} alt={set.title} />
 				</div>
 
 				<FlexRow className={styles.content}>
 					<FlexRow className={styles.infoWrapper}>
-						<h3 className={styles.title}>{`${set.price}.00 ₽`}</h3>
+						<h3 className={styles.title}>{`${set.item_price} ₽`}</h3>
 						<p className={styles.subtitle}>{set.title}</p>
-						<p className={styles.weight}>{`${set.weight} г`}</p>
+						<p className={styles.weight}>{`${set.item_weight} г`}</p>
 					</FlexRow>
 
 					{breakPoint !== 'S' && (

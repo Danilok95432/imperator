@@ -71,14 +71,17 @@ export const CandyCard = ({ candy, className, smallCard }: CandyCardProps) => {
 						</div>
 					</FlexRow>
 					<div className={styles.smallImage}>
-						<img src={candy.img} alt={candy.title} />
+						<img
+							src={candy.img && candy.img.length > 0 ? candy.img[0].original : ''}
+							alt={candy.title}
+						/>
 					</div>
 
 					<FlexRow className={styles.smallContent}>
 						<FlexRow className={styles.smallInfoWrapper}>
-							<h3 className={styles.title}>{`${candy.price}.00 ₽`}</h3>
+							<h3 className={styles.title}>{`${candy.item_price} ₽`}</h3>
 							<p className={styles.subtitle}>{candy.title}</p>
-							<p className={styles.weight}>{`${candy.weight} г`}</p>
+							<p className={styles.weight}>{`${candy.item_weight} г`}</p>
 						</FlexRow>
 
 						{breakPoint !== 'S' && (
@@ -147,14 +150,17 @@ export const CandyCard = ({ candy, className, smallCard }: CandyCardProps) => {
 					</div>
 				</FlexRow>
 				<div className={styles.image}>
-					<img src={candy.img} alt={candy.title} />
+					<img
+						src={candy.img && candy.img.length > 0 ? candy.img[0].original : ''}
+						alt={candy.title}
+					/>
 				</div>
 
 				<FlexRow className={styles.content}>
 					<FlexRow className={styles.infoWrapper}>
-						<h3 className={styles.title}>{`${candy.price}.00 ₽`}</h3>
+						<h3 className={styles.title}>{`${candy.item_price} ₽`}</h3>
 						<p className={styles.subtitle}>{candy.title}</p>
-						<p className={styles.weight}>{`${candy.weight} г`}</p>
+						<p className={styles.weight}>{`${candy.item_weight} г`}</p>
 					</FlexRow>
 
 					{breakPoint !== 'S' && (

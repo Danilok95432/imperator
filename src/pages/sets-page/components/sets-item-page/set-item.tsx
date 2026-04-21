@@ -20,12 +20,13 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 import { Pagination } from 'swiper/modules'
 import { SetCard } from '../set-list/components/set-card/set-card'
-import { mockSets } from 'src/mock/sets'
+import { useGetItemCatalogByIDQuery } from 'src/features/catalog/api/catalog.api'
 
 export const SetItem = () => {
-	const { id } = useParams()
+	const { id = '' } = useParams()
+	const { data } = useGetItemCatalogByIDQuery(id)
 	const swiperRef: RefObject<SwiperRef> = useRef<SwiperRef>(null)
-	const set = mockSets.find((el) => el.id === id)
+	const set = data
 	const [alsoItems, setAlsoItems] = useState<CardItem[]>([])
 	const getRandomItems = (arr: CardItem[], count: number) => {
 		const shuffled = [...arr]
@@ -37,7 +38,7 @@ export const SetItem = () => {
 	}
 
 	useEffect(() => {
-		setAlsoItems(getRandomItems(mockSets, 4))
+		setAlsoItems(getRandomItems(data?.moreitems ?? [], 4))
 	}, [id])
 
 	useAdditionalCrumbs(set?.title)
@@ -102,7 +103,13 @@ export const SetItem = () => {
 									<SwiperSlide key={idx}>
 										<FlexRow className={styles.slideRow}>
 											<div className={styles.imgWrapper}>
-												{slideEl && <img className={styles.sliderImg} src={slideEl} alt='image' />}
+												{slideEl && (
+													<img
+														className={styles.sliderImg}
+														src={slideEl ? slideEl.original : ''}
+														alt='image'
+													/>
+												)}
 											</div>
 										</FlexRow>
 									</SwiperSlide>
@@ -114,12 +121,12 @@ export const SetItem = () => {
 					<FlexRow className={styles.infoWrapper}>
 						<FlexRow className={styles.info}>
 							<p className={styles.title}>{set?.title}</p>
-							<p className={styles.weight}>{`${set?.weight} г`}</p>
-							<p className={styles.desc}>{set?.description}</p>
-							<p className={styles.composition}>{`Состав: ${set?.composition}`}</p>
+							<p className={styles.weight}>{`${set?.item_weight} г`}</p>
+							<p className={styles.desc}>{set?.short}</p>
+							<p className={styles.composition}>{`Состав: ${set?.item_desc}`}</p>
 						</FlexRow>
 						<FlexRow className={styles.buySection}>
-							<p className={styles.price}>{`${set?.price}.00 ₽`}</p>
+							<p className={styles.price}>{`${set?.item_price} ₽`}</p>
 							<MainButton
 								className={cn(styles.buyButton, {
 									[styles.filled]: count > 0,

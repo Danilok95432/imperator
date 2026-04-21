@@ -5,18 +5,27 @@ import { Pagination } from 'src/widgets/pagination/pagination'
 import { useBreakPoint } from 'src/features/useBreakPoint/useBreakPoint'
 import { SpecialSeriesCard } from './components/special-series-card/special-series-card'
 import { mockSpecialSeries } from 'src/mock/special-series'
+import { useGetCatalogQuery } from 'src/features/catalog/api/catalog.api'
+import { Loader } from 'src/shared/ui/loader/loader'
 
 let ITEMS_PER_PAGE = 9
 
 export const SpecialSeriesList = () => {
 	const [currentPage, setCurrentPage] = useState(1)
+	const { data, isLoading } = useGetCatalogQuery({
+		id: '5',
+		limit: String(ITEMS_PER_PAGE),
+		step: String(currentPage),
+	})
 	const breakPoint = useBreakPoint()
 
 	if (breakPoint === 'S') ITEMS_PER_PAGE = 8
 
 	const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
 	const endIndex = startIndex + ITEMS_PER_PAGE
-	const currentItems = mockSpecialSeries.slice(startIndex, endIndex)
+	const currentItems = data?.items
+		? data?.items.slice(startIndex, endIndex)
+		: mockSpecialSeries.slice(startIndex, endIndex)
 
 	const handlePageChange = (page: number) => {
 		setCurrentPage(page)
@@ -24,12 +33,14 @@ export const SpecialSeriesList = () => {
 	}
 
 	const paginationData = useMemo(() => {
-		const totalItems = mockSpecialSeries.length
+		const totalItems = data?.totalitems ?? data?.items.length ?? 1
 		const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE)
 
 		const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
 		const endIndex = startIndex + ITEMS_PER_PAGE
-		const currentItems = mockSpecialSeries.slice(startIndex, endIndex)
+		const currentItems = data?.items
+			? data?.items.slice(startIndex, endIndex)
+			: mockSpecialSeries.slice(startIndex, endIndex)
 
 		return {
 			totalItems,
@@ -40,12 +51,17 @@ export const SpecialSeriesList = () => {
 		}
 	}, [mockSpecialSeries, currentPage, ITEMS_PER_PAGE])
 
+	if (!data?.items || isLoading) return <Loader />
 	return (
 		<Container className={styles.cont}>
 			<div className={styles.grid}>
-				{currentItems.map((specialSeries) => (
-					<SpecialSeriesCard key={specialSeries.id} specialSeries={specialSeries} />
-				))}
+				{currentItems.length > 1 ? (
+					currentItems.map((chocolate) => (
+						<SpecialSeriesCard key={chocolate.id} specialSeries={chocolate} />
+					))
+				) : (
+					<p className={styles.noItems}>Нет товаров</p>
+				)}
 			</div>
 
 			{paginationData.totalPages > 1 && (

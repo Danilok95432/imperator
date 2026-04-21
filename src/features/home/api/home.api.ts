@@ -7,6 +7,7 @@ import {
 	type BestListResponse,
 	type EliteListResponse,
 	type ReviewListResponse,
+	type PromoListResponse,
 } from 'src/types/home'
 
 export const homeApi = createApi({
@@ -20,6 +21,11 @@ export const homeApi = createApi({
 				params: {
 					id_event: idEvent,
 				},
+			}),
+		}),
+		getPromoList: build.query<PromoListResponse, null>({
+			query: () => ({
+				url: `promo/list`,
 			}),
 		}),
 		getAwardsList: build.query<AwardsListResponse, null>({
@@ -39,7 +45,7 @@ export const homeApi = createApi({
 		}),
 		getInfoEliteList: build.query<EliteListResponse, null>({
 			query: () => ({
-				url: `info_elite/list`,
+				url: `advs/list`,
 			}),
 		}),
 		getReviewsList: build.query<ReviewListResponse, null>({
@@ -57,4 +63,5 @@ export const {
 	useGetBestListQuery,
 	useGetInfoEliteListQuery,
 	useGetReviewsListQuery,
+	useGetPromoListQuery,
 } = homeApi

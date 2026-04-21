@@ -20,12 +20,13 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 import { Pagination } from 'swiper/modules'
 import { CoctailCard } from '../coctail-list/components/coctail-card/coctail-card'
-import { mockCoctailCandies } from 'src/mock/coctail'
+import { useGetItemCatalogByIDQuery } from 'src/features/catalog/api/catalog.api'
 
 export const CoctailItem = () => {
-	const { id } = useParams()
+	const { id = '' } = useParams()
+	const { data } = useGetItemCatalogByIDQuery(id)
 	const swiperRef: RefObject<SwiperRef> = useRef<SwiperRef>(null)
-	const coctail = mockCoctailCandies.find((el) => el.id === id)
+	const coctail = data
 	const [alsoItems, setAlsoItems] = useState<CardItem[]>([])
 	const getRandomItems = (arr: CardItem[], count: number) => {
 		const shuffled = [...arr]
@@ -37,7 +38,7 @@ export const CoctailItem = () => {
 	}
 
 	useEffect(() => {
-		setAlsoItems(getRandomItems(mockCoctailCandies, 4))
+		setAlsoItems(getRandomItems(data?.moreitems ?? [], 4))
 	}, [id])
 
 	useAdditionalCrumbs(coctail?.title)
@@ -102,7 +103,13 @@ export const CoctailItem = () => {
 									<SwiperSlide key={idx}>
 										<FlexRow className={styles.slideRow}>
 											<div className={styles.imgWrapper}>
-												{slideEl && <img className={styles.sliderImg} src={slideEl} alt='image' />}
+												{slideEl && (
+													<img
+														className={styles.sliderImg}
+														src={slideEl ? slideEl.original : ''}
+														alt='image'
+													/>
+												)}
 											</div>
 										</FlexRow>
 									</SwiperSlide>
@@ -114,12 +121,12 @@ export const CoctailItem = () => {
 					<FlexRow className={styles.infoWrapper}>
 						<FlexRow className={styles.info}>
 							<p className={styles.title}>{coctail?.title}</p>
-							<p className={styles.weight}>{`${coctail?.weight} г`}</p>
-							<p className={styles.desc}>{coctail?.description}</p>
-							<p className={styles.composition}>{`Состав: ${coctail?.composition}`}</p>
+							<p className={styles.weight}>{`${coctail?.item_weight} г`}</p>
+							<p className={styles.desc}>{coctail?.short}</p>
+							<p className={styles.composition}>{`Состав: ${coctail?.item_desc}`}</p>
 						</FlexRow>
 						<FlexRow className={styles.buySection}>
-							<p className={styles.price}>{`${coctail?.price}.00 ₽`}</p>
+							<p className={styles.price}>{`${coctail?.item_price} ₽`}</p>
 							<MainButton
 								className={cn(styles.buyButton, {
 									[styles.filled]: count > 0,

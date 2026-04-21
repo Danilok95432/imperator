@@ -79,14 +79,17 @@ export const FavoriteCard = ({ item, className, smallCard }: ItemCardProps) => {
 						</div>
 					</FlexRow>
 					<div className={styles.smallImage}>
-						<img src={item.img} alt={item.title} />
+						<img
+							src={item.img && item.img.length > 0 ? item.img[0].original : ''}
+							alt={item.title}
+						/>
 					</div>
 
 					<FlexRow className={styles.smallContent}>
 						<FlexRow className={styles.smallInfoWrapper}>
-							<h3 className={styles.title}>{`${item.price}.00 ₽`}</h3>
+							<h3 className={styles.title}>{`${item.item_price}.00 ₽`}</h3>
 							<p className={styles.subtitle}>{item.title}</p>
-							<p className={styles.weight}>{`${item.weight} г`}</p>
+							<p className={styles.weight}>{`${item.item_weight} г`}</p>
 						</FlexRow>
 
 						{breakPoint !== 'S' && (
@@ -155,14 +158,14 @@ export const FavoriteCard = ({ item, className, smallCard }: ItemCardProps) => {
 					</div>
 				</FlexRow>
 				<div className={styles.image}>
-					<img src={item.img} alt={item.title} />
+					<img src={item.img && item.img.length > 0 ? item.img[0].original : ''} alt={item.title} />
 				</div>
 
 				<FlexRow className={styles.content}>
 					<FlexRow className={styles.infoWrapper}>
-						<h3 className={styles.title}>{`${item.price}.00 ₽`}</h3>
+						<h3 className={styles.title}>{`${item.item_price}.00 ₽`}</h3>
 						<p className={styles.subtitle}>{item.title}</p>
-						<p className={styles.weight}>{`${item.weight} г`}</p>
+						<p className={styles.weight}>{`${item.item_weight} г`}</p>
 					</FlexRow>
 
 					{breakPoint !== 'S' && (

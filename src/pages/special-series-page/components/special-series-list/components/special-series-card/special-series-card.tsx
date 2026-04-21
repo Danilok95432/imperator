@@ -75,14 +75,21 @@ export const SpecialSeriesCard = ({
 						</div>
 					</FlexRow>
 					<div className={styles.smallImage}>
-						<img src={specialSeries.img} alt={specialSeries.title} />
+						<img
+							src={
+								specialSeries.img && specialSeries.img.length > 0
+									? specialSeries.img[0].original
+									: ''
+							}
+							alt={specialSeries.title}
+						/>
 					</div>
 
 					<FlexRow className={styles.smallContent}>
 						<FlexRow className={styles.smallInfoWrapper}>
-							<h3 className={styles.title}>{`${specialSeries.price}.00 ₽`}</h3>
+							<h3 className={styles.title}>{`${specialSeries.item_price} ₽`}</h3>
 							<p className={styles.subtitle}>{specialSeries.title}</p>
-							<p className={styles.weight}>{`${specialSeries.weight} г`}</p>
+							<p className={styles.weight}>{`${specialSeries.item_weight} г`}</p>
 						</FlexRow>
 
 						{breakPoint !== 'S' && (
@@ -151,14 +158,19 @@ export const SpecialSeriesCard = ({
 					</div>
 				</FlexRow>
 				<div className={styles.image}>
-					<img src={specialSeries.img} alt={specialSeries.title} />
+					<img
+						src={
+							specialSeries.img && specialSeries.img.length > 0 ? specialSeries.img[0].original : ''
+						}
+						alt={specialSeries.title}
+					/>
 				</div>
 
 				<FlexRow className={styles.content}>
 					<FlexRow className={styles.infoWrapper}>
-						<h3 className={styles.title}>{`${specialSeries.price}.00 ₽`}</h3>
+						<h3 className={styles.title}>{`${specialSeries.item_price} ₽`}</h3>
 						<p className={styles.subtitle}>{specialSeries.title}</p>
-						<p className={styles.weight}>{`${specialSeries.weight} г`}</p>
+						<p className={styles.weight}>{`${specialSeries.item_weight} г`}</p>
 					</FlexRow>
 
 					{breakPoint !== 'S' && (

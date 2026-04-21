@@ -20,12 +20,13 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 import { Pagination } from 'swiper/modules'
 import { CandyCard } from '../candy-list/components/candy-card/candy-card'
-import { mockCandies } from 'src/mock/candy'
+import { useGetItemCatalogByIDQuery } from 'src/features/catalog/api/catalog.api'
 
 export const CandyItem = () => {
-	const { id } = useParams()
+	const { id = '' } = useParams()
+	const { data } = useGetItemCatalogByIDQuery(id)
 	const swiperRef: RefObject<SwiperRef> = useRef<SwiperRef>(null)
-	const candy = mockCandies.find((el) => el.id === id)
+	const candy = data
 	const [alsoItems, setAlsoItems] = useState<CardItem[]>([])
 	const getRandomItems = (arr: CardItem[], count: number) => {
 		const shuffled = [...arr]
@@ -37,7 +38,7 @@ export const CandyItem = () => {
 	}
 
 	useEffect(() => {
-		setAlsoItems(getRandomItems(mockCandies, 4))
+		setAlsoItems(getRandomItems(data?.moreitems ?? [], 4))
 	}, [id])
 
 	useAdditionalCrumbs(candy?.title)
@@ -102,7 +103,13 @@ export const CandyItem = () => {
 									<SwiperSlide key={idx}>
 										<FlexRow className={styles.slideRow}>
 											<div className={styles.imgWrapper}>
-												{slideEl && <img className={styles.sliderImg} src={slideEl} alt='image' />}
+												{slideEl && (
+													<img
+														className={styles.sliderImg}
+														src={slideEl ? slideEl.original : ''}
+														alt='image'
+													/>
+												)}
 											</div>
 										</FlexRow>
 									</SwiperSlide>
@@ -114,12 +121,12 @@ export const CandyItem = () => {
 					<FlexRow className={styles.infoWrapper}>
 						<FlexRow className={styles.info}>
 							<p className={styles.title}>{candy?.title}</p>
-							<p className={styles.weight}>{`${candy?.weight} г`}</p>
-							<p className={styles.desc}>{candy?.description}</p>
-							<p className={styles.composition}>{`Состав: ${candy?.composition}`}</p>
+							<p className={styles.weight}>{`${candy?.item_weight} г`}</p>
+							<p className={styles.desc}>{candy?.short}</p>
+							<p className={styles.composition}>{`Состав: ${candy?.item_desc}`}</p>
 						</FlexRow>
 						<FlexRow className={styles.buySection}>
-							<p className={styles.price}>{`${candy?.price}.00 ₽`}</p>
+							<p className={styles.price}>{`${candy?.item_price} ₽`}</p>
 							<MainButton
 								className={cn(styles.buyButton, {
 									[styles.filled]: count > 0,

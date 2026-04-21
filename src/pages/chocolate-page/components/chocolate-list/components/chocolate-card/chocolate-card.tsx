@@ -71,14 +71,17 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 						</div>
 					</FlexRow>
 					<div className={styles.smallImage}>
-						<img src={chocolate.img} alt={chocolate.title} />
+						<img
+							src={chocolate.img && chocolate.img.length > 0 ? chocolate.img[0].original : ''}
+							alt={chocolate.title}
+						/>
 					</div>
 
 					<FlexRow className={styles.smallContent}>
 						<FlexRow className={styles.smallInfoWrapper}>
-							<h3 className={styles.title}>{`${chocolate.price}.00 ₽`}</h3>
+							<h3 className={styles.title}>{`${chocolate.item_price} ₽`}</h3>
 							<p className={styles.subtitle}>{chocolate.title}</p>
-							<p className={styles.weight}>{`${chocolate.weight} г`}</p>
+							<p className={styles.weight}>{`${chocolate.item_weight} г`}</p>
 						</FlexRow>
 
 						{breakPoint !== 'S' && (
@@ -147,14 +150,17 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 					</div>
 				</FlexRow>
 				<div className={styles.image}>
-					<img src={chocolate.img} alt={chocolate.title} />
+					<img
+						src={chocolate.img && chocolate.img.length > 0 ? chocolate.img[0].original : ''}
+						alt={chocolate.title}
+					/>
 				</div>
 
 				<FlexRow className={styles.content}>
 					<FlexRow className={styles.infoWrapper}>
-						<h3 className={styles.title}>{`${chocolate.price}.00 ₽`}</h3>
+						<h3 className={styles.title}>{`${chocolate.item_price} ₽`}</h3>
 						<p className={styles.subtitle}>{chocolate.title}</p>
-						<p className={styles.weight}>{`${chocolate.weight} г`}</p>
+						<p className={styles.weight}>{`${chocolate.item_weight} г`}</p>
 					</FlexRow>
 
 					{breakPoint !== 'S' && (

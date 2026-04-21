@@ -1,8 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { authApi } from 'src/features/auth/api/auth.api'
 import { authReducer } from 'src/features/auth/api/auth.slice'
+import { catalogApi } from 'src/features/catalog/api/catalog.api'
 import { homeApi } from 'src/features/home/api/home.api'
 import { modalReducer } from 'src/features/modal/store/modal.slice'
+import { settingsApi } from 'src/features/settings/api/settings.api'
 import { NameSpace } from 'src/shared/helpers/consts'
 import { breadCrumbsReducer } from 'src/widgets/breadcrumbs/store/bread-crumbs.slice'
 
@@ -12,6 +14,8 @@ export const store = configureStore({
 		[NameSpace.Auth]: authReducer,
 		[homeApi.reducerPath]: homeApi.reducer,
 		[authApi.reducerPath]: authApi.reducer,
+		[catalogApi.reducerPath]: catalogApi.reducer,
+		[settingsApi.reducerPath]: settingsApi.reducer,
 		[NameSpace.BreadCrumbs]: breadCrumbsReducer,
 	},
 	devTools: true,
@@ -19,6 +23,8 @@ export const store = configureStore({
 		getDefaultMiddleware({ serializableCheck: false }).concat(
 			homeApi.middleware,
 			authApi.middleware,
+			catalogApi.middleware,
+			settingsApi.middleware,
 		),
 })
 

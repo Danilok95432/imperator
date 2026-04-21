@@ -102,6 +102,12 @@ section.catalog {
 					border-radius: 4px;
 					font-size: 20px;
 					font-family: 'Tinos';
+					p {
+						max-width: 214px;
+						text-overflow: ellipsis;
+						overflow: hidden;
+						white-space: nowrap;
+					}
 				}
 			}
 		}

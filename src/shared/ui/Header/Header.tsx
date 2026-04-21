@@ -7,7 +7,7 @@ import styles from './index.module.scss'
 import { MainNavigation } from 'src/widgets/main-navigation/main-navigation'
 import { LogoSVG } from '../icons/logoSVG'
 
-const authorized = true
+const authorized = false
 
 export const Header = () => {
 	const navigate = useNavigate()

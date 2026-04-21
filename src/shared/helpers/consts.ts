@@ -1,5 +1,8 @@
 export enum ReducerPath {
 	Home = 'home/api',
+	Catalog = 'catalog/api',
+	Auth = 'auth/api',
+	Settings = 'settings/api',
 }
 
 export const ImagesFormat = ['png', 'jpeg', 'jpg', 'webp', 'gif']

@@ -5,10 +5,11 @@ import { NavLink } from 'react-router-dom'
 
 import styles from './index.module.scss'
 import { setActive } from 'src/shared/helpers/utils'
-import { navigationElements } from '../consts'
+import { useGetCategoriesCatalogQuery } from 'src/features/catalog/api/catalog.api'
 
 export const BurgerMenu = () => {
 	const [isOpen, setIsOpen] = useState(false)
+	const { data } = useGetCategoriesCatalogQuery(null)
 
 	const toggleMenu = () => {
 		setIsOpen(!isOpen)
@@ -51,14 +52,14 @@ export const BurgerMenu = () => {
 					<span></span>
 				</div>
 				<ul>
-					{navigationElements.map((menuEl, index) => (
+					{data?.catalogs.map((menuEl, index) => (
 						<li className={styles.menuItem} key={index}>
 							<NavLink
 								className={({ isActive }) => setActive(isActive, styles.activeLink)}
-								to={menuEl.link}
+								to={'/catalog'}
 								onClick={() => {
 									toggleMenu()
-									scrollToSection(menuEl.link)
+									scrollToSection(`/catalog/${menuEl.id}`)
 								}}
 							>
 								{menuEl.title}

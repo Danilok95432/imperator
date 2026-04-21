@@ -27,6 +27,12 @@
     column-gap: 16px;
 		align-items: center;
   }
+	.noItems {
+		font-size: 24px;
+		font-family: "Tinos";
+		font-weight: 500;
+		color: var(--main-theme-color-2);
+	}
 }
 
 .pagination {

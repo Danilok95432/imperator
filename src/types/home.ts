@@ -7,6 +7,7 @@ export type AwardsItem = {
 	itemname: string
 	title: string
 	use_main: boolean
+	color: string
 }
 
 export type AwardsListResponse = {
@@ -53,9 +54,16 @@ export type BestListResponse = {
 
 export type EliteItem = {
 	id: string
-	title: string
+	adv_text: string
 }
 
 export type EliteListResponse = {
-	elits: EliteItem[]
+	block_name: string
+	advs: EliteItem[]
+}
+
+export type PromoListResponse = {
+	block_name: string
+	block_desc: string
+	img: ImageItemWithText[]
 }

@@ -1,14 +1,18 @@
-import { type FC, type ReactNode } from 'react'
+import { type FC, type ReactNode, type HTMLAttributes } from 'react'
 import classNames from 'classnames'
 import styles from './index.module.scss'
 
-type FlexRowProps = {
+type FlexRowProps = HTMLAttributes<HTMLDivElement> & {
 	className?: string
 	children: ReactNode
 }
 
-export const FlexRow: FC<FlexRowProps> = ({ className, children }) => {
+export const FlexRow: FC<FlexRowProps> = ({ className, children, ...props }) => {
 	const combinedClassName = classNames(styles.flexRowContainer, className)
 
-	return <div className={combinedClassName}>{children}</div>
+	return (
+		<div className={combinedClassName} {...props}>
+			{children}
+		</div>
+	)
 }

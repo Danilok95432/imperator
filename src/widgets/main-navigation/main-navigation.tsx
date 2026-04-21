@@ -1,13 +1,14 @@
 import { Container } from 'src/shared/ui/Container/Container'
-import { navigationElements } from './consts'
 import styles from './index.module.scss'
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { BurgerMenu } from './burger-menu/burger-menu'
+import { useGetCategoriesCatalogQuery } from 'src/features/catalog/api/catalog.api'
 
 export const MainNavigation = () => {
 	const location = useLocation()
 	const navigate = useNavigate()
+	const { data } = useGetCategoriesCatalogQuery(null)
 
 	const scrollToSection = (sectionId: string) => {
 		const element = document.getElementById(sectionId)
@@ -56,8 +57,12 @@ export const MainNavigation = () => {
 			<Container className={styles.navigationCont}>
 				<BurgerMenu />
 				<ul className={styles.navWrapper}>
-					{navigationElements.map((el, index) => (
-						<button key={index} className={styles.navEl} onClick={() => scrollToSection(el.link)}>
+					{data?.catalogs.map((el, index) => (
+						<button
+							key={index}
+							className={styles.navEl}
+							onClick={() => scrollToSection(`/catalog/${el.id}`)}
+						>
 							<li>{el.title}</li>
 						</button>
 					))}

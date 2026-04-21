@@ -10,13 +10,13 @@ export const ClassSection = () => {
 		<Section className={styles.class}>
 			<Container className={styles.classCont}>
 				<FlexRow className={styles.headRow}>
-					<h2>Класс элит</h2>
+					<h2>{data?.block_name}</h2>
 				</FlexRow>
 				<div className={styles.classRow}>
-					{data?.elits.map((el, idx) => {
+					{data?.advs.map((el, idx) => {
 						return (
 							<FlexRow className={styles.classEl} key={el.id}>
-								<p>{el.title}</p>
+								<p>{el.adv_text}</p>
 							</FlexRow>
 						)
 					})}

@@ -6,10 +6,12 @@ import { FlexRow } from 'src/shared/ui/FlexRow/FlexRow'
 import { Section } from 'src/shared/ui/Section/section'
 import { Outlet, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
+import { useGetCatalogQuery } from 'src/features/catalog/api/catalog.api'
 
 export const SpecialSeriesPage = () => {
 	const location = useLocation()
 	const insideLocation = location.pathname.split('/').some((segment) => /^\d+$/.test(segment))
+	const { data } = useGetCatalogQuery({ id: '5', limit: '0', step: '1' })
 	useEffect(() => {
 		window.scrollTo({
 			top: 0,
@@ -22,7 +24,7 @@ export const SpecialSeriesPage = () => {
 			{!insideLocation && (
 				<Container className={styles.cont}>
 					<FlexRow className={styles.headRow}>
-						<h2 className={styles.title}>{'Юбилейная серия'}</h2>
+						<h2 className={styles.title}>{data?.title}</h2>
 					</FlexRow>
 				</Container>
 			)}

@@ -17,4 +17,6 @@ export enum AppRoute {
 	POLITIC = '/politic',
 	AUTH = '/auth',
 	REGISTRATION = 'registration',
+	Catalog = '/catalog',
+	CatalogItem = '/item',
 }

@@ -7,8 +7,10 @@ import { LocationIconSVG } from '../icons/locationIconSVG'
 import { MailIconSVG } from '../icons/mailIconSVG'
 import { PhoneIconSVG } from '../icons/phoneIconSVG'
 import classNames from 'classnames'
+import { useGetSiteSettingsQuery } from 'src/features/settings/api/settings.api'
 
 export const Footer = () => {
+	const { data } = useGetSiteSettingsQuery(null)
 	const infoLinks = [
 		{ id: '1', title: 'О нас', link: '/about' },
 		{ id: '2', title: 'Самовывоз и доставка', link: '/about/delivery' },
@@ -26,10 +28,7 @@ export const Footer = () => {
 		<footer className={styles.footer}>
 			<Container className={styles.cont}>
 				<FlexRow className={styles.footerCont}>
-					<p>
-						Фабрика Император
-						<br /> © 2026
-					</p>
+					<p>{data?.info_copyright}</p>
 					<FlexRow className={styles.footerRow}>
 						<p>Информация</p>
 						{infoLinks.map((el) => {
@@ -54,19 +53,19 @@ export const Footer = () => {
 						<p>О магазине</p>
 						<FlexRow className={classNames(styles.aboutElRow, styles.start)}>
 							<LocationIconSVG />
-							<p>Шоколадная фабрика ИМПЕРАТОР Россия, Санкт-Петербург</p>
+							<p>{data?.contact_address}</p>
 						</FlexRow>
 						<FlexRow className={styles.aboutElRow}>
 							<PhoneIconSVG />
-							<p>+7 (921) 182-94-04</p>
+							<p>{data?.contact_telphone}</p>
 						</FlexRow>
 						<FlexRow className={styles.aboutElRow}>
 							<MailIconSVG />
-							<p>info@imperator-shokolad.ru</p>
+							<p>{data?.contact_email}</p>
 						</FlexRow>
 						<FlexRow className={styles.aboutElRow}>
 							<VkIconSVG />
-							<p>Группа VK</p>
+							<p>{data?.contact_vk}</p>
 						</FlexRow>
 					</FlexRow>
 				</FlexRow>

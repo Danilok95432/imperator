@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { type FieldValues } from 'react-hook-form'
 import { MAIN_PROD_URL } from 'src/shared/helpers/consts'
+import { type AuthResponse } from 'src/types/auth'
 import {
 	type SelOption,
 	type MultiSelOption,
@@ -15,6 +16,41 @@ export const authApi = createApi({
 		baseUrl: MAIN_PROD_URL,
 	}),
 	endpoints: (build) => ({
+		sendRegistrationForm: build.mutation<
+			{ status: string; errortext: string; ticket_link: string },
+			FieldValues
+		>({
+			query: (formData) => ({
+				url: '/registration/register',
+				method: 'POST',
+				body: formData,
+			}),
+		}),
+		registrationUser: build.mutation<AuthResponse, FieldValues>({
+			query: (formData) => ({
+				url: '/registration/register',
+				method: 'POST',
+				body: formData,
+			}),
+		}),
+		loginUser: build.mutation<AuthResponse, FieldValues>({
+			query: (formData) => ({
+				url: '/auth/auth',
+				method: 'POST',
+				body: formData,
+			}),
+		}),
+		logoutUser: build.mutation({
+			query: () => ({
+				url: '/auth/logout',
+				method: 'POST',
+			}),
+		}),
+		checkAuth: build.query<AuthResponse, null>({
+			query: () => ({
+				url: '/auth/refresh',
+			}),
+		}),
 		getRegistrationCode: build.mutation<
 			{ status: string; errortext?: string; ticket?: string },
 			string
@@ -33,16 +69,6 @@ export const authApi = createApi({
 		>({
 			query: (formData) => ({
 				url: '/registration/checkcode',
-				method: 'POST',
-				body: formData,
-			}),
-		}),
-		sendRegistrationForm: build.mutation<
-			{ status: string; errortext: string; ticket_link: string },
-			FieldValues
-		>({
-			query: (formData) => ({
-				url: '/registration/register',
 				method: 'POST',
 				body: formData,
 			}),
@@ -97,20 +123,6 @@ export const authApi = createApi({
 				},
 			}),
 		}),
-		// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
-		loginUser: build.mutation<void, FieldValues>({
-			query: (formData) => ({
-				url: '/auth',
-				method: 'POST',
-				body: formData,
-			}),
-		}),
-		logoutUser: build.mutation({
-			query: () => ({
-				url: '/logout',
-				method: 'POST',
-			}),
-		}),
 	}),
 })
 export const {
@@ -123,4 +135,6 @@ export const {
 	useSendRegistrationFormMutation,
 	useLogoutUserMutation,
 	useCheckRegistrationCodeMutation,
+	useCheckAuthQuery,
+	useRegistrationUserMutation,
 } = authApi
