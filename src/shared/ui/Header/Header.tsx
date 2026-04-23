@@ -7,12 +7,10 @@ import styles from './index.module.scss'
 import { MainNavigation } from 'src/widgets/main-navigation/main-navigation'
 import { LogoSVG } from '../icons/logoSVG'
 
-const authorized = false
-
 export const Header = () => {
 	const navigate = useNavigate()
 	// const [activeLang, setActiveLang] = useState<string>('RU')
-
+	const authorized = !!localStorage.getItem('token')
 	return (
 		<header className={styles.header}>
 			<Container className={styles.headerCont}>
