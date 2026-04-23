@@ -31,8 +31,22 @@ export const catalogApi = createApi({
 				url: `catalog/list_items`,
 			}),
 		}),
+		getUserFavorites: build.query<ICatalog, null>({
+			query: () => {
+				const token = localStorage.getItem('token')
+				console.log(token)
+				return {
+					url: 'user_favourites/list',
+					headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+				}
+			},
+		}),
 	}),
 })
 
-export const { useGetCatalogQuery, useGetItemCatalogByIDQuery, useGetCategoriesCatalogQuery } =
-	catalogApi
+export const {
+	useGetCatalogQuery,
+	useGetItemCatalogByIDQuery,
+	useGetCategoriesCatalogQuery,
+	useGetUserFavoritesQuery,
+} = catalogApi

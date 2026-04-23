@@ -14,6 +14,8 @@ import { ControlledCheckbox } from 'src/widgets/controlled-checkbox/controlled-c
 import { useBreakPoint } from 'src/features/useBreakPoint/useBreakPoint'
 import { useActions } from 'src/app/store/hooks/actions'
 import { useLoginUserMutation } from 'src/features/auth/api/auth.api'
+import { toast } from 'react-toastify'
+import { type LoginResponse, getErrorMessage } from '../registration-page/registration-page'
 
 export const AuthPage = () => {
 	const { setAuth, setUser } = useActions()
@@ -26,20 +28,27 @@ export const AuthPage = () => {
 	})
 	const onSubmit: SubmitHandler<AuthInputs> = async (data) => {
 		console.log(data)
-		const formData = new FormData()
-		formData.append('user_name', data.email)
-		formData.append('password', data.password)
-		// try {
-		// 	const { data } = await loginUser(formData)
-		// 	if (data && 'token' in data && 'user' in data) {
-		// 		localStorage.setItem('token', data.token)
-		// 		setAuth(true)
-		// 		setUser(data.user)
-		// 		navigate(`/org/fond/info`)
-		// 	}
-		// } catch (err) {
-		// 	console.error(err)
-		// }
+		try {
+			const loginFormData = new FormData()
+			loginFormData.append('user_name', data.user_name)
+			loginFormData.append('password', data.password)
+
+			const loginResponse = (await loginUser(loginFormData).unwrap()) as LoginResponse
+
+			if (!loginResponse.token || !loginResponse.user) {
+				toast.error(loginResponse.errortext ?? 'Ошибка авторизации')
+				return
+			}
+
+			localStorage.setItem('token', String(loginResponse.token))
+			setAuth(true)
+			setUser(loginResponse.user)
+
+			toast.success('Авторизация прошла успешно')
+			navigate('/lk')
+		} catch (error) {
+			toast.error(getErrorMessage(error, 'Ошибка регистрации или авторизации'))
+		}
 	}
 	return (
 		<Section className={styles.authSection}>

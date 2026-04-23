@@ -3,6 +3,22 @@
 	@media (max-width: 768px) {
 		padding: 0;
 	}
+	.empty {
+		width: max-content;
+		font-size: 24px;
+		font-family: 'Tinos';
+		font-weight: 400;
+		margin: 48px auto 48px auto;
+		color: var(--main-theme-color-2);
+	}
+	.error {
+		width: max-content;
+		font-size: 24px;
+		font-family: 'Tinos';
+		font-weight: 400;
+		margin: 48px auto 48px auto;
+		color: var(--main-theme-color-2);
+	}
 }
 
 .title {

@@ -1,17 +1,18 @@
 import * as yup from 'yup'
 
 export type RegInputs = {
-	name: string
-	secondName: string
+	firstname: string
+	surname: string
 	email: string
-	phone: string
+	telphone: string
 	password: string
-	repeatPassword: string
+	password2: string
+	use_spam?: boolean
 }
 
 export const regInputsSchema = yup.object().shape({
 	// Проверка имени
-	name: yup
+	firstname: yup
 		.string()
 		.required('Введите имя')
 		.min(2, 'Имя должно содержать минимум 2 символа')
@@ -19,7 +20,7 @@ export const regInputsSchema = yup.object().shape({
 		.matches(/^[а-яА-ЯёЁa-zA-Z\s-]+$/, 'Имя может содержать только буквы, пробел и дефис'),
 
 	// Проверка фамилии
-	secondName: yup
+	surname: yup
 		.string()
 		.required('Введите фамилию')
 		.min(2, 'Фамилия должна содержать минимум 2 символа')
@@ -34,10 +35,7 @@ export const regInputsSchema = yup.object().shape({
 		.matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Введите корректный email адрес'),
 
 	// Проверка телефона - 11 цифр
-	phone: yup
-		.string()
-		.required('Введите номер телефона')
-		.matches(/^\d{11}$/, 'Номер телефона должен состоять из 11 цифр'),
+	telphone: yup.string().required('Введите номер телефона'),
 
 	// Проверка пароля
 	password: yup
@@ -46,7 +44,7 @@ export const regInputsSchema = yup.object().shape({
 		.min(6, 'Пароль должен содержать минимум 6 символов'),
 
 	// Проверка повторения пароля
-	repeatPassword: yup
+	password2: yup
 		.string()
 		.required('Повторите пароль')
 		.oneOf([yup.ref('password')], 'Пароли не совпадают'),

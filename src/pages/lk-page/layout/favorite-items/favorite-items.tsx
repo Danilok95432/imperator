@@ -2,52 +2,78 @@ import { useState, useMemo } from 'react'
 import { useBreakPoint } from 'src/features/useBreakPoint/useBreakPoint'
 import { Container } from 'src/shared/ui/Container/Container'
 import { Pagination } from 'src/widgets/pagination/pagination'
-
 import styles from './index.module.scss'
 import { FavoriteCard } from './components/favorite-card/favorite-card'
 import { useAdditionalCrumbs } from 'src/app/store/hooks/additionalCrumbs'
-import { mockFavorites } from 'src/mock/favorite'
+import { useGetUserFavoritesQuery } from 'src/features/catalog/api/catalog.api'
 
 let ITEMS_PER_PAGE = 9
 
 export const FavoriteItems = () => {
+	const { data, isLoading, isError } = useGetUserFavoritesQuery(null)
 	useAdditionalCrumbs('Избранные товары')
 	const [currentPage, setCurrentPage] = useState(1)
 	const breakPoint = useBreakPoint()
 
 	if (breakPoint === 'S') ITEMS_PER_PAGE = 8
 
-	const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
-	const endIndex = startIndex + ITEMS_PER_PAGE
-	const currentItems = mockFavorites.slice(startIndex, endIndex)
-
 	const handlePageChange = (page: number) => {
 		setCurrentPage(page)
 		window.scrollTo({ top: 0, behavior: 'smooth' })
 	}
 
+	// Вычисляем данные для пагинации на основе реальных items
 	const paginationData = useMemo(() => {
-		const totalItems = mockFavorites.length
+		const totalItems = data?.items?.length ?? 0
 		const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE)
-
 		const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
 		const endIndex = startIndex + ITEMS_PER_PAGE
-		const currentItems = mockFavorites.slice(startIndex, endIndex)
+		const currentItems = data?.items?.slice(startIndex, endIndex) ?? []
 
 		return {
 			totalItems,
 			totalPages,
 			currentItems,
-			startIndex: startIndex + 1,
+			startIndex: totalItems === 0 ? 0 : startIndex + 1,
 			endIndex: Math.min(endIndex, totalItems),
 		}
-	}, [mockFavorites, currentPage, ITEMS_PER_PAGE])
+	}, [data?.items, currentPage, ITEMS_PER_PAGE])
+
+	// Обработка загрузки
+	if (isLoading) {
+		return (
+			<Container className={styles.cont}>
+				<h1 className={styles.title}>Избранные товары</h1>
+				<div className={styles.loader}>Загрузка...</div>
+			</Container>
+		)
+	}
+
+	// Обработка ошибки
+	if (isError) {
+		return (
+			<Container className={styles.cont}>
+				<h1 className={styles.title}>Избранные товары</h1>
+				<div className={styles.error}>Не удалось загрузить избранные товары. Попробуйте позже.</div>
+			</Container>
+		)
+	}
+
+	// Обработка пустого списка
+	if (!data?.items?.length) {
+		return (
+			<Container className={styles.cont}>
+				<h1 className={styles.title}>Избранные товары</h1>
+				<div className={styles.empty}>У вас пока нет избранных товаров.</div>
+			</Container>
+		)
+	}
 
 	return (
 		<Container className={styles.cont}>
 			<h1 className={styles.title}>Избранные товары</h1>
 			<div className={styles.grid}>
-				{currentItems.map((candy) => (
+				{paginationData.currentItems.map((candy) => (
 					<FavoriteCard key={candy.id} item={candy} />
 				))}
 			</div>

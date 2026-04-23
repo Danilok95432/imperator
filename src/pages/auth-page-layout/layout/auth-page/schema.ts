@@ -1,12 +1,12 @@
 import * as yup from 'yup'
 
 export type AuthInputs = {
-	email: string
+	user_name: string
 	password: string
 }
 
 export const authInputsSchema = yup.object().shape({
-	email: yup
+	user_name: yup
 		.string()
 		.required('Введите почту')
 		.email('Введите корректный email адрес')

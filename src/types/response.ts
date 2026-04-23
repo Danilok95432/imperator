@@ -12,4 +12,5 @@ export type LoginData = {
 export type AuthResponse = {
 	token: string
 	user: User
+	status: string
 }
