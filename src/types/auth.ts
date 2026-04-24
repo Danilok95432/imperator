@@ -14,3 +14,11 @@ export type AuthResponse = {
 	user: User
 	status: string
 }
+
+export type PersonalResponse = {
+	firstname: string
+	surname: string
+	email: string
+	telphone: string
+	use_spam: boolean
+}

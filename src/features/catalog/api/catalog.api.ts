@@ -34,7 +34,6 @@ export const catalogApi = createApi({
 		getUserFavorites: build.query<ICatalog, null>({
 			query: () => {
 				const token = localStorage.getItem('token')
-				console.log(token)
 				return {
 					url: 'user_favourites/list',
 					headers: token ? { Authorization: `Bearer ${token}` } : undefined,

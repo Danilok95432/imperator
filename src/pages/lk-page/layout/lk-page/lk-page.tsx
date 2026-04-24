@@ -5,8 +5,17 @@ import styles from './index.module.scss'
 import { FlexRow } from 'src/shared/ui/FlexRow/FlexRow'
 import { lkTabNavigation } from './consts'
 import { MainButton } from 'src/shared/ui/MainButton/MainButton'
+import { useLogoutUserMutation } from 'src/features/auth/api/auth.api'
+import { useNavigate } from 'react-router-dom'
 
 export const LkPage = () => {
+	const [logout] = useLogoutUserMutation()
+	const navigate = useNavigate()
+	const handleLogout = async () => {
+		await logout({})
+		localStorage.removeItem('token')
+		navigate('/')
+	}
 	return (
 		<Section className={styles.lkSection}>
 			<Container className={styles.lkCont}>
@@ -22,7 +31,7 @@ export const LkPage = () => {
 						)
 					})}
 				</div>
-				<MainButton type='submit' className={styles.cancelBtn}>
+				<MainButton type='submit' className={styles.cancelBtn} onClick={handleLogout}>
 					Выйти из профиля
 				</MainButton>
 			</Container>

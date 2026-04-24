@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { type FieldValues } from 'react-hook-form'
 import { MAIN_PROD_URL } from 'src/shared/helpers/consts'
-import { type AuthResponse } from 'src/types/auth'
+import { type PersonalResponse, type AuthResponse } from 'src/types/auth'
 import {
 	type SelOption,
 	type MultiSelOption,
@@ -41,10 +41,33 @@ export const authApi = createApi({
 			}),
 		}),
 		logoutUser: build.mutation({
-			query: () => ({
-				url: '/auth/logout',
-				method: 'POST',
-			}),
+			query: () => {
+				const token = localStorage.getItem('token')
+				return {
+					url: 'auth/logout',
+					headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+				}
+			},
+		}),
+		getPersonalInfo: build.query<PersonalResponse, null>({
+			query: () => {
+				const token = localStorage.getItem('token')
+				return {
+					url: 'user_personal/getinfo',
+					headers: token ? { Authorization: `${token}` } : undefined,
+				}
+			},
+		}),
+		savePersonalInfo: build.mutation<{ status: string; errortext: string }, FieldValues>({
+			query: (formData) => {
+				const token = localStorage.getItem('token')
+				return {
+					url: 'user_personal/saveinfo',
+					headers: token ? { Authorization: `${token}` } : undefined,
+					method: 'POST',
+					body: formData,
+				}
+			},
 		}),
 		checkAuth: build.query<AuthResponse, null>({
 			query: () => ({
@@ -137,4 +160,6 @@ export const {
 	useCheckRegistrationCodeMutation,
 	useCheckAuthQuery,
 	useRegistrationUserMutation,
+	useGetPersonalInfoQuery,
+	useSavePersonalInfoMutation,
 } = authApi

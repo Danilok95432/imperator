@@ -10,8 +10,17 @@ import { ControlledCheckbox } from 'src/widgets/controlled-checkbox/controlled-c
 import { ControlledInput } from 'src/widgets/controlled-input/controlled-input'
 
 import styles from './index.module.scss'
+import {
+	useGetPersonalInfoQuery,
+	useSavePersonalInfoMutation,
+} from 'src/features/auth/api/auth.api'
+import { useEffect } from 'react'
+import { toast } from 'react-toastify'
+import { booleanToNumberString } from 'src/shared/helpers/utils'
 
 export const InfoPage = () => {
+	const { data } = useGetPersonalInfoQuery(null)
+	const [savePersonalInfo] = useSavePersonalInfoMutation()
 	useAdditionalCrumbs('Личные данные')
 	const methods = useForm<LkInputs>({
 		mode: 'onBlur',
@@ -19,7 +28,28 @@ export const InfoPage = () => {
 	})
 	const onSubmit: SubmitHandler<LkInputs> = async (data) => {
 		console.log(data)
+		const formData = new FormData()
+		formData.append('firstname', data.firstname)
+		formData.append('surname', data.surname)
+		formData.append('email', data.email)
+		formData.append('telphone', data.telphone)
+		formData.append('password', data.password)
+		formData.append('password2', data.password2)
+		formData.append('use_spam', booleanToNumberString(data.use_spam))
+		const res = await savePersonalInfo(formData)
+		if (res && 'data' in res) {
+			toast.success('Данные успешно сохранены')
+		} else {
+			toast.error('Ошибка при сохранении данных')
+		}
 	}
+
+	useEffect(() => {
+		if (data) {
+			methods.reset({ ...data })
+		}
+	}, [data])
+
 	return (
 		<Section className={styles.regSection}>
 			<Container className={styles.regCont}>
@@ -31,10 +61,10 @@ export const InfoPage = () => {
 						noValidate
 						autoComplete='off'
 					>
-						<ControlledInput name='name' label='Имя*' margin='0 0 32px 0' />
-						<ControlledInput name='secondName' label='Фамилия*' margin='0 0 32px 0' />
+						<ControlledInput name='firstname' label='Имя*' margin='0 0 32px 0' />
+						<ControlledInput name='surname' label='Фамилия*' margin='0 0 32px 0' />
 						<ControlledInput name='email' label='Email*' margin='0 0 32px 0' />
-						<ControlledInput name='phone' label='Телефон*' margin='0 0 32px 0' isPhone />
+						<ControlledInput name='telphone' label='Телефон*' margin='0 0 32px 0' isPhone />
 						<FlexRow className={styles.inputRow}>
 							<ControlledInput
 								name='password'
@@ -46,7 +76,7 @@ export const InfoPage = () => {
 						</FlexRow>
 						<FlexRow className={styles.inputRow}>
 							<ControlledInput
-								name='repeatPassword'
+								name='password2'
 								label='Подтверждение нового пароля*'
 								type='password'
 								className={styles.input}
@@ -54,7 +84,7 @@ export const InfoPage = () => {
 						</FlexRow>
 						<FlexRow className={styles.controlsWrapper}>
 							<ControlledCheckbox
-								name='want'
+								name='use_spam'
 								label='Хочу получать новости на почту'
 								type='checkbox'
 							/>
