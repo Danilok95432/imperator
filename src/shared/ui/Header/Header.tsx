@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Container } from '../Container/Container'
 import { FlexRow } from '../FlexRow/FlexRow'
@@ -6,11 +7,16 @@ import { PersonSVG } from '../icons/personSVG'
 import styles from './index.module.scss'
 import { MainNavigation } from 'src/widgets/main-navigation/main-navigation'
 import { LogoSVG } from '../icons/logoSVG'
+import { useCheckAuthQuery } from 'src/features/auth/api/auth.api'
 
 export const Header = () => {
 	const navigate = useNavigate()
-	// const [activeLang, setActiveLang] = useState<string>('RU')
-	const authorized = !!localStorage.getItem('token')
+	const { data } = useCheckAuthQuery(null)
+
+	const authorized = useMemo(() => {
+		return Boolean(data?.token && data?.user)
+	}, [data])
+
 	return (
 		<header className={styles.header}>
 			<Container className={styles.headerCont}>
@@ -18,29 +24,15 @@ export const Header = () => {
 					<div onClick={() => navigate('/')} className={styles.logo}>
 						<LogoSVG />
 					</div>
+
 					<FlexRow className={styles.controls}>
-						{/* <FlexRow className={styles.langSwitcher}>
-							<p
-								className={cn({ [styles.activeLang]: activeLang === 'RU' })}
-								onClick={() => setActiveLang('RU')}
-							>
-								RU
-							</p>
-							<p
-								className={cn({ [styles.activeLang]: activeLang === 'EN' })}
-								onClick={() => setActiveLang('EN')}
-							>
-								EN
-							</p>
-						</FlexRow> */}
 						<MainNavigation />
+
 						<FlexRow className={styles.btns}>
-							{/* <div className={styles.vector}>
-								<SearchSVG />
-							</div> */}
 							<div className={styles.vector} onClick={() => navigate(authorized ? '/lk' : '/auth')}>
 								<PersonSVG />
 							</div>
+
 							<div className={styles.vector} onClick={() => navigate('/lk/cart')}>
 								<CartIconSVG />
 							</div>

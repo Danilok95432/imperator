@@ -6,8 +6,8 @@ export type LkInputs = {
 	email: string
 	telphone: string
 	use_spam?: boolean
-	password: string
-	password2: string
+	password?: string
+	password2?: string
 }
 
 export const lkInputsSchema = yup.object().shape({
@@ -37,15 +37,6 @@ export const lkInputsSchema = yup.object().shape({
 	// Проверка телефона - 11 цифр
 	telphone: yup.string().required('Введите номер телефона'),
 
-	// Проверка пароля
-	password: yup
-		.string()
-		.required('Введите пароль')
-		.min(6, 'Пароль должен содержать минимум 6 символов'),
-
 	// Проверка повторения пароля
-	password2: yup
-		.string()
-		.required('Повторите пароль')
-		.oneOf([yup.ref('password')], 'Пароли не совпадают'),
+	password2: yup.string().oneOf([yup.ref('password')], 'Пароли не совпадают'),
 })

@@ -27,6 +27,7 @@ type ControlledInputProps = {
 	bigFont?: boolean
 	locked?: boolean
 	isPhone?: boolean
+	isAutoCompleteOff?: boolean
 } & React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>
 
 export const ControlledInput: FC<ControlledInputProps> = ({
@@ -48,6 +49,7 @@ export const ControlledInput: FC<ControlledInputProps> = ({
 	locked = false,
 	subLabel,
 	isPhone = false,
+	isAutoCompleteOff = false,
 	...props
 }) => {
 	const {
@@ -117,6 +119,7 @@ export const ControlledInput: FC<ControlledInputProps> = ({
 							className={cn(styles.controlledInput, {
 								[styles.noValid]: errors[name],
 							})}
+							autoComplete={isAutoCompleteOff ? 'off' : 'on'}
 						/>
 						<button
 							className={cn(styles.passEyeBtn, { [styles._crossOut]: isVisiblePass })}

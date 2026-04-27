@@ -33,8 +33,8 @@ export const InfoPage = () => {
 		formData.append('surname', data.surname)
 		formData.append('email', data.email)
 		formData.append('telphone', data.telphone)
-		formData.append('password', data.password)
-		formData.append('password2', data.password2)
+		formData.append('password', data.password ?? '')
+		formData.append('password2', data.password2 ?? '')
 		formData.append('use_spam', booleanToNumberString(data.use_spam))
 		const res = await savePersonalInfo(formData)
 		if (res && 'data' in res) {
@@ -72,6 +72,7 @@ export const InfoPage = () => {
 								type='password'
 								className={styles.input}
 								margin='0 0 32px 0'
+								isAutoCompleteOff={true}
 							/>
 						</FlexRow>
 						<FlexRow className={styles.inputRow}>
@@ -80,6 +81,7 @@ export const InfoPage = () => {
 								label='Подтверждение нового пароля*'
 								type='password'
 								className={styles.input}
+								isAutoCompleteOff={true}
 							/>
 						</FlexRow>
 						<FlexRow className={styles.controlsWrapper}>
