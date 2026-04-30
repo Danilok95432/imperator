@@ -20,6 +20,7 @@ import { InfoPage } from 'src/pages/lk-page/layout/info-page/info-page'
 import { FavoriteItems } from 'src/pages/lk-page/layout/favorite-items/favorite-items'
 import { OrdersPage } from 'src/pages/lk-page/layout/orders-page/orders-page'
 import { CartPage } from 'src/pages/lk-page/layout/cart-page/cart-page'
+import { MyCartPage } from 'src/pages/lk-page/layout/my-cart-page/my-cart-page'
 
 export const MainRoutes = () => {
 	return (
@@ -42,6 +43,7 @@ export const MainRoutes = () => {
 					<Route path={`${AppRoute.LK}/${AppRoute.LKfavorite}`} element={<FavoriteItems />} />
 					<Route path={`${AppRoute.LK}/${AppRoute.LKorders}`} element={<OrdersPage />} />
 					<Route path={`${AppRoute.LK}/${AppRoute.LKcart}`} element={<CartPage />} />
+					<Route path={`${AppRoute.LK}/${AppRoute.MyCart}`} element={<MyCartPage />} />
 				</Route>
 				<Route index element={<HomePage />} />
 				<Route path={AppRoute.Catalog} element={<ChocolatePage />}>

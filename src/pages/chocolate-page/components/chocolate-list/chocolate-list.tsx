@@ -14,18 +14,17 @@ export const ChocolateList = () => {
 	const [currentPage, setCurrentPage] = useState(1)
 	const { data, isLoading } = useGetCatalogQuery({
 		id: '1',
-		limit: String(ITEMS_PER_PAGE),
+		limit: String(0),
 		step: String(currentPage),
 	})
+
 	const breakPoint = useBreakPoint()
 
 	if (breakPoint === 'S') ITEMS_PER_PAGE = 8
 
 	const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
 	const endIndex = startIndex + ITEMS_PER_PAGE
-	const currentItems = data?.items
-		? data?.items.slice(startIndex, endIndex)
-		: mockChocolates.slice(startIndex, endIndex)
+	const currentItems = data?.items ? data?.items.slice(startIndex, endIndex) : []
 
 	const handlePageChange = (page: number) => {
 		setCurrentPage(page)
@@ -55,7 +54,7 @@ export const ChocolateList = () => {
 	return (
 		<Container className={styles.cont}>
 			<div className={styles.grid}>
-				{currentItems.length > 1 ? (
+				{currentItems.length > 0 ? (
 					currentItems.map((chocolate) => (
 						<ChocolateCard key={chocolate.id} chocolate={chocolate} />
 					))

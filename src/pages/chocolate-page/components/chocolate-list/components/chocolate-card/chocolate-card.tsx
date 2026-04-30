@@ -54,6 +54,7 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 		e.stopPropagation()
 		handleAddToCart()
 	}
+
 	if (smallCard) {
 		return (
 			<Link to={`${AppRoute.Chocolate}/${chocolate.id}`}>

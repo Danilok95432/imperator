@@ -4,7 +4,7 @@ export enum AppRoute {
 	LKinfo = '/info',
 	LKfavorite = '/favorite',
 	LKorders = '/orders',
-	LKcart = '/cart',
+	LKcart = 'order',
 	Chocolate = '/chocolate',
 	Candy = '/candy',
 	Coctail = '/coctail',
@@ -19,4 +19,5 @@ export enum AppRoute {
 	REGISTRATION = 'registration',
 	Catalog = '/catalog',
 	CatalogItem = '/item',
+	MyCart = '/cart',
 }
