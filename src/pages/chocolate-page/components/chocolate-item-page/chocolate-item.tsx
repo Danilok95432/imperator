@@ -6,10 +6,9 @@ import styles from './index.module.scss'
 import { BreadCrumbs } from 'src/widgets/breadcrumbs/bread-crumbs'
 import { useAdditionalCrumbs } from 'src/app/store/hooks/additionalCrumbs'
 import { useParams } from 'react-router-dom'
-import { type CardItem } from 'src/types/cardItem'
 import { ChocolateCard } from '../chocolate-list/components/chocolate-card/chocolate-card'
 import { MainButton } from 'src/shared/ui/MainButton/MainButton'
-import { type RefObject, useEffect, useRef, useState } from 'react'
+import { type RefObject, useRef, useState } from 'react'
 import { MinusSVG } from 'src/shared/ui/icons/minusSvg'
 import { PlusSVG } from 'src/shared/ui/icons/plusSVG'
 import { Swiper, type SwiperRef, SwiperSlide } from 'swiper/react'
@@ -20,27 +19,17 @@ import { sliderOptions } from './consts'
 import 'swiper/css'
 import 'swiper/css/pagination'
 import { Pagination } from 'swiper/modules'
-import { useGetItemCatalogByIDQuery } from 'src/features/catalog/api/catalog.api'
+import {
+	useGetCatalogQuery,
+	useGetItemCatalogByIDQuery,
+} from 'src/features/catalog/api/catalog.api'
 
 export const ChocolateItem = () => {
-	const { id = '' } = useParams()
-	const { data } = useGetItemCatalogByIDQuery(id)
+	const { menuId = '', itemId = '' } = useParams()
+	const { data } = useGetItemCatalogByIDQuery(itemId)
 	const swiperRef: RefObject<SwiperRef> = useRef<SwiperRef>(null)
 	const chocolate = data
-	const [alsoItems, setAlsoItems] = useState<CardItem[]>([])
-	const getRandomItems = (arr: CardItem[], count: number) => {
-		const shuffled = [...arr]
-		for (let i = shuffled.length - 1; i > 0; i--) {
-			const j = Math.floor(Math.random() * (i + 1))
-			;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-		}
-		return shuffled.slice(0, count)
-	}
-
-	useEffect(() => {
-		setAlsoItems(getRandomItems(data?.moreitems ?? [], 4))
-	}, [id])
-
+	const { data: catalogData } = useGetCatalogQuery({ id: menuId, limit: '0', step: '1' })
 	useAdditionalCrumbs(chocolate?.title)
 
 	const [count, setCount] = useState<number>(0)
@@ -83,10 +72,12 @@ export const ChocolateItem = () => {
 					<BreadCrumbs
 						crumbsLinksMap={[
 							{
-								title: 'Шоколад',
-								link: 'chocolate',
+								title: catalogData?.title ?? 'Шоколад',
+								link: `catalog`,
 							},
 						]}
+						isCatalog
+						idLink={menuId}
 					/>
 				</FlexRow>
 				<FlexRow className={styles.previewProduct}>
@@ -154,9 +145,9 @@ export const ChocolateItem = () => {
 				<FlexRow className={styles.alsoItems}>
 					<p className={styles.subtitle}>Попробуйте также</p>
 					<div className={styles.alsoList}>
-						{alsoItems &&
-							alsoItems.length > 0 &&
-							alsoItems.map((el) => {
+						{data?.moreitems &&
+							data?.moreitems.length > 0 &&
+							data?.moreitems.map((el) => {
 								return (
 									<ChocolateCard key={el.id} chocolate={el} className={styles.alsoCard} smallCard />
 								)

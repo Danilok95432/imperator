@@ -32,6 +32,11 @@
 		.footerRow {
 			flex-direction: column;
 			gap: 16px;
+			.paymentsRow {
+				gap: 16px;
+				padding-top: 17.5px;
+				align-items: center;
+			}
 			p {
 				color: #fff;
 				font-size: 16px;

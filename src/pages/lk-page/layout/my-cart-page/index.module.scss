@@ -25,6 +25,28 @@ section.section {
 			font-family: 'Tinos';
 			font-size: 20px;
 		}
+		.clearRow {
+			width: 100%;
+			justify-content: end;
+			align-items: center;
+			.clearBtn {
+				font-size: 24px;
+				font-family: 'Tinos';
+				padding: 16px 32px;
+				border-radius: 8px;
+				background: transparent;
+				border: 1px solid var(--main-theme-color-2);
+				color: var(--main-theme-color-2);
+				height: auto;
+				width: 258px;
+				min-width: 228px;
+				transition: all .3s ease-in-out;
+				&:hover {
+					background: var(--main-theme-color-2);
+					color: #000;
+				}
+			}
+		}
 		.submitBtn {
 			font-size: 24px;
 			font-family: 'Tinos';
@@ -79,7 +101,7 @@ section.section {
 					}
 
 					&:hover .counter {
-						color: black!important;
+						color: black !important;
 					}
 
 					svg {

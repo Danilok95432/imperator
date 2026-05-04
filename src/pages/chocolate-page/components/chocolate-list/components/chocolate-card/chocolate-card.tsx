@@ -9,8 +9,10 @@ import { useBreakPoint } from 'src/features/useBreakPoint/useBreakPoint'
 import { MinusSVG } from 'src/shared/ui/icons/minusSvg'
 import { PlusSVG } from 'src/shared/ui/icons/plusSVG'
 import { type CardItem } from 'src/types/cardItem'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { AppRoute } from 'src/app/router/consts'
+
+import skeleton from 'src/assets/img/candy(2).png'
 
 interface ChocolateCardProps {
 	chocolate: CardItem
@@ -24,6 +26,7 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 	const [count, setCount] = useState<number>(0)
 	const [isJumping, setIsJumping] = useState<boolean>(false)
 	const breakPoint = useBreakPoint()
+	const { menuId = '' } = useParams()
 
 	const handleAddToCart = () => {
 		setCount((prev) => prev + 1)
@@ -57,7 +60,7 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 
 	if (smallCard) {
 		return (
-			<Link to={`${AppRoute.Chocolate}/${chocolate.id}`}>
+			<Link to={`${AppRoute.Catalog}/${menuId}/item/${chocolate.id}`}>
 				<div className={cn(styles.smallCard, className)}>
 					<FlexRow className={styles.smallIcon}>
 						<div
@@ -73,7 +76,7 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 					</FlexRow>
 					<div className={styles.smallImage}>
 						<img
-							src={chocolate.img && chocolate.img.length > 0 ? chocolate.img[0].original : ''}
+							src={chocolate.img && chocolate.img.length > 0 ? chocolate.img[0].original : skeleton}
 							alt={chocolate.title}
 						/>
 					</div>
@@ -136,7 +139,7 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 		)
 	}
 	return (
-		<Link to={`${AppRoute.Chocolate}/${chocolate.id}`}>
+		<Link to={`${AppRoute.Catalog}/${menuId}/item/${chocolate.id}`}>
 			<div className={cn(styles.card, className)}>
 				<FlexRow className={styles.icon}>
 					<div
@@ -152,7 +155,7 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 				</FlexRow>
 				<div className={styles.image}>
 					<img
-						src={chocolate.img && chocolate.img.length > 0 ? chocolate.img[0].original : ''}
+						src={chocolate.img && chocolate.img.length > 0 ? chocolate.img[0].original : skeleton}
 						alt={chocolate.title}
 					/>
 				</div>

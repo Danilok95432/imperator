@@ -48,10 +48,7 @@ export const MainRoutes = () => {
 				<Route index element={<HomePage />} />
 				<Route path={AppRoute.Catalog} element={<ChocolatePage />}>
 					<Route path={`${AppRoute.Catalog}/:menuId`} element={<ChocolateList />} />
-					<Route
-						path={`${AppRoute.Catalog}/:menuId/${AppRoute.CatalogItem}/:itemId`}
-						element={<ChocolateItem />}
-					/>
+					<Route path={`${AppRoute.Catalog}/:menuId/item/:itemId`} element={<ChocolateItem />} />
 				</Route>
 				<Route path={AppRoute.ABOUT} element={<AboutPageLayout />}>
 					<Route index element={<AboutPage />} />

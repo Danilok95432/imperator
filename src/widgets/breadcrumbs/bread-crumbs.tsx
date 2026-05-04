@@ -14,9 +14,16 @@ import classNames from 'classnames'
 type BreadCrumbsProps = {
 	crumbsLinksMap: NavigationItem[]
 	isHeadNav?: boolean
+	isCatalog?: boolean
+	idLink?: string
 }
 
-export const BreadCrumbs: FC<BreadCrumbsProps> = ({ crumbsLinksMap, isHeadNav = false }) => {
+export const BreadCrumbs: FC<BreadCrumbsProps> = ({
+	crumbsLinksMap,
+	isHeadNav = false,
+	isCatalog = false,
+	idLink = '',
+}) => {
 	const { pathname } = useLocation()
 	const [pathNames, setPathNames] = useState<string[]>([''])
 
@@ -95,7 +102,9 @@ export const BreadCrumbs: FC<BreadCrumbsProps> = ({ crumbsLinksMap, isHeadNav = 
 
 				return (
 					<li key={pathEl} id={pathEl}>
-						<Link to={`/${pathEl}`}>{defineLinkTitle(pathEl)}</Link>
+						<Link to={isCatalog ? `/${pathEl}/${idLink}` : `/${pathEl}`}>
+							{defineLinkTitle(pathEl)}
+						</Link>
 						<SeparatorIconNavigationSVG />
 					</li>
 				)

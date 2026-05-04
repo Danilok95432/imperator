@@ -63,7 +63,7 @@ export const catalogApi = createApi({
 				}
 			},
 		}),
-		clearCart: build.query<null, null>({
+		clearCart: build.mutation<null, null>({
 			query: () => ({
 				url: `cart/clear`,
 			}),
@@ -78,5 +78,5 @@ export const {
 	useGetUserFavoritesQuery,
 	useAddItemToCartMutation,
 	useDeleteItemFromCartQuery,
-	useClearCartQuery,
+	useClearCartMutation,
 } = catalogApi

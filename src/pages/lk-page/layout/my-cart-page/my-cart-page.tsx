@@ -13,12 +13,16 @@ import { PlusSVG } from 'src/shared/ui/icons/plusSVG'
 import skeleton from 'src/assets/img/candy(2).png'
 import { useNavigate } from 'react-router-dom'
 import { AppRoute } from 'src/app/router/consts'
+import { useClearCartMutation } from 'src/features/catalog/api/catalog.api'
 
 export const MyCartPage = () => {
 	useAdditionalCrumbs('Моя корзина')
 	const [count, setCount] = useState<number>(1)
 	const [, setIsJumping] = useState<boolean>(false)
 	const navigate = useNavigate()
+
+	const [clearCart] = useClearCartMutation()
+
 	const handleAddToCart = () => {
 		setCount((prev) => prev + 1)
 		setIsJumping(true)
@@ -70,6 +74,15 @@ export const MyCartPage = () => {
 		<Section className={styles.section}>
 			<Container className={styles.cont}>
 				<h1 className={styles.title}>Моя корзина</h1>
+				<FlexRow className={styles.clearRow}>
+					<MainButton
+						type='button'
+						className={styles.clearBtn}
+						onClick={async () => await clearCart(null)}
+					>
+						Очистить корзину
+					</MainButton>
+				</FlexRow>
 				<FlexRow className={styles.cartRow}>
 					{mockItems.map((el) => {
 						return (

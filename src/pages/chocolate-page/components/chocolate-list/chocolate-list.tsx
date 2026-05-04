@@ -7,13 +7,15 @@ import { Pagination } from 'src/widgets/pagination/pagination'
 import { useBreakPoint } from 'src/features/useBreakPoint/useBreakPoint'
 import { useGetCatalogQuery } from 'src/features/catalog/api/catalog.api'
 import { Loader } from 'src/shared/ui/loader/loader'
+import { useParams } from 'react-router'
 
 let ITEMS_PER_PAGE = 9
 
 export const ChocolateList = () => {
 	const [currentPage, setCurrentPage] = useState(1)
+	const { menuId = '' } = useParams()
 	const { data, isLoading } = useGetCatalogQuery({
-		id: '1',
+		id: menuId,
 		limit: String(0),
 		step: String(currentPage),
 	})
