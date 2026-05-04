@@ -13,6 +13,7 @@ import {
 	PaymentsFooterMirSVG,
 	PaymentsFooterVisaSVG,
 } from '../icons/paymentsFooterSVG'
+import { autoSetYearCopyright } from 'src/shared/helpers/utils'
 
 export const Footer = () => {
 	const { data } = useGetSiteSettingsQuery(null)
@@ -33,6 +34,7 @@ export const Footer = () => {
 		{ id: '3', title: 'Самовывоз и доставка', link: '/about/delivery' },
 		{ id: '4', title: 'Правила возврата', link: '/' },
 	]
+
 	return (
 		<footer className={styles.footer}>
 			<Container className={styles.cont}>
@@ -40,7 +42,8 @@ export const Footer = () => {
 					<FlexRow className={styles.footerRow}>
 						<p>
 							{data?.info_copyright}
-							<br />© 2026
+							<br className={styles.perenos} />
+							<span className={styles.copyrightYear}>© {autoSetYearCopyright()}</span>
 						</p>
 						<FlexRow className={styles.paymentsRow}>
 							<PaymentsFooterMirSVG />

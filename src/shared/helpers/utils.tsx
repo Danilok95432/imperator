@@ -28,6 +28,11 @@ export const booleanToNumberString = (bool: boolean | undefined): string => {
 	return bool ? '1' : '0'
 }
 
+export const autoSetYearCopyright = (): string => {
+	const currentYear = new Date().getFullYear()
+	return String(currentYear)
+}
+
 export const setActive = (isActive: boolean, styles: string) => (isActive ? styles : '')
 
 // форматирование данных с формы в виде объекта в формат FormData

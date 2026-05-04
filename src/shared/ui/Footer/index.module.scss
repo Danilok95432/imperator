@@ -22,7 +22,8 @@
 		justify-content: space-between;
 		gap: 0;
 		@media (max-width: 768px) {
-			gap: 32px;
+			gap: 48px;
+			flex-direction: column;
 		}
 		p {
 			color: #fff;
@@ -32,6 +33,14 @@
 		.footerRow {
 			flex-direction: column;
 			gap: 16px;
+			.perenos {
+				@media (max-width: 768px) {
+					display: none;
+				}
+			}
+			.copyrightYear {
+				margin-left: 5px;
+			}
 			.paymentsRow {
 				gap: 16px;
 				padding-top: 17.5px;
