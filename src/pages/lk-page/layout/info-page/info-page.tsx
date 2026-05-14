@@ -17,6 +17,7 @@ import {
 import { useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { booleanToNumberString } from 'src/shared/helpers/utils'
+import { ControlledSelect } from 'src/widgets/controlled-select/controlled-select'
 
 export const InfoPage = () => {
 	const { data } = useGetPersonalInfoQuery(null)
@@ -36,6 +37,14 @@ export const InfoPage = () => {
 		formData.append('password', data.password ?? '')
 		formData.append('password2', data.password2 ?? '')
 		formData.append('use_spam', booleanToNumberString(data.use_spam))
+		formData.append('use_org', booleanToNumberString(data.use_org))
+		if (data.use_org) {
+			formData.append('org_name', data.org_name ?? '')
+			formData.append('city', data.city ?? '')
+			formData.append('org_street', data.org_street ?? '')
+			formData.append('org_house', data.org_house ?? '')
+			formData.append('org_apartment', data.org_apartment ?? '')
+		}
 		const res = await savePersonalInfo(formData)
 		if (res && 'data' in res) {
 			toast.success('Данные успешно сохранены')
@@ -43,6 +52,8 @@ export const InfoPage = () => {
 			toast.error('Ошибка при сохранении данных')
 		}
 	}
+
+	const orgChecked = methods.watch('use_org')
 
 	useEffect(() => {
 		if (data) {
@@ -62,9 +73,53 @@ export const InfoPage = () => {
 						autoComplete='off'
 					>
 						<ControlledInput name='firstname' label='Имя*' margin='0 0 32px 0' />
+						<ControlledInput name='fathname' label='Отчество' margin='0 0 32px 0' />
 						<ControlledInput name='surname' label='Фамилия*' margin='0 0 32px 0' />
 						<ControlledInput name='email' label='Email*' margin='0 0 32px 0' />
 						<ControlledInput name='telphone' label='Телефон*' margin='0 0 32px 0' isPhone />
+						<ControlledCheckbox
+							name='use_org'
+							label='Я представляю организацию'
+							type='checkbox'
+							$margin='0 0 32px 0'
+						/>
+						{orgChecked && (
+							<FlexRow className={styles.orgBlock}>
+								<ControlledInput
+									name='org_name'
+									label='Название организации*'
+									margin='0 0 32px 0'
+									className={styles.input}
+								/>
+								<ControlledSelect
+									name='city'
+									label='Город*'
+									selectOptions={[]}
+									margin='0 0 32px 0'
+									className={styles.input}
+								/>
+								<ControlledInput
+									name='org_street'
+									label='Улица*'
+									margin='0 0 32px 0'
+									className={styles.input}
+								/>
+								<FlexRow className={styles.orgRow}>
+									<ControlledInput
+										name='org_house'
+										label='Дом*'
+										margin='0 0 32px 0'
+										className={styles.input}
+									/>
+									<ControlledInput
+										name='org_apartment'
+										label='Квартира/офис'
+										margin='0 0 32px 0'
+										className={styles.input}
+									/>
+								</FlexRow>
+							</FlexRow>
+						)}
 						<FlexRow className={styles.inputRow}>
 							<ControlledInput
 								name='password'

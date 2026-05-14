@@ -27,9 +27,13 @@ export const CatalogSection = () => {
 								<p className={styles.title}>{el.title}</p>
 								<FlexRow className={styles.bottomRow}>
 									<FlexRow className={styles.linksRow}>
-										{el.subcats?.slice(0, 7).map((elem) => {
+										{el.subcats?.map((elem) => {
 											return (
-												<Link to={'#'} key={elem.id} className={styles.link}>
+												<Link
+													to={`/catalog/${el.id}/item/${elem.id}`}
+													key={elem.id}
+													className={styles.link}
+												>
 													{elem.title}
 												</Link>
 											)

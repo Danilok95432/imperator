@@ -82,7 +82,7 @@ export const RegistrationPage = () => {
 			const regResponse = (await regUser(formData).unwrap()) as RegistrationResponse
 
 			if (regResponse.status !== 'ok') {
-				toast.error(regResponse.errortext ?? 'Ошибка регистрации')
+				toast.error(`Ошибка регистрации: ${regResponse.errortext ?? 'Ошибка регистрации'}`)
 				return
 			}
 
@@ -95,18 +95,21 @@ export const RegistrationPage = () => {
 			const loginResponse = (await loginUser(loginFormData).unwrap()) as LoginResponse
 
 			if (!loginResponse.token || !loginResponse.user) {
-				toast.error(loginResponse.errortext ?? 'Ошибка авторизации')
+				toast.error(`Ошибка авторизации: ${loginResponse.errortext ?? 'Ошибка авторизации'}`)
 				return
 			}
 
 			localStorage.setItem('token', String(loginResponse.token))
+			localStorage.setItem('userID', String(loginResponse.user.id))
 			setAuth(true)
 			setUser(loginResponse.user)
 
 			toast.success('Авторизация прошла успешно')
 			navigate('/lk')
 		} catch (error) {
-			toast.error(getErrorMessage(error, 'Ошибка регистрации или авторизации'))
+			toast.error(
+				`Ошибка регистрации или авторизации: ${getErrorMessage(error, 'Ошибка регистрации или авторизации')}`,
+			)
 		}
 	}
 

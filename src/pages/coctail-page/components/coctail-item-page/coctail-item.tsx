@@ -24,7 +24,7 @@ import { useGetItemCatalogByIDQuery } from 'src/features/catalog/api/catalog.api
 
 export const CoctailItem = () => {
 	const { id = '' } = useParams()
-	const { data } = useGetItemCatalogByIDQuery(id)
+	const { data } = useGetItemCatalogByIDQuery({ id, userId: '' })
 	const swiperRef: RefObject<SwiperRef> = useRef<SwiperRef>(null)
 	const coctail = data
 	const [alsoItems, setAlsoItems] = useState<CardItem[]>([])

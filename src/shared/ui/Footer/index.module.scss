@@ -65,11 +65,14 @@
 			.aboutElRow {
 				gap: 10px;
 				align-items: center;
-				p {
+				a {
 					color: #ffffffca;
 					text-decoration: underline 1px solid #fff;
 					font-size: 14px;
 					max-width: 240px;
+				}
+				.telephone {
+					text-decoration: none;
 				}
 			}
 		}

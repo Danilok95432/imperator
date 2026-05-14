@@ -1,0 +1,55 @@
+import { type OrderItem } from 'src/types/order'
+
+export const orders: OrderItem[] = [
+	{
+		id: '1',
+		number: '554629541',
+		date: '30.09.2026',
+		items: [
+			{ id: '1', title: 'Товар 1', price: 1000, quantity: 2 },
+			{ id: '2', title: 'Товар 2', price: 500, quantity: 1 },
+			{ id: '3', title: 'Товар 3', price: 200, quantity: 3 },
+		],
+		deliveryPrice: '5000',
+		totalPrice: '55 000.00',
+		itemsTotal: '50 000.00',
+		deliver: 'СДЭК до двери, Санкт-Петербург — Москва, 5 000 ₽',
+		status: 'Заказ собран и передан в доставку',
+		deliverDate: '30.09.2026',
+		type: 'canceled',
+	},
+	{
+		id: '2',
+		number: '554629542',
+		date: '31.09.2026',
+		items: [
+			{ id: '1', title: 'Товар 1', price: 1000, quantity: 2 },
+			{ id: '2', title: 'Товар 2', price: 500, quantity: 1 },
+			{ id: '3', title: 'Товар 3', price: 200, quantity: 3 },
+		],
+		deliveryPrice: '5000',
+		totalPrice: '55 000.00',
+		itemsTotal: '50 000.00',
+		deliver: 'СДЭК до двери, Санкт-Петербург — Москва, 5 000 ₽',
+		status: 'Заказ собран и передан в доставку',
+		deliverDate: '30.09.2026',
+		type: 'completed',
+	},
+	{
+		id: '3',
+		number: '554629543',
+		date: '01.10.2026',
+		items: [
+			{ id: '1', title: 'Товар 1', price: 1000, quantity: 2 },
+			{ id: '2', title: 'Товар 2', price: 500, quantity: 1 },
+			{ id: '3', title: 'Товар 3', price: 200, quantity: 3 },
+		],
+		deliveryPrice: '5000',
+		totalPrice: '55 000.00',
+		itemsTotal: '50 000.00',
+		deliver: 'СДЭК до двери, Санкт-Петербург — Москва, 5 000 ₽',
+		status: 'Заказ собран и передан в доставку',
+		deliverDate: '30.09.2026',
+		type: 'current',
+	},
+]

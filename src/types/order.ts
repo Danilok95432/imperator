@@ -19,4 +19,18 @@ export type CartItem = {
 	quantity: number
 }
 
+export type OrderItem = {
+	id: string
+	number: string
+	date: string
+	items: CartItem[]
+	deliveryPrice: string
+	totalPrice: string
+	itemsTotal: string
+	deliver: string
+	status: string
+	deliverDate: string
+	type: 'current' | 'completed' | 'canceled'
+}
+
 export type EditSection = 'region' | 'delivery' | 'payment' | 'customer' | null

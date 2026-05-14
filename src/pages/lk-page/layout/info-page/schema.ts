@@ -6,6 +6,12 @@ export type LkInputs = {
 	email: string
 	telphone: string
 	use_spam?: boolean
+	use_org?: boolean
+	org_name?: string
+	city?: string
+	org_street?: string
+	org_house?: string
+	org_apartment?: string
 	password?: string
 	password2?: string
 }

@@ -15,33 +15,35 @@ export const MainSliderSection = () => {
 	return (
 		<Section className={cn(styles.mainSlider)}>
 			<Container className={styles.sliderCont}>
-				<FlexRow className={styles.sectionRow}>
-					<Swiper {...sliderOptions} ref={swiperRef} className={styles.sliderMain}>
-						{data?.slider.map((slideEl) => {
-							return (
-								<SwiperSlide key={slideEl.id}>
-									<FlexRow className={styles.slideRow}>
-										<FlexRow className={styles.contentSlide}>
-											<p className={styles.slideTitle}>{slideEl.title}</p>
-											<p className={styles.slideDesc}>{slideEl.itemdesc}</p>
-											<button className={styles.infoBtn}>Подробнее</button>
+				{data?.slider && data?.slider.length > 0 && (
+					<FlexRow className={styles.sectionRow}>
+						<Swiper {...sliderOptions} ref={swiperRef} className={styles.sliderMain}>
+							{data?.slider.map((slideEl) => {
+								return (
+									<SwiperSlide key={slideEl.id}>
+										<FlexRow className={styles.slideRow}>
+											<FlexRow className={styles.contentSlide}>
+												<p className={styles.slideTitle}>{slideEl.title}</p>
+												<p className={styles.slideDesc}>{slideEl.itemdesc}</p>
+												<button className={styles.infoBtn}>Подробнее</button>
+											</FlexRow>
+											<div className={styles.imgWrapper}>
+												{slideEl.img[0]?.original && (
+													<img
+														className={styles.sliderImg}
+														src={slideEl.img[0]?.original}
+														alt='image'
+													/>
+												)}
+											</div>
 										</FlexRow>
-										<div className={styles.imgWrapper}>
-											{slideEl.img[0]?.original && (
-												<img
-													className={styles.sliderImg}
-													src={slideEl.img[0]?.original}
-													alt='image'
-												/>
-											)}
-										</div>
-									</FlexRow>
-								</SwiperSlide>
-							)
-						})}
-					</Swiper>
-					<SliderBtns className={styles.sliderBtns} swiperRef={swiperRef} />
-				</FlexRow>
+									</SwiperSlide>
+								)
+							})}
+						</Swiper>
+						<SliderBtns className={styles.sliderBtns} swiperRef={swiperRef} />
+					</FlexRow>
+				)}
 			</Container>
 		</Section>
 	)

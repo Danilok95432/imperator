@@ -14,16 +14,25 @@ import {
 	PaymentsFooterVisaSVG,
 } from '../icons/paymentsFooterSVG'
 import { autoSetYearCopyright } from 'src/shared/helpers/utils'
+import { useLocation } from 'react-use'
+import { useMemo } from 'react'
+import { useCheckAuthQuery } from 'src/features/auth/api/auth.api'
 
 export const Footer = () => {
 	const { data } = useGetSiteSettingsQuery(null)
+	const location = useLocation()
+	const { data: checkData } = useCheckAuthQuery(null)
+
+	const authorized = useMemo(() => {
+		return Boolean(checkData?.token && checkData?.user && localStorage.getItem('token') !== null)
+	}, [checkData, location.pathname])
 	const infoLinks = [
 		{ id: '1', title: 'О нас', link: '/about' },
 		{ id: '2', title: 'Контакты', link: '/about/contacts' },
 		{ id: '3', title: 'Политика конфиденциальности', link: '/about/politic' },
 	]
 	const LCLinks = [
-		{ id: '1', title: 'Личный кабинет', link: '/lk' },
+		{ id: '1', title: 'Личный кабинет', link: authorized ? '/lk' : '/auth' },
 		{ id: '2', title: 'История заказа', link: '/' },
 		{ id: '3', title: 'Закладки', link: '/' },
 		{ id: '4', title: 'Рассылка', link: '/' },
@@ -35,13 +44,32 @@ export const Footer = () => {
 		{ id: '4', title: 'Правила возврата', link: '/' },
 	]
 
+	const address = data?.contact_address?.trim()
+	const email = data?.contact_email?.trim()
+	const vk = data?.contact_vk?.trim()
+	const phone = data?.contact_telphone?.trim()
+
+	const yandexMapsUrl = address
+		? `https://yandex.ru/maps/?mode=search&text=${encodeURIComponent(address)}`
+		: undefined
+
+	const emailUrl = email ? `mailto:${email}` : undefined
+
+	const vkUrl = vk
+		? vk.startsWith('http://') || vk.startsWith('https://')
+			? vk
+			: `https://${vk}`
+		: undefined
+
+	const copyright = data?.info_copyright.split('©')[0]
+
 	return (
 		<footer className={styles.footer}>
 			<Container className={styles.cont}>
 				<FlexRow className={styles.footerCont}>
 					<FlexRow className={styles.footerRow}>
 						<p>
-							{data?.info_copyright}
+							{copyright ?? data?.info_copyright}
 							<br className={styles.perenos} />
 							<span className={styles.copyrightYear}>© {autoSetYearCopyright()}</span>
 						</p>
@@ -85,19 +113,60 @@ export const Footer = () => {
 						<p>О магазине</p>
 						<FlexRow className={classNames(styles.aboutElRow, styles.start)}>
 							<LocationIconSVG />
-							<p>{data?.contact_address}</p>
+
+							{address ? (
+								<a
+									href={yandexMapsUrl}
+									target='_blank'
+									rel='noopener noreferrer'
+									className={styles.aboutLink}
+								>
+									{address}
+								</a>
+							) : (
+								<p>Адрес не указан</p>
+							)}
 						</FlexRow>
+
 						<FlexRow className={styles.aboutElRow}>
 							<PhoneIconSVG />
-							<p>{data?.contact_telphone}</p>
+
+							{phone ? (
+								<a href={`tel:${phone}`} className={styles.telephone}>
+									{phone}
+								</a>
+							) : (
+								<p>Телефон не указан</p>
+							)}
 						</FlexRow>
+
 						<FlexRow className={styles.aboutElRow}>
 							<MailIconSVG />
-							<p>{data?.contact_email}</p>
+
+							{email ? (
+								<a href={emailUrl} className={styles.aboutLink}>
+									{email}
+								</a>
+							) : (
+								<p>Почта не указана</p>
+							)}
 						</FlexRow>
+
 						<FlexRow className={styles.aboutElRow}>
 							<VkIconSVG />
-							<p>{data?.contact_vk}</p>
+
+							{vk ? (
+								<a
+									href={vkUrl}
+									target='_blank'
+									rel='noopener noreferrer'
+									className={styles.aboutLink}
+								>
+									{vk}
+								</a>
+							) : (
+								<p>VK не указан</p>
+							)}
 						</FlexRow>
 					</FlexRow>
 				</FlexRow>

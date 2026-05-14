@@ -12,88 +12,16 @@ import { sliderOptions } from './consts'
 import { HeartIconSVG } from 'src/shared/ui/icons/heartIconSVG'
 import { useGetBestListQuery } from 'src/features/home/api/home.api'
 
-type CandyItem = {
-	id: string
-	title: string
-	weight: string
-	price: number
-	imageSrc: string
-}
+import skeleton from 'src/assets/img/candy(2).png'
+import { userID } from 'src/shared/helpers/consts'
 
 type CandySliderSectionProps = {
 	title?: string
-	items?: CandyItem[]
 }
 
-export const CandySliderSection: FC<CandySliderSectionProps> = ({
-	title = 'Наше лучшее',
-	items,
-}) => {
+export const CandySliderSection: FC<CandySliderSectionProps> = ({ title = 'Наше лучшее' }) => {
 	const swiperRef: RefObject<SwiperRef> = useRef<SwiperRef>(null)
-	// const data = useMemo<CandyItem[]>(
-	// 	() =>
-	// 		items ?? [
-	// 			{
-	// 				id: '1',
-	// 				title: 'Конфеты «БОЛЬШОЙ ГОРОД»',
-	// 				weight: '300 г',
-	// 				price: 1300,
-	// 				imageSrc: 'src/assets/img/candy(1).png',
-	// 			},
-	// 			{
-	// 				id: '2',
-	// 				title: 'Конфеты «Гвардейские»',
-	// 				weight: '300 г',
-	// 				price: 1300,
-	// 				imageSrc: 'src/assets/img/candy(2).png',
-	// 			},
-	// 			{
-	// 				id: '3',
-	// 				title: 'Конфеты «1147»',
-	// 				weight: '300 г',
-	// 				price: 1300,
-	// 				imageSrc: 'src/assets/img/candy(3).png',
-	// 			},
-	// 			{
-	// 				id: '4',
-	// 				title: 'Конфеты «Любовь Орлова»',
-	// 				weight: '300 г',
-	// 				price: 1300,
-	// 				imageSrc: 'src/assets/img/candy(4).png',
-	// 			},
-	// 			{
-	// 				id: '5',
-	// 				title: 'Конфеты «БОЛЬШОЙ ГОРОД»',
-	// 				weight: '300 г',
-	// 				price: 1300,
-	// 				imageSrc: 'src/assets/img/candy(1).png',
-	// 			},
-	// 			{
-	// 				id: '6',
-	// 				title: 'Конфеты «Гвардейские»',
-	// 				weight: '300 г',
-	// 				price: 1300,
-	// 				imageSrc: 'src/assets/img/candy(2).png',
-	// 			},
-	// 			{
-	// 				id: '7',
-	// 				title: 'Конфеты «1147»',
-	// 				weight: '300 г',
-	// 				price: 1300,
-	// 				imageSrc: 'src/assets/img/candy(3).png',
-	// 			},
-	// 			{
-	// 				id: '8',
-	// 				title: 'Конфеты «Любовь Орлова»',
-	// 				weight: '300 г',
-	// 				price: 1300,
-	// 				imageSrc: 'src/assets/img/candy(4).png',
-	// 			},
-	// 		],
-	// 	[items],
-	// )
-
-	const { data } = useGetBestListQuery(null)
+	const { data } = useGetBestListQuery(userID ?? '')
 
 	const formatPrice = (value: number) =>
 		`${value.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₽`
@@ -116,15 +44,15 @@ export const CandySliderSection: FC<CandySliderSectionProps> = ({
 									<div className={styles.imageWrap}>
 										<img
 											className={styles.image}
-											src={item.img[0]?.original}
+											src={item.img[0]?.original ?? skeleton}
 											alt={item.title}
 											loading='lazy'
 										/>
 									</div>
 									<div className={styles.name}>{item.title}</div>
 									<FlexRow className={styles.metaRow}>
-										<span className={styles.weight}>{item.weight}</span>
-										<span className={styles.price}>{formatPrice(Number(item.price))}</span>
+										<span className={styles.weight}>{item.item_weight} г.</span>
+										<span className={styles.price}>{formatPrice(Number(item.item_price))}</span>
 									</FlexRow>
 								</FlexRow>
 							</SwiperSlide>

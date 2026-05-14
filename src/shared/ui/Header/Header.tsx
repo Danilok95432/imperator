@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Container } from '../Container/Container'
 import { FlexRow } from '../FlexRow/FlexRow'
 import { CartIconSVG } from '../icons/cartIconSVG'
@@ -11,11 +11,12 @@ import { useCheckAuthQuery } from 'src/features/auth/api/auth.api'
 
 export const Header = () => {
 	const navigate = useNavigate()
+	const location = useLocation()
 	const { data } = useCheckAuthQuery(null)
 
 	const authorized = useMemo(() => {
-		return Boolean(data?.token && data?.user)
-	}, [data])
+		return Boolean(data?.token && data?.user && localStorage.getItem('token') !== null)
+	}, [data, location.pathname])
 
 	return (
 		<header className={styles.header}>
@@ -33,7 +34,10 @@ export const Header = () => {
 								<PersonSVG />
 							</div>
 
-							<div className={styles.vector} onClick={() => navigate('/lk/cart')}>
+							<div
+								className={styles.vector}
+								onClick={() => navigate(authorized ? '/lk/cart' : '/auth')}
+							>
 								<CartIconSVG />
 							</div>
 						</FlexRow>

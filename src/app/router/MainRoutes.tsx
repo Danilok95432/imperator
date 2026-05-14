@@ -21,6 +21,10 @@ import { FavoriteItems } from 'src/pages/lk-page/layout/favorite-items/favorite-
 import { OrdersPage } from 'src/pages/lk-page/layout/orders-page/orders-page'
 import { CartPage } from 'src/pages/lk-page/layout/cart-page/cart-page'
 import { MyCartPage } from 'src/pages/lk-page/layout/my-cart-page/my-cart-page'
+import { CanceledOrders } from 'src/pages/lk-page/layout/orders-page/layout/canceled-orders/canceled-orders'
+import { CompletedOrders } from 'src/pages/lk-page/layout/orders-page/layout/completed-orders/completed-orders'
+import { CurrentOrders } from 'src/pages/lk-page/layout/orders-page/layout/current-orders/current-orders'
+import { OneOrderPage } from 'src/pages/lk-page/layout/orders-page/layout/one-order-page/one-order-page'
 
 export const MainRoutes = () => {
 	return (
@@ -41,7 +45,18 @@ export const MainRoutes = () => {
 					<Route index element={<LkPage />} />
 					<Route path={`${AppRoute.LK}/${AppRoute.LKinfo}`} element={<InfoPage />} />
 					<Route path={`${AppRoute.LK}/${AppRoute.LKfavorite}`} element={<FavoriteItems />} />
-					<Route path={`${AppRoute.LK}/${AppRoute.LKorders}`} element={<OrdersPage />} />
+					<Route path={`${AppRoute.LK}/${AppRoute.LKorders}`} element={<OrdersPage />}>
+						<Route index element={<CurrentOrders />} />
+						<Route
+							path={`${AppRoute.LK}/${AppRoute.LKorders}/${AppRoute.Completed}`}
+							element={<CompletedOrders />}
+						/>
+						<Route
+							path={`${AppRoute.LK}/${AppRoute.LKorders}/${AppRoute.Canceled}`}
+							element={<CanceledOrders />}
+						/>
+						<Route path={`${AppRoute.LK}/${AppRoute.LKorders}/:id`} element={<OneOrderPage />} />
+					</Route>
 					<Route path={`${AppRoute.LK}/${AppRoute.LKcart}`} element={<CartPage />} />
 					<Route path={`${AppRoute.LK}/${AppRoute.MyCart}`} element={<MyCartPage />} />
 				</Route>

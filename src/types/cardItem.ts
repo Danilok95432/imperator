@@ -21,6 +21,21 @@ export interface CardItem {
 	full: string
 	img: ImageItemWithText[]
 	moreitems: CardItem[]
+	favourite: boolean
+	in_cart: boolean
+}
+
+export interface IFavotiteItem {
+	id: string
+	title: string
+	weight: string
+	price: string
+	img: ImageItemWithText[]
+}
+
+export interface IFavoriteCatalog {
+	items: IFavotiteItem[]
+	totalitems: number
 }
 
 export interface ICatalog {
@@ -44,4 +59,17 @@ export type CatalogListItem = {
 
 export interface CatalogListItemsResponse {
 	catalogs: CatalogListItem[]
+}
+
+export interface CartListItem {
+	id_item: string
+	item_name: string
+	item_count: string
+	item_price: string
+	item_fullprice: string
+}
+
+export interface CartListItemsResponse {
+	items: CartListItem[]
+	cart_price: string
 }

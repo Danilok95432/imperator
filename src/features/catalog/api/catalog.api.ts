@@ -2,28 +2,38 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 import { type FieldValues } from 'react-hook-form'
 import { baseQueryWithReauth } from 'src/shared/helpers/base-query'
 import { ReducerPath } from 'src/shared/helpers/consts'
-import { type CatalogListItemsResponse, type CardItem, type ICatalog } from 'src/types/cardItem'
+import {
+	type CatalogListItemsResponse,
+	type CardItem,
+	type ICatalog,
+	type CartListItemsResponse,
+} from 'src/types/cardItem'
 
 export const catalogApi = createApi({
 	reducerPath: ReducerPath.Catalog,
 	tagTypes: ['Catalog'],
 	baseQuery: baseQueryWithReauth,
 	endpoints: (build) => ({
-		getCatalog: build.query<ICatalog, { id?: string; limit?: string; step?: string }>({
-			query: ({ id, limit, step }) => ({
+		getCatalog: build.query<
+			ICatalog,
+			{ id?: string; limit?: string; step?: string; userId?: string }
+		>({
+			query: ({ id, limit, step, userId }) => ({
 				url: `catalog/item`,
 				params: {
 					id,
 					limit,
 					step,
+					id_user: userId,
 				},
 			}),
 		}),
-		getItemCatalogByID: build.query<CardItem, string>({
-			query: (id) => ({
+		getItemCatalogByID: build.query<CardItem, { id: string; userId?: string }>({
+			query: ({ id, userId }) => ({
 				url: `catalog/tovar`,
 				params: {
 					id,
+					id_user: userId,
 				},
 			}),
 		}),
@@ -41,6 +51,18 @@ export const catalogApi = createApi({
 				}
 			},
 		}),
+		getItemsCart: build.query<CartListItemsResponse, string>({
+			query: (idUser) => {
+				const token = localStorage.getItem('token')
+				return {
+					url: 'cart/list',
+					headers: token ? { Authorization: `${token}` } : undefined,
+					params: {
+						id_user: idUser,
+					},
+				}
+			},
+		}),
 		addItemToCart: build.mutation<{ status: string; errortext: string }, FieldValues>({
 			query: (formData) => {
 				const token = localStorage.getItem('token')
@@ -52,7 +74,7 @@ export const catalogApi = createApi({
 				}
 			},
 		}),
-		deleteItemFromCart: build.query<string, FieldValues>({
+		deleteItemFromCart: build.mutation<string, FieldValues>({
 			query: (formData) => {
 				const token = localStorage.getItem('token')
 				return {
@@ -63,10 +85,50 @@ export const catalogApi = createApi({
 				}
 			},
 		}),
-		clearCart: build.mutation<null, null>({
-			query: () => ({
-				url: `cart/clear`,
-			}),
+		clearCart: build.mutation<null, FieldValues>({
+			query: (formData) => {
+				const token = localStorage.getItem('token')
+				return {
+					url: `cart/clear`,
+					headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+					method: 'POST',
+					body: formData,
+				}
+			},
+		}),
+		addToFavorites: build.mutation<{ status: string; errortext: string }, FieldValues>({
+			query: (formData) => {
+				const token = localStorage.getItem('token')
+				return {
+					url: 'favourite/add',
+					headers: token ? { Authorization: `${token}` } : undefined,
+					method: 'POST',
+					body: formData,
+				}
+			},
+		}),
+		deleteFromFavorites: build.mutation<{ status: string; errortext: string }, FieldValues>({
+			query: (formData) => {
+				const token = localStorage.getItem('token')
+				return {
+					url: 'favourite/delete',
+					headers: token ? { Authorization: `${token}` } : undefined,
+					method: 'POST',
+					body: formData,
+				}
+			},
+		}),
+		getItemsFavorites: build.query<ICatalog, string>({
+			query: (idUser) => {
+				const token = localStorage.getItem('token')
+				return {
+					url: 'favourite/list',
+					headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+					params: {
+						id_user: idUser,
+					},
+				}
+			},
 		}),
 	}),
 })
@@ -77,6 +139,10 @@ export const {
 	useGetCategoriesCatalogQuery,
 	useGetUserFavoritesQuery,
 	useAddItemToCartMutation,
-	useDeleteItemFromCartQuery,
+	useDeleteItemFromCartMutation,
 	useClearCartMutation,
+	useGetItemsCartQuery,
+	useAddToFavoritesMutation,
+	useDeleteFromFavoritesMutation,
+	useGetItemsFavoritesQuery,
 } = catalogApi

@@ -5,6 +5,8 @@ import styles from './index.module.scss'
 import cn from 'classnames'
 import { SlidePrevSVG } from 'src/shared/ui/icons/slidePrevSVG'
 import { SlideNextSVG } from 'src/shared/ui/icons/slideNextSVG'
+import { SmallSlidePrevSVG } from 'src/shared/ui/icons/smallSlidePrevSVG'
+import { SmallSlideNextSVG } from 'src/shared/ui/icons/smallSlideNextSVG'
 
 type SliderProps = {
 	swiperRef: RefObject<SwiperRef>
@@ -12,9 +14,10 @@ type SliderProps = {
 	prevBtnColor?: string
 	nextBtnColor?: string
 	color?: string
+	smallControls?: boolean
 }
 
-export const SliderBtns: FC<SliderProps> = ({ swiperRef, className }) => {
+export const SliderBtns: FC<SliderProps> = ({ swiperRef, className, smallControls }) => {
 	const handlePrev = () => {
 		swiperRef.current?.swiper.slidePrev()
 	}
@@ -25,10 +28,10 @@ export const SliderBtns: FC<SliderProps> = ({ swiperRef, className }) => {
 	return (
 		<div className={cn(className, styles.sliderBtnsWrapper)}>
 			<button type='button' onClick={handlePrev}>
-				<SlidePrevSVG />
+				{smallControls ? <SmallSlidePrevSVG /> : <SlidePrevSVG />}
 			</button>
 			<button type='button' onClick={handleNext}>
-				<SlideNextSVG />
+				{smallControls ? <SmallSlideNextSVG /> : <SlideNextSVG />}
 			</button>
 		</div>
 	)

@@ -34,13 +34,13 @@ export const AuthPage = () => {
 			loginFormData.append('password', data.password)
 
 			const loginResponse = (await loginUser(loginFormData).unwrap()) as LoginResponse
-
 			if (!loginResponse.token || !loginResponse.user) {
-				toast.error(loginResponse.errortext ?? 'Ошибка авторизации')
+				toast.error(`Ошибка авторизации: ${loginResponse.errortext ?? 'Ошибка авторизации'}`)
 				return
 			}
 
 			localStorage.setItem('token', String(loginResponse.token))
+			localStorage.setItem('userID', String(loginResponse.user.id))
 			setAuth(true)
 			setUser(loginResponse.user)
 

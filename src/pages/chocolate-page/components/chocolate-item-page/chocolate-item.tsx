@@ -23,13 +23,19 @@ import {
 	useGetCatalogQuery,
 	useGetItemCatalogByIDQuery,
 } from 'src/features/catalog/api/catalog.api'
+import { userID } from 'src/shared/helpers/consts'
 
 export const ChocolateItem = () => {
 	const { menuId = '', itemId = '' } = useParams()
-	const { data } = useGetItemCatalogByIDQuery(itemId)
+	const { data } = useGetItemCatalogByIDQuery({ id: itemId, userId: userID ?? '' })
 	const swiperRef: RefObject<SwiperRef> = useRef<SwiperRef>(null)
 	const chocolate = data
-	const { data: catalogData } = useGetCatalogQuery({ id: menuId, limit: '0', step: '1' })
+	const { data: catalogData } = useGetCatalogQuery({
+		id: menuId,
+		limit: '0',
+		step: '1',
+		userId: userID ?? '',
+	})
 	useAdditionalCrumbs(chocolate?.title)
 
 	const [count, setCount] = useState<number>(0)

@@ -61,6 +61,11 @@
 					font-weight: 600;
 					color: var(--main-theme-color-2);
 					margin-bottom: 12px;
+					max-height: 44px;
+					height: 44px;
+					line-clamp: 2;
+					overflow: hidden;
+					text-overflow: ellipsis;
 				}
 				.metaRow {
 					width: 100%;

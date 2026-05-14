@@ -12,6 +12,8 @@ export enum NameSpace {
 	Auth = 'AUTH',
 }
 
+export const userID = localStorage.getItem('userID') ?? ''
+
 export enum DisplayBreakpoints {
 	Xss = 340,
 	Xs = 500,

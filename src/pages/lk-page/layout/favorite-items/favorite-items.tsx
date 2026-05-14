@@ -3,14 +3,15 @@ import { useBreakPoint } from 'src/features/useBreakPoint/useBreakPoint'
 import { Container } from 'src/shared/ui/Container/Container'
 import { Pagination } from 'src/widgets/pagination/pagination'
 import styles from './index.module.scss'
-import { FavoriteCard } from './components/favorite-card/favorite-card'
 import { useAdditionalCrumbs } from 'src/app/store/hooks/additionalCrumbs'
-import { useGetUserFavoritesQuery } from 'src/features/catalog/api/catalog.api'
+import { useGetItemsFavoritesQuery } from 'src/features/catalog/api/catalog.api'
+import { ChocolateCard } from 'src/pages/chocolate-page/components/chocolate-list/components/chocolate-card/chocolate-card'
 
 let ITEMS_PER_PAGE = 9
 
 export const FavoriteItems = () => {
-	const { data, isLoading, isError } = useGetUserFavoritesQuery(null)
+	const userID = localStorage.getItem('userID') ?? ''
+	const { data, isLoading, isError } = useGetItemsFavoritesQuery(userID)
 	useAdditionalCrumbs('Избранные товары')
 	const [currentPage, setCurrentPage] = useState(1)
 	const breakPoint = useBreakPoint()
@@ -74,7 +75,7 @@ export const FavoriteItems = () => {
 			<h1 className={styles.title}>Избранные товары</h1>
 			<div className={styles.grid}>
 				{paginationData.currentItems.map((candy) => (
-					<FavoriteCard key={candy.id} item={candy} />
+					<ChocolateCard key={candy.id} chocolate={candy} />
 				))}
 			</div>
 

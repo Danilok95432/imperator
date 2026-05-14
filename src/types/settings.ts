@@ -1,11 +1,11 @@
 export type SettingsResponse = {
-	use_promo: string
-	use_awards: string
-	use_mainslider: string
-	use_best: string
-	use_adv: string
-	use_catalog: string
-	use_reviews: string
+	use_promo: boolean | string
+	use_awards: boolean | string
+	use_mainslider: boolean | string
+	use_best: boolean | string
+	use_adv: boolean | string
+	use_catalog: boolean | string
+	use_reviews: boolean | string
 	contact_address: string
 	contact_telphone: string
 	contact_email: string

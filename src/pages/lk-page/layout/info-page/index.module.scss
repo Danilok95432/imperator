@@ -1,6 +1,21 @@
 section.regSection {
 	background: var(--main-theme-color);
 	padding: 0;
+	.orgBlock {
+		flex-direction: column;
+		gap: 0;
+		width: 100%;
+		.input {
+			width: 100%;
+		}
+		.orgRow {
+			width: 100%;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			gap: 32px;
+			align-items: center;
+		}
+	}
 	.regCont {
 		display: flex;
 		justify-content: center;

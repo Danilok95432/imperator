@@ -38,9 +38,12 @@ export const homeApi = createApi({
 				url: `slider/list`,
 			}),
 		}),
-		getBestList: build.query<BestListResponse, null>({
-			query: () => ({
+		getBestList: build.query<BestListResponse, string>({
+			query: (userId) => ({
 				url: `best/list`,
+				params: {
+					id_user: userId,
+				},
 			}),
 		}),
 		getInfoEliteList: build.query<EliteListResponse, null>({

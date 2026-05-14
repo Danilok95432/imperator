@@ -43,8 +43,8 @@ export type ReviewListResponse = {
 export type BestItem = {
 	id: string
 	title: string
-	weight: string
-	price: string
+	item_weight: string
+	item_price: string
 	img: ImageItemWithText[]
 }
 

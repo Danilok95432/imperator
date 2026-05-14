@@ -4,6 +4,30 @@ section.awards {
 	@media (max-width: 768px) {
 		padding: 0;
 	}
+	.sliderBtns {
+		top: 40%;
+		width: calc(1220px + 128px);
+		@media (max-width: 1360px) {
+			top: 45%;
+			width: 80%;
+			display: none;
+		}
+		@media (max-width: 768px) {
+			display: flex;
+		}
+		@media (max-width: 590px) {
+			top: 45%;
+			width: calc(100% + 6px);
+		}
+		@media (max-width: 500px) {
+			top: 45%;
+			width: calc(100% + 6px);
+		}
+		@media (max-width: 440px) {
+			top: 45%;
+			width: calc(100% + 6px);
+		}
+	}
 	:global {
 		.swiper-pagination {
 			position: static;
@@ -36,14 +60,15 @@ section.awards {
 		}
 	}
 	.awardsRow {
+		width: 100%;
 		flex-direction: row;
 		flex-wrap: nowrap;
 		justify-content: center;
 		gap: 24px;
 		.awardsEl {
+			width: 100%;
 			gap: 16px;
 			flex-wrap: nowrap;
-			max-width: 30%;
 			padding: 24px 0;
 			@media (max-width: 768px) {
 				width: 100%;

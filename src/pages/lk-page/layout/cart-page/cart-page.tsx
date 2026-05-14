@@ -16,6 +16,7 @@ import { DeliveryCard } from './components/delivery-card/delivery-card'
 import { OrderStep } from './components/order-step/order-step'
 import { OrderSummary } from './components/order-summary/order-summary'
 import { PaymentCard } from './components/payment-card/payment-card'
+import { ControlledSelect } from 'src/widgets/controlled-select/controlled-select'
 
 export const CartPage = () => {
 	const methods = useForm<OrderInputs>({
@@ -138,7 +139,12 @@ export const CartPage = () => {
 							>
 								{editingSection === 'region' ? (
 									<div className={styles.stepContent}>
-										<ControlledInput name='city' label='Город доставки*' margin='0 0 24px 0' />
+										<ControlledSelect
+											name='city'
+											label='Город доставки*'
+											selectOptions={[{ label: 'Не выбран', value: '0' }]}
+											margin='0 0 24px 0'
+										/>
 
 										<FlexRow className={styles.actionsRow}>
 											<MainButton
@@ -411,9 +417,9 @@ export const CartPage = () => {
 
 						<aside className={styles.sidebar}>
 							<OrderSummary
-								itemsTotal={itemsTotal}
-								deliveryPrice={deliveryPrice}
-								totalPrice={totalPrice}
+								itemsTotal={String(itemsTotal)}
+								deliveryPrice={String(deliveryPrice)}
+								totalPrice={String(totalPrice)}
 							/>
 						</aside>
 					</form>

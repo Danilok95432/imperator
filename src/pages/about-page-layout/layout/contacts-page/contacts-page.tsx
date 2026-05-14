@@ -3,6 +3,9 @@ import styles from './index.module.scss'
 import classNames from 'classnames'
 
 export const ContactsPage = () => {
+	const yandexMapsUrlFirst = `https://yandex.ru/maps/?mode=search&text=${encodeURIComponent('ул. Сестрорецкая, дом 6')}`
+	const yandexMapsUrlSecond = `https://yandex.ru/maps/?mode=search&text=${encodeURIComponent('Ленинградская область, поселок Сосново, ул. Октябрьская, д. 6. ТЦ Сосновский (1 этаж)')}`
+	const yandexMapsUrlThird = `https://yandex.ru/maps/?mode=search&text=${encodeURIComponent('г. Мытищи, Осташковское шоссе, 1к13 «Мытищинская Ярмарка» Ангар 32')}`
 	return (
 		<div className={styles.elementPage}>
 			<h2 className={styles.title}>Контакты</h2>
@@ -20,7 +23,8 @@ export const ContactsPage = () => {
 					<FlexRow className={styles.customDesc}>
 						<p className={styles.bold}>Адрес:</p>
 						<p>
-							ул. Сестрорецкая, дом 6, ст. м. Черная речка (посмотреть <a href='#'>на карте</a>)
+							ул. Сестрорецкая, дом 6, ст. м. Черная речка (посмотреть{' '}
+							<a href={yandexMapsUrlFirst}>на карте</a>)
 						</p>
 					</FlexRow>
 					<FlexRow className={styles.customDesc}>
@@ -47,7 +51,7 @@ export const ContactsPage = () => {
 						<p className={styles.bold}>Адрес:</p>
 						<p>
 							Ленинградская область, поселок Сосново, ул. Октябрьская, д. 6. ТЦ Сосновский (1 этаж)
-							(посмотреть <a href='#'>на карте</a>)
+							(посмотреть <a href={yandexMapsUrlSecond}>на карте</a>)
 						</p>
 					</FlexRow>
 					<FlexRow className={styles.customDesc}>
@@ -64,7 +68,7 @@ export const ContactsPage = () => {
 						<p className={styles.bold}>Адрес:</p>
 						<p>
 							г. Мытищи, Осташковское шоссе, 1к13 «Мытищинская Ярмарка» Ангар 32 (посмотреть{' '}
-							<a href='#'>на карте</a>)
+							<a href={yandexMapsUrlThird}>на карте</a>)
 						</p>
 					</FlexRow>
 					<FlexRow className={styles.customDesc}>

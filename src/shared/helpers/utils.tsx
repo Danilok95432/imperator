@@ -28,6 +28,17 @@ export const booleanToNumberString = (bool: boolean | undefined): string => {
 	return bool ? '1' : '0'
 }
 
+export const getItemsWord = (count: number) => {
+	const lastTwo = count % 100
+	const last = count % 10
+
+	if (lastTwo >= 11 && lastTwo <= 14) return 'товаров'
+	if (last === 1) return 'товар'
+	if (last >= 2 && last <= 4) return 'товара'
+
+	return 'товаров'
+}
+
 export const autoSetYearCopyright = (): string => {
 	const currentYear = new Date().getFullYear()
 	return String(currentYear)

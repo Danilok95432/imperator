@@ -9,7 +9,12 @@ export const LkPageLayout = () => {
 	return (
 		<Section className={styles.lkSection}>
 			<Container className={styles.lkCont}>
-				<BreadCrumbs crumbsLinksMap={[{ title: 'Личный кабинет', link: 'lk' }]} />
+				<BreadCrumbs
+					crumbsLinksMap={[
+						{ title: 'Личный кабинет', link: 'lk' },
+						{ title: 'Мои заказы', link: 'lk/orders' },
+					]}
+				/>
 				<Outlet />
 			</Container>
 		</Section>

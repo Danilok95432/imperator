@@ -2,15 +2,45 @@ import { Container } from 'src/shared/ui/Container/Container'
 import { Section } from 'src/shared/ui/Section/section'
 
 import styles from './index.module.scss'
-import { useAdditionalCrumbs } from 'src/app/store/hooks/additionalCrumbs'
+import { Link, Outlet, useLocation } from 'react-router-dom'
+import { FlexRow } from 'src/shared/ui/FlexRow/FlexRow'
+import { ordersNavigation } from './consts'
+import cn from 'classnames'
+
+const pathsWithHeader = ['/lk/orders', '/lk/orders/completed', '/lk/orders/canceled']
 
 export const OrdersPage = () => {
-	useAdditionalCrumbs('Мои заказы')
+	const location = useLocation()
+
+	const normalizedPathname = location.pathname.replace(/\/$/, '')
+
+	const shouldShowHeaderAndNav = pathsWithHeader.includes(normalizedPathname)
+
 	return (
 		<Section className={styles.section}>
-			<Container className={styles.cont}>
-				<h1 className={styles.title}>Мои заказы</h1>
-			</Container>
+			{shouldShowHeaderAndNav && (
+				<>
+					<Container className={styles.cont}>
+						<h1 className={styles.title}>Мои заказы</h1>
+					</Container>
+
+					<FlexRow className={styles.nav}>
+						{ordersNavigation.map((item) => (
+							<Link
+								key={item.id}
+								to={item.link}
+								className={cn(styles.link, {
+									[styles.active]: normalizedPathname === item.link,
+								})}
+							>
+								{item.title}
+							</Link>
+						))}
+					</FlexRow>
+				</>
+			)}
+
+			<Outlet />
 		</Section>
 	)
 }

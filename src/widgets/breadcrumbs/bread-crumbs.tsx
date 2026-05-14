@@ -38,12 +38,20 @@ export const BreadCrumbs: FC<BreadCrumbsProps> = ({
 	}
 
 	useEffect(() => {
-		const filteredPathnames = pathname.split('/').filter((el) => crumbsLinksArr.includes(el))
+		const segments = pathname.split('/').filter(Boolean)
+
+		const fullPathnames = segments.map((_, idx) => {
+			return segments.slice(0, idx + 1).join('/')
+		})
+
+		const filteredPathnames = fullPathnames.filter((path) => crumbsLinksArr.includes(path))
+
 		setPathNames(() => {
 			if (additionalCrumbs) {
 				return [...filteredPathnames, additionalCrumbs]
 			}
-			return [...filteredPathnames]
+
+			return filteredPathnames
 		})
 	}, [pathname, additionalCrumbs])
 	if (isHeadNav) {

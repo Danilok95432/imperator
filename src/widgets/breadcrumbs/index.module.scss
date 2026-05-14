@@ -18,6 +18,9 @@ ul.headList {
   flex-wrap: wrap;
   gap: 8px;
   margin: 0 auto;
+  @media (max-width: 768px) {
+    padding-top: 32px;
+  }
   li {
     max-width: 550px;
     white-space: nowrap;

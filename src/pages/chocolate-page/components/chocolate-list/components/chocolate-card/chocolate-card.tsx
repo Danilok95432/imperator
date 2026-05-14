@@ -1,18 +1,28 @@
+import { useState } from 'react'
+import { type FieldValues } from 'react-hook-form'
+import { Link, useParams } from 'react-router-dom'
+import cn from 'classnames'
+
 import { FlexRow } from 'src/shared/ui/FlexRow/FlexRow'
-import styles from './index.module.scss'
 import { MainButton } from 'src/shared/ui/MainButton/MainButton'
 import { CardIconCatalogSVG } from 'src/shared/ui/icons/cardIconCatalogSVG'
 import { HeartIconCatalogSVG } from 'src/shared/ui/icons/heartIconCatalogSVG'
-import { useState } from 'react'
-import cn from 'classnames'
-import { useBreakPoint } from 'src/features/useBreakPoint/useBreakPoint'
 import { MinusSVG } from 'src/shared/ui/icons/minusSvg'
 import { PlusSVG } from 'src/shared/ui/icons/plusSVG'
+
+import { useBreakPoint } from 'src/features/useBreakPoint/useBreakPoint'
+import {
+	useAddItemToCartMutation,
+	// useDeleteItemFromCartMutation,
+	useAddToFavoritesMutation,
+	useDeleteFromFavoritesMutation,
+} from 'src/features/catalog/api/catalog.api'
+
 import { type CardItem } from 'src/types/cardItem'
-import { Link, useParams } from 'react-router-dom'
 import { AppRoute } from 'src/app/router/consts'
 
 import skeleton from 'src/assets/img/candy(2).png'
+import styles from './index.module.scss'
 
 interface ChocolateCardProps {
 	chocolate: CardItem
@@ -25,60 +35,148 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 	const [isHovered, setIsHovered] = useState<boolean>(false)
 	const [count, setCount] = useState<number>(0)
 	const [isJumping, setIsJumping] = useState<boolean>(false)
+	const [isCartUpdating, setIsCartUpdating] = useState<boolean>(false)
+	const [isFavoriteUpdating, setIsFavoriteUpdating] = useState<boolean>(false)
+
 	const breakPoint = useBreakPoint()
 	const { menuId = '' } = useParams()
 
-	const handleAddToCart = () => {
-		setCount((prev) => prev + 1)
+	const [addItemToCart] = useAddItemToCartMutation()
+	// const [deleteItemFromCart] = useDeleteItemFromCartMutation()
+
+	const [addToFavorites] = useAddToFavoritesMutation()
+	const [deleteFromFavorites] = useDeleteFromFavoritesMutation()
+
+	const userID = localStorage.getItem('userID') ?? ''
+
+	const createAddFormData = (count: string) => {
+		const formData = new FormData()
+
+		if (userID) {
+			formData.append('id_user', userID)
+		}
+
+		formData.append('id_item', String(chocolate.id))
+		formData.append('item_count', count)
+
+		return formData
+	}
+
+	// const createDeleteFormData = () => {
+	// 	const formData = new FormData()
+
+	// 	if (userID) {
+	// 		formData.append('id_user', userID)
+	// 	}
+
+	// 	formData.append('id_item', String(chocolate.id))
+
+	// 	return formData
+	// }
+
+	const createFavoriteFormData = () => {
+		const formData = new FormData()
+
+		if (userID) {
+			formData.append('id_user', userID)
+		}
+
+		formData.append('id_item', String(chocolate.id))
+
+		return formData
+	}
+
+	const startJumpAnimation = () => {
 		setIsJumping(true)
+
 		setTimeout(() => {
 			setIsJumping(false)
 		}, 400)
 	}
 
-	const handleRemoveFromCart = (e: React.MouseEvent) => {
+	const handleAddToCart = async (e: React.MouseEvent, count: string) => {
 		e.preventDefault()
 		e.stopPropagation()
-		setCount((prev) => Math.max(0, prev - 1))
+
+		if (isCartUpdating) return
+
+		try {
+			setIsCartUpdating(true)
+
+			await addItemToCart(createAddFormData(count) as unknown as FieldValues).unwrap()
+
+			setCount((prev) => prev + 1)
+			startJumpAnimation()
+		} catch (error) {
+			console.error('Ошибка при добавлении товара в корзину:', error)
+		} finally {
+			setIsCartUpdating(false)
+		}
 	}
 
-	const handleIncrease = (e: React.MouseEvent) => {
+	// const handleRemoveFromCart = async (e: React.MouseEvent, countRemove: string) => {
+	// 	e.preventDefault()
+	// 	e.stopPropagation()
+
+	// 	if (isCartUpdating || count <= 0) return
+
+	// 	try {
+	// 		setIsCartUpdating(true)
+
+	// 		await addItemToCart(createAddFormData(countRemove) as unknown as FieldValues).unwrap()
+
+	// 		setCount((prev) => Math.max(0, prev - 1))
+	// 	} catch (error) {
+	// 		console.error('Ошибка при удалении товара из корзины:', error)
+	// 	} finally {
+	// 		setIsCartUpdating(false)
+	// 	}
+	// }
+
+	const handleHeartClick = async (e: React.MouseEvent) => {
 		e.preventDefault()
 		e.stopPropagation()
-		setCount((prev) => prev + 1)
-		setIsJumping(true)
-		setTimeout(() => {
-			setIsJumping(false)
-		}, 400)
+
+		if (isFavoriteUpdating) return
+
+		try {
+			setIsFavoriteUpdating(true)
+
+			if (filled) {
+				await deleteFromFavorites(createFavoriteFormData() as unknown as FieldValues).unwrap()
+				setFilled(false)
+			} else {
+				await addToFavorites(createFavoriteFormData() as unknown as FieldValues).unwrap()
+				setFilled(true)
+			}
+		} catch (error) {
+			console.error('Ошибка при изменении избранного:', error)
+		} finally {
+			setIsFavoriteUpdating(false)
+		}
 	}
 
-	const handleFirstAdd = (e: React.MouseEvent) => {
-		e.preventDefault()
-		e.stopPropagation()
-		handleAddToCart()
-	}
+	const imageSrc = chocolate.img && chocolate.img.length > 0 ? chocolate.img[0].original : skeleton
+	const linkTo = `${AppRoute.Catalog}/${menuId}/item/${chocolate.id}`
 
 	if (smallCard) {
 		return (
-			<Link to={`${AppRoute.Catalog}/${menuId}/item/${chocolate.id}`}>
+			<Link to={linkTo}>
 				<div className={cn(styles.smallCard, className)}>
 					<FlexRow className={styles.smallIcon}>
 						<div
-							className={cn(styles.vector, { [styles.filledHeart]: filled })}
-							onClick={(e: React.MouseEvent) => {
-								setFilled(!filled)
-								e.preventDefault()
-								e.stopPropagation()
-							}}
+							className={cn(styles.vector, {
+								[styles.filledHeart]: chocolate.favourite,
+								[styles.loading]: isFavoriteUpdating,
+							})}
+							onClick={handleHeartClick}
 						>
-							<HeartIconCatalogSVG filled={filled} />
+							<HeartIconCatalogSVG filled={chocolate.favourite} />
 						</div>
 					</FlexRow>
+
 					<div className={styles.smallImage}>
-						<img
-							src={chocolate.img && chocolate.img.length > 0 ? chocolate.img[0].original : skeleton}
-							alt={chocolate.title}
-						/>
+						<img src={imageSrc} alt={chocolate.title} />
 					</div>
 
 					<FlexRow className={styles.smallContent}>
@@ -90,43 +188,61 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 
 						{breakPoint !== 'S' && (
 							<MainButton
+								type='button'
 								className={cn(styles.smallBuyBtn, {
 									[styles.filled]: count > 0 && breakPoint === 'S',
+									[styles.loading]: isCartUpdating,
 								})}
+								disabled={isCartUpdating}
 								onMouseEnter={() => setIsHovered(true)}
 								onMouseLeave={() => setIsHovered(false)}
-								onClick={(e: React.MouseEvent) => {
-									e.preventDefault()
-									e.stopPropagation()
-									handleAddToCart()
-								}}
+								onClick={async (e: React.MouseEvent) => await handleAddToCart(e, '1')}
 							>
 								<CardIconCatalogSVG
 									small
 									filled={isHovered}
 									className={isJumping ? styles.jump : ''}
 								/>
+
 								{count > 0 && <div className={styles.counter}>{count}</div>}
 							</MainButton>
 						)}
 
 						{breakPoint === 'S' && (
 							<MainButton
+								type='button'
 								className={cn(styles.smallBuyBtn, styles.mobileBuyBtn, {
 									[styles.filled]: count > 0,
+									[styles.loading]: isCartUpdating,
 								})}
+								disabled={isCartUpdating}
+								onClick={(e: React.MouseEvent) => {
+									e.preventDefault()
+									e.stopPropagation()
+								}}
 							>
 								{count === 0 ? (
-									<p className={styles.btnText} onClick={handleFirstAdd}>
+									<p
+										className={styles.btnText}
+										onClick={async (e: React.MouseEvent) => await handleAddToCart(e, '1')}
+									>
 										В корзину
 									</p>
 								) : (
 									<FlexRow className={styles.smallCounterCart}>
-										<div className={styles.vector} onClick={handleRemoveFromCart}>
+										<div
+											className={styles.vector}
+											onClick={async (e: React.MouseEvent) => await handleAddToCart(e, '-1')}
+										>
 											<MinusSVG />
 										</div>
+
 										<p>{count}</p>
-										<div className={styles.vector} onClick={handleIncrease}>
+
+										<div
+											className={styles.vector}
+											onClick={async (e: React.MouseEvent) => await handleAddToCart(e, '1')}
+										>
 											<PlusSVG />
 										</div>
 									</FlexRow>
@@ -138,26 +254,24 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 			</Link>
 		)
 	}
+
 	return (
-		<Link to={`${AppRoute.Catalog}/${menuId}/item/${chocolate.id}`}>
+		<Link to={linkTo}>
 			<div className={cn(styles.card, className)}>
 				<FlexRow className={styles.icon}>
 					<div
-						className={cn(styles.vector, { [styles.filledHeart]: filled })}
-						onClick={(e: React.MouseEvent) => {
-							setFilled(!filled)
-							e.preventDefault()
-							e.stopPropagation()
-						}}
+						className={cn(styles.vector, {
+							[styles.filledHeart]: chocolate.favourite,
+							[styles.loading]: isFavoriteUpdating,
+						})}
+						onClick={handleHeartClick}
 					>
-						<HeartIconCatalogSVG filled={filled} />
+						<HeartIconCatalogSVG filled={chocolate.favourite} />
 					</div>
 				</FlexRow>
+
 				<div className={styles.image}>
-					<img
-						src={chocolate.img && chocolate.img.length > 0 ? chocolate.img[0].original : skeleton}
-						alt={chocolate.title}
-					/>
+					<img src={imageSrc} alt={chocolate.title} />
 				</div>
 
 				<FlexRow className={styles.content}>
@@ -169,35 +283,57 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 
 					{breakPoint !== 'S' && (
 						<MainButton
-							className={cn(styles.buyBtn, { [styles.filled]: count > 0 && breakPoint === 'S' })}
+							type='button'
+							className={cn(styles.buyBtn, {
+								[styles.filled]: count > 0 && breakPoint === 'S',
+								[styles.loading]: isCartUpdating,
+							})}
+							disabled={isCartUpdating}
 							onMouseEnter={() => setIsHovered(true)}
 							onMouseLeave={() => setIsHovered(false)}
-							onClick={(e: React.MouseEvent) => {
-								e.preventDefault()
-								e.stopPropagation()
-								handleAddToCart()
-							}}
+							onClick={async (e: React.MouseEvent) => await handleAddToCart(e, '1')}
 						>
 							<CardIconCatalogSVG filled={isHovered} className={isJumping ? styles.jump : ''} />
+
 							{count > 0 && <div className={styles.counter}>{count}</div>}
 						</MainButton>
 					)}
 
 					{breakPoint === 'S' && (
 						<MainButton
-							className={cn(styles.buyBtn, styles.mobileBuyBtn, { [styles.filled]: count > 0 })}
+							type='button'
+							className={cn(styles.buyBtn, styles.mobileBuyBtn, {
+								[styles.filled]: count > 0,
+								[styles.loading]: isCartUpdating,
+							})}
+							disabled={isCartUpdating}
+							onClick={(e: React.MouseEvent) => {
+								e.preventDefault()
+								e.stopPropagation()
+							}}
 						>
 							{count === 0 ? (
-								<p className={styles.btnText} onClick={handleFirstAdd}>
+								<p
+									className={styles.btnText}
+									onClick={async (e: React.MouseEvent) => await handleAddToCart(e, '1')}
+								>
 									В корзину
 								</p>
 							) : (
 								<FlexRow className={styles.counterCart}>
-									<div className={styles.vector} onClick={handleRemoveFromCart}>
+									<div
+										className={styles.vector}
+										onClick={async (e: React.MouseEvent) => await handleAddToCart(e, '-1')}
+									>
 										<MinusSVG />
 									</div>
+
 									<p>{count}</p>
-									<div className={styles.vector} onClick={handleIncrease}>
+
+									<div
+										className={styles.vector}
+										onClick={async (e: React.MouseEvent) => await handleAddToCart(e, '1')}
+									>
 										<PlusSVG />
 									</div>
 								</FlexRow>

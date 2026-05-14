@@ -25,7 +25,7 @@ import { useGetItemCatalogByIDQuery } from 'src/features/catalog/api/catalog.api
 export const SpecialSeriesItem = () => {
 	const { id = '' } = useParams()
 	const swiperRef: RefObject<SwiperRef> = useRef<SwiperRef>(null)
-	const { data } = useGetItemCatalogByIDQuery(id)
+	const { data } = useGetItemCatalogByIDQuery({ id, userId: '' })
 	const specialSeries = data
 	const [alsoItems, setAlsoItems] = useState<CardItem[]>([])
 	const getRandomItems = (arr: CardItem[], count: number) => {

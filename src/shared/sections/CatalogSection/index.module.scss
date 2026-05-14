@@ -9,7 +9,7 @@ section.catalog {
 		align-items: center;
 		width: 100%;
 		margin-bottom: 32px;
-    @media (max-width: 768px) {
+		@media (max-width: 768px) {
 			margin-bottom: 16px;
 		}
 		@media (max-width: 768px) {
@@ -88,6 +88,24 @@ section.catalog {
 					align-items: center;
 					justify-content: center;
 					text-align: center;
+					overflow-y: scroll;
+
+					// Chrome / Edge / Safari
+					&::-webkit-scrollbar {
+						width: 1px;
+					}
+
+					&::-webkit-scrollbar-track {
+						background: transparent;
+					}
+
+					&::-webkit-scrollbar-thumb {
+						background-color: rgba(192, 159, 61, 0.18);
+					}
+
+					&::-webkit-scrollbar-thumb:hover {
+						background-color: rgba(192, 159, 61, 0.18);
+					}
 					.link {
 						color: #c09f3dab;
 						font-size: 16px;

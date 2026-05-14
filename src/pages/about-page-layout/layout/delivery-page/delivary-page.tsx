@@ -3,6 +3,7 @@ import styles from './index.module.scss'
 import classNames from 'classnames'
 
 export const DeliveryPage = () => {
+	const yandexMapsUrlFirst = `https://yandex.ru/maps/?mode=search&text=${encodeURIComponent('ул. Сестрорецкая, дом 6')}`
 	return (
 		<div className={styles.elementPage}>
 			<h2 className={styles.title}>Самовывоз или доставка</h2>
@@ -23,9 +24,10 @@ export const DeliveryPage = () => {
 						Самовывоз в Санкт-Петербурге (пункт выдачи и производство)
 					</p>
 					<p className={styles.desc}>
-						Адрес: ул. Сестрорецкая, дом 6, ст. м. Черная речка (посмотреть <a href='#'>на карте</a>
-						) Если заказ оформлен в выходной или праздничный день, то забрать его можно в первый
-						рабочий день. Менеджер свяжется с Вами и уточнит, когда можно будет забрать заказ.
+						Адрес: ул. Сестрорецкая, дом 6, ст. м. Черная речка (посмотреть{' '}
+						<a href={yandexMapsUrlFirst}>на карте</a>) Если заказ оформлен в выходной или
+						праздничный день, то забрать его можно в первый рабочий день. Менеджер свяжется с Вами и
+						уточнит, когда можно будет забрать заказ.
 					</p>
 					<FlexRow className={styles.customDesc}>
 						<p className={styles.bold}>Время работы пункта выдачи:</p>

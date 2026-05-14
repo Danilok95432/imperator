@@ -11,13 +11,13 @@ export const HomePage = () => {
 	const { data } = useGetSiteSettingsQuery(null)
 	return (
 		<>
-			{data?.use_promo && <MainImgSection />}
-			{data?.use_awards && <AwardsSection />}
-			{data?.use_mainslider && <MainSliderSection />}
-			{data?.use_best && <CandySliderSection />}
-			{data?.use_adv && <ClassSection />}
-			{data?.use_catalog && <CatalogSection />}
-			{data?.use_reviews && <ReviewSection />}
+			{data?.use_promo && data?.use_promo === '1' && <MainImgSection />}
+			{data?.use_awards && data?.use_awards === '1' && <AwardsSection />}
+			{data?.use_mainslider && data?.use_mainslider === '1' && <MainSliderSection />}
+			{data?.use_best && data?.use_best === '1' && <CandySliderSection />}
+			{data?.use_adv && data?.use_adv === '1' && <ClassSection />}
+			{data?.use_catalog && data?.use_catalog === '1' && <CatalogSection />}
+			{data?.use_reviews && data?.use_reviews === '1' && <ReviewSection />}
 		</>
 	)
 }

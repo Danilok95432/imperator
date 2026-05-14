@@ -1,6 +1,6 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi } from '@reduxjs/toolkit/query/react'
 import { type FieldValues } from 'react-hook-form'
-import { MAIN_PROD_URL } from 'src/shared/helpers/consts'
+import { baseQueryWithReauth } from 'src/shared/helpers/base-query'
 import { type PersonalResponse, type AuthResponse } from 'src/types/auth'
 import {
 	type SelOption,
@@ -12,9 +12,7 @@ import {
 export const authApi = createApi({
 	reducerPath: 'auth/api',
 	tagTypes: ['Auth'],
-	baseQuery: fetchBaseQuery({
-		baseUrl: MAIN_PROD_URL,
-	}),
+	baseQuery: baseQueryWithReauth,
 	endpoints: (build) => ({
 		sendRegistrationForm: build.mutation<
 			{ status: string; errortext: string; ticket_link: string },
@@ -162,4 +160,5 @@ export const {
 	useRegistrationUserMutation,
 	useGetPersonalInfoQuery,
 	useSavePersonalInfoMutation,
+	useLazyCheckAuthQuery,
 } = authApi
