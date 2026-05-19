@@ -8,11 +8,14 @@ import styles from './index.module.scss'
 import { MainNavigation } from 'src/widgets/main-navigation/main-navigation'
 import { LogoSVG } from '../icons/logoSVG'
 import { useCheckAuthQuery } from 'src/features/auth/api/auth.api'
+import { useGetCountItemsCartQuery } from 'src/features/catalog/api/catalog.api'
+import { userID } from 'src/shared/helpers/consts'
 
 export const Header = () => {
 	const navigate = useNavigate()
 	const location = useLocation()
 	const { data } = useCheckAuthQuery(null)
+	const { data: countCartData } = useGetCountItemsCartQuery(userID)
 
 	const authorized = useMemo(() => {
 		return Boolean(data?.token && data?.user && localStorage.getItem('token') !== null)
@@ -35,10 +38,13 @@ export const Header = () => {
 							</div>
 
 							<div
-								className={styles.vector}
+								className={styles.cartVector}
 								onClick={() => navigate(authorized ? '/lk/cart' : '/auth')}
 							>
 								<CartIconSVG />
+								{Number(countCartData?.cart_items) > 0 && (
+									<span className={styles.cartBadge}>{Number(countCartData?.cart_items)}</span>
+								)}
 							</div>
 						</FlexRow>
 					</FlexRow>

@@ -7,23 +7,30 @@ export const deliveryOptions: DeliveryOption[] = [
 		description: 'Стоимость: 900 ₽',
 		price: 900,
 		days: '4 дня',
+		value: 'cdek-courier',
+		label: 'СДЭК (Доставка курьером)',
 	},
 	{
 		id: 'pickup-spb',
 		title: 'Самовывоз в Санкт-Петербурге',
 		description: 'Адрес: Сестрорецкая ул., д. 6, м. Черная речка',
 		price: 0,
+		days: '1 день',
+		value: 'pickup-spb',
+		label: 'Самовывоз в Санкт-Петербурге',
 	},
 ]
 
 export const paymentOptions: PaymentOption[] = [
 	{
 		id: 'cash',
-		title: 'При получении',
+		value: 'cash',
+		label: 'При получении',
 	},
 	{
 		id: 'card',
-		title: 'Онлайн картой',
+		value: 'card',
+		label: 'Онлайн картой',
 	},
 ]
 

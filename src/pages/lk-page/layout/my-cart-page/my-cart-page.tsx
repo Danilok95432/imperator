@@ -24,6 +24,9 @@ import skeleton from 'src/assets/img/candy(2).png'
 import cn from 'classnames'
 import styles from './index.module.scss'
 import { userID } from 'src/shared/helpers/consts'
+import { DeleteItemFromCartSVG } from 'src/shared/ui/icons/deleteItemFromCartSVG'
+import { useActions } from 'src/app/store/hooks/actions'
+import { ConfirmWindow } from 'src/modals/confirmActionModal/confirmActionModal'
 
 export interface CartListItem {
 	id_item: string
@@ -128,32 +131,36 @@ export const MyCartPage = () => {
 	const handleRemoveFromCart = async (e: React.MouseEvent, item: CartListItem) => {
 		e.preventDefault()
 		e.stopPropagation()
-
-		try {
-			setUpdatingItemId(item.id_item)
-
-			await deleteItemFromCart(
-				createDeleteFormData(item.id_item) as unknown as FieldValues,
-			).unwrap()
-			await refetch()
-		} catch (error) {
-			console.error('Ошибка при удалении товара из корзины:', error)
-		} finally {
-			setUpdatingItemId(null)
-		}
+		openModal(
+			<ConfirmWindow
+				text='Вы действительно хотите удалить товар из корзины? Отменить это действие будет нельзя'
+				submitHandle={async () => {
+					setUpdatingItemId(item.id_item)
+					await deleteItemFromCart(
+						createDeleteFormData(item.id_item) as unknown as FieldValues,
+					).unwrap()
+					await refetch()
+				}}
+				link='/lk/cart'
+			/>,
+		)
 	}
 
-	const handleClearCart = async () => {
-		try {
-			setIsClearing(true)
+	const { openModal } = useActions()
 
-			await clearCart(createClearDeleteFormData()).unwrap()
-			await refetch()
-		} catch (error) {
-			console.error('Ошибка при очистке корзины:', error)
-		} finally {
-			setIsClearing(false)
-		}
+	const handleClearCart = () => {
+		openModal(
+			<ConfirmWindow
+				text='Вы действительно хотите удалить все товары из корзины? Отменить это действие будет нельзя'
+				submitHandle={async () => {
+					setIsClearing(true)
+					await clearCart(createClearDeleteFormData()).unwrap()
+					await refetch()
+					setIsClearing(false)
+				}}
+				link='/lk/cart'
+			/>,
+		)
 	}
 
 	return (
@@ -227,7 +234,9 @@ export const MyCartPage = () => {
 										<div
 											className={styles.deleteVector}
 											onClick={async (e) => await handleRemoveFromCart(e, item)}
-										></div>
+										>
+											<DeleteItemFromCartSVG />
+										</div>
 									</FlexRow>
 								</FlexRow>
 							)

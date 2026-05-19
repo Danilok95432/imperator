@@ -1,12 +1,20 @@
 import { FlexRow } from 'src/shared/ui/FlexRow/FlexRow'
 import styles from './index.module.scss'
-import classNames from 'classnames'
+import { useGetFooterPageInfoQuery } from 'src/features/home/api/home.api'
 
 export const PoliticPage = () => {
+	const { data } = useGetFooterPageInfoQuery('politic')
 	return (
 		<div className={styles.elementPage}>
-			<h2 className={styles.title}>Политика конфиденциальности</h2>
-			<FlexRow className={styles.rowSection}>
+			<h2 className={styles.title}>{data?.page_name}</h2>
+			<FlexRow className={styles.content}>
+				<p className={styles.desc}>
+					{data?.page_text && (
+						<div className={styles.desc} dangerouslySetInnerHTML={{ __html: data.page_text }} />
+					)}
+				</p>
+			</FlexRow>
+			{/* <FlexRow className={styles.rowSection}>
 				<FlexRow className={classNames(styles.content, styles.lessGap)}>
 					<p className={styles.desc}>г. Санкт-Петербург «14» ноября 2018 г.</p>
 					<p className={styles.desc}>
@@ -121,7 +129,7 @@ export const PoliticPage = () => {
 						<p className={styles.subtitle}>4. ...</p>
 					</FlexRow>
 				</FlexRow>
-			</FlexRow>
+			</FlexRow> */}
 		</div>
 	)
 }

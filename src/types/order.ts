@@ -1,14 +1,17 @@
 export type DeliveryOption = {
-	id: string
-	title: string
+	id?: string
+	title?: string
+	value: string
+	label: string
 	description?: string
-	price: number
+	price?: number
 	days?: string
 }
 
 export type PaymentOption = {
-	id: string
-	title: string
+	id?: string
+	value: string
+	label: string
 	description?: string
 }
 

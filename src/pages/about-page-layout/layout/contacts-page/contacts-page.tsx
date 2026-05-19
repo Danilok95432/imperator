@@ -1,15 +1,23 @@
 import { FlexRow } from 'src/shared/ui/FlexRow/FlexRow'
 import styles from './index.module.scss'
-import classNames from 'classnames'
+import { useGetFooterPageInfoQuery } from 'src/features/home/api/home.api'
 
 export const ContactsPage = () => {
-	const yandexMapsUrlFirst = `https://yandex.ru/maps/?mode=search&text=${encodeURIComponent('ул. Сестрорецкая, дом 6')}`
-	const yandexMapsUrlSecond = `https://yandex.ru/maps/?mode=search&text=${encodeURIComponent('Ленинградская область, поселок Сосново, ул. Октябрьская, д. 6. ТЦ Сосновский (1 этаж)')}`
-	const yandexMapsUrlThird = `https://yandex.ru/maps/?mode=search&text=${encodeURIComponent('г. Мытищи, Осташковское шоссе, 1к13 «Мытищинская Ярмарка» Ангар 32')}`
+	const { data } = useGetFooterPageInfoQuery('contacts')
+	// const yandexMapsUrlFirst = `https://yandex.ru/maps/?mode=search&text=${encodeURIComponent('ул. Сестрорецкая, дом 6')}`
+	// const yandexMapsUrlSecond = `https://yandex.ru/maps/?mode=search&text=${encodeURIComponent('Ленинградская область, поселок Сосново, ул. Октябрьская, д. 6. ТЦ Сосновский (1 этаж)')}`
+	// const yandexMapsUrlThird = `https://yandex.ru/maps/?mode=search&text=${encodeURIComponent('г. Мытищи, Осташковское шоссе, 1к13 «Мытищинская Ярмарка» Ангар 32')}`
 	return (
 		<div className={styles.elementPage}>
-			<h2 className={styles.title}>Контакты</h2>
-			<FlexRow className={styles.rowSection}>
+			<h2 className={styles.title}>{data?.page_name}</h2>
+			<FlexRow className={styles.content}>
+				<p className={styles.desc}>
+					{data?.page_text && (
+						<div className={styles.desc} dangerouslySetInnerHTML={{ __html: data.page_text }} />
+					)}
+				</p>
+			</FlexRow>
+			{/* <FlexRow className={styles.rowSection}>
 				<FlexRow className={classNames(styles.content, styles.lessGap)}>
 					<p className={styles.subtitle}>Производство и пункт выдачи в Санкт-Петербурге</p>
 					<FlexRow className={styles.customDesc}>
@@ -80,7 +88,7 @@ export const ContactsPage = () => {
 						<p>sweet-opt@list.ru</p>
 					</FlexRow>
 				</FlexRow>
-			</FlexRow>
+			</FlexRow> */}
 		</div>
 	)
 }

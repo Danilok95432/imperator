@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { type FieldValues } from 'react-hook-form'
 import { Link, useParams } from 'react-router-dom'
 import cn from 'classnames'
@@ -23,6 +23,9 @@ import { AppRoute } from 'src/app/router/consts'
 
 import skeleton from 'src/assets/img/candy(2).png'
 import styles from './index.module.scss'
+import { selectCartItemCount, setCartItemCount } from 'src/features/cart/cartSlice'
+import { useAppSelector } from 'src/app/store/hooks/store'
+import { useDispatch } from 'react-redux'
 
 interface ChocolateCardProps {
 	chocolate: CardItem
@@ -30,10 +33,13 @@ interface ChocolateCardProps {
 	smallCard?: boolean
 }
 
+type CartResponse = { item_count: string; status: string }
+
 export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCardProps) => {
-	const [filled, setFilled] = useState<boolean>(false)
+	const [filled, setFilled] = useState<boolean>(Boolean(chocolate.favourite))
 	const [isHovered, setIsHovered] = useState<boolean>(false)
-	const [count, setCount] = useState<number>(0)
+	const dispatch = useDispatch()
+	const count = useAppSelector(selectCartItemCount(chocolate.id))
 	const [isJumping, setIsJumping] = useState<boolean>(false)
 	const [isCartUpdating, setIsCartUpdating] = useState<boolean>(false)
 	const [isFavoriteUpdating, setIsFavoriteUpdating] = useState<boolean>(false)
@@ -46,6 +52,16 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 
 	const [addToFavorites] = useAddToFavoritesMutation()
 	const [deleteFromFavorites] = useDeleteFromFavoritesMutation()
+
+	useEffect(() => {
+		setFilled(Boolean(chocolate.favourite))
+	}, [chocolate.favourite])
+
+	const getCartItemCount = (response: CartResponse) => {
+		const numberValue = Number(response.item_count)
+
+		return Number.isFinite(numberValue) ? Math.max(0, numberValue) : null
+	}
 
 	const userID = localStorage.getItem('userID') ?? ''
 
@@ -94,21 +110,44 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 		}, 400)
 	}
 
-	const handleAddToCart = async (e: React.MouseEvent, count: string) => {
+	const handleAddToCart = async (e: React.MouseEvent, countValue: string) => {
 		e.preventDefault()
 		e.stopPropagation()
 
-		if (isCartUpdating) return
+		const delta = Number(countValue)
+
+		if (isCartUpdating || (delta < 0 && count <= 0)) return
 
 		try {
 			setIsCartUpdating(true)
 
-			await addItemToCart(createAddFormData(count) as unknown as FieldValues).unwrap()
+			const response = (await addItemToCart(
+				createAddFormData(countValue) as unknown as FieldValues,
+			).unwrap()) as unknown as CartResponse
 
-			setCount((prev) => prev + 1)
-			startJumpAnimation()
+			const nextCount = getCartItemCount(response)
+
+			if (nextCount !== null) {
+				dispatch(
+					setCartItemCount({
+						id: chocolate.id,
+						count: nextCount,
+					}),
+				)
+			} else {
+				dispatch(
+					setCartItemCount({
+						id: chocolate.id,
+						count: Math.max(0, count + delta),
+					}),
+				)
+			}
+
+			if (delta > 0) {
+				startJumpAnimation()
+			}
 		} catch (error) {
-			console.error('Ошибка при добавлении товара в корзину:', error)
+			console.error('Ошибка при изменении товара в корзине:', error)
 		} finally {
 			setIsCartUpdating(false)
 		}
@@ -166,12 +205,12 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 					<FlexRow className={styles.smallIcon}>
 						<div
 							className={cn(styles.vector, {
-								[styles.filledHeart]: chocolate.favourite,
+								[styles.filledHeart]: filled,
 								[styles.loading]: isFavoriteUpdating,
 							})}
 							onClick={handleHeartClick}
 						>
-							<HeartIconCatalogSVG filled={chocolate.favourite} />
+							<HeartIconCatalogSVG filled={filled} />
 						</div>
 					</FlexRow>
 
@@ -261,12 +300,12 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 				<FlexRow className={styles.icon}>
 					<div
 						className={cn(styles.vector, {
-							[styles.filledHeart]: chocolate.favourite,
+							[styles.filledHeart]: filled,
 							[styles.loading]: isFavoriteUpdating,
 						})}
 						onClick={handleHeartClick}
 					>
-						<HeartIconCatalogSVG filled={chocolate.favourite} />
+						<HeartIconCatalogSVG filled={filled} />
 					</div>
 				</FlexRow>
 

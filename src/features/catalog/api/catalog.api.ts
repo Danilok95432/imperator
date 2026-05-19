@@ -7,6 +7,7 @@ import {
 	type CardItem,
 	type ICatalog,
 	type CartListItemsResponse,
+	type ILKInfoOrder,
 } from 'src/types/cardItem'
 
 export const catalogApi = createApi({
@@ -56,6 +57,18 @@ export const catalogApi = createApi({
 				const token = localStorage.getItem('token')
 				return {
 					url: 'cart/list',
+					headers: token ? { Authorization: `${token}` } : undefined,
+					params: {
+						id_user: idUser,
+					},
+				}
+			},
+		}),
+		getCountItemsCart: build.query<{ cart_items: string }, string>({
+			query: (idUser) => {
+				const token = localStorage.getItem('token')
+				return {
+					url: 'cart/items_count',
 					headers: token ? { Authorization: `${token}` } : undefined,
 					params: {
 						id_user: idUser,
@@ -130,6 +143,18 @@ export const catalogApi = createApi({
 				}
 			},
 		}),
+		getLkInfoForOrder: build.query<ILKInfoOrder, string>({
+			query: (idUser) => {
+				const token = localStorage.getItem('token')
+				return {
+					url: 'order/getinfo',
+					headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+					params: {
+						id_user: idUser,
+					},
+				}
+			},
+		}),
 	}),
 })
 
@@ -145,4 +170,6 @@ export const {
 	useAddToFavoritesMutation,
 	useDeleteFromFavoritesMutation,
 	useGetItemsFavoritesQuery,
+	useGetLkInfoForOrderQuery,
+	useGetCountItemsCartQuery,
 } = catalogApi

@@ -6,16 +6,8 @@ export const LinksNavigation: NavigationItem[] = [
 		link: '/about',
 	},
 	{
-		title: 'Самовывоз или доставка',
-		link: '/about/delivery',
-	},
-	{
 		title: 'Контакты',
 		link: '/about/contacts',
-	},
-	{
-		title: 'Способ оплаты',
-		link: '/about/payment',
 	},
 	{
 		title: 'Политика конфиденциальности',

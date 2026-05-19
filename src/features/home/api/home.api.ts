@@ -8,6 +8,8 @@ import {
 	type EliteListResponse,
 	type ReviewListResponse,
 	type PromoListResponse,
+	type PagesListResponse,
+	type PageFooterItem,
 } from 'src/types/home'
 
 export const homeApi = createApi({
@@ -56,6 +58,19 @@ export const homeApi = createApi({
 				url: `reviews/list`,
 			}),
 		}),
+		getFooterPagesList: build.query<PagesListResponse, null>({
+			query: () => ({
+				url: `pages/list`,
+			}),
+		}),
+		getFooterPageInfo: build.query<PageFooterItem, string>({
+			query: (type) => ({
+				url: `pages/getpage`,
+				params: {
+					type,
+				},
+			}),
+		}),
 	}),
 })
 
@@ -67,4 +82,6 @@ export const {
 	useGetInfoEliteListQuery,
 	useGetReviewsListQuery,
 	useGetPromoListQuery,
+	useGetFooterPageInfoQuery,
+	useGetFooterPagesListQuery,
 } = homeApi

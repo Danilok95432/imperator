@@ -40,6 +40,17 @@ export type ReviewListResponse = {
 	reviews: ReviewItem[]
 }
 
+export type PageFooterItem = {
+	id: string
+	page_name: string
+	parent_name: string
+	page_text: string
+}
+
+export type PagesListResponse = {
+	pages: PageFooterItem[]
+}
+
 export type BestItem = {
 	id: string
 	title: string

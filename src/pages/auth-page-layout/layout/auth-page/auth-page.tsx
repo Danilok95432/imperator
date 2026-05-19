@@ -27,7 +27,6 @@ export const AuthPage = () => {
 		resolver: yupResolver(authInputsSchema),
 	})
 	const onSubmit: SubmitHandler<AuthInputs> = async (data) => {
-		console.log(data)
 		try {
 			const loginFormData = new FormData()
 			loginFormData.append('user_name', data.user_name)

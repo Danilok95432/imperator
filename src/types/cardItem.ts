@@ -1,4 +1,5 @@
 import { type ImageItemWithText } from './photos'
+import { type SelOption } from './select'
 
 export interface MoreCardItem {
 	id: string
@@ -36,6 +37,29 @@ export interface IFavotiteItem {
 export interface IFavoriteCatalog {
 	items: IFavotiteItem[]
 	totalitems: number
+}
+
+export type ItemsInOrder = {
+	id_item: string
+	item_name: string
+	item_count: string
+	item_price: string
+	item_fullprice: string
+}
+
+export interface ILKInfoOrder {
+	citys: SelOption[]
+	payments: SelOption[]
+	firstname: string
+	surname: string
+	email: string
+	telphone: string
+	street: string
+	dom: string
+	room: string
+	items: ItemsInOrder[]
+	cart_price: string
+	comment: string
 }
 
 export interface ICatalog {

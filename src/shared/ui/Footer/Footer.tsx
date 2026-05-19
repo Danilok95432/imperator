@@ -17,6 +17,7 @@ import { autoSetYearCopyright } from 'src/shared/helpers/utils'
 import { useLocation } from 'react-use'
 import { useMemo } from 'react'
 import { useCheckAuthQuery } from 'src/features/auth/api/auth.api'
+import { AppRoute } from 'src/app/router/consts'
 
 export const Footer = () => {
 	const { data } = useGetSiteSettingsQuery(null)
@@ -33,15 +34,23 @@ export const Footer = () => {
 	]
 	const LCLinks = [
 		{ id: '1', title: 'Личный кабинет', link: authorized ? '/lk' : '/auth' },
-		{ id: '2', title: 'История заказа', link: '/' },
-		{ id: '3', title: 'Закладки', link: '/' },
-		{ id: '4', title: 'Рассылка', link: '/' },
+		{
+			id: '2',
+			title: 'История заказов',
+			link: authorized ? `${AppRoute.LK}/${AppRoute.LKorders}` : '/auth',
+		},
+		{
+			id: '3',
+			title: 'Избранное',
+			link: authorized ? `${AppRoute.LK}${AppRoute.LKfavorite}` : '/auth',
+		},
+		// { id: '4', title: 'Рассылка', link: '/' },
 	]
 	const shopLinks = [
-		{ id: '1', title: 'Как заказать', link: '/' },
-		{ id: '2', title: 'Способы оплаты', link: '/about/payment' },
-		{ id: '3', title: 'Самовывоз и доставка', link: '/about/delivery' },
-		{ id: '4', title: 'Правила возврата', link: '/' },
+		{ id: '1', title: 'Как заказать', link: '/shop' },
+		{ id: '2', title: 'Способы оплаты', link: '/shop/payment' },
+		{ id: '3', title: 'Самовывоз и доставка', link: '/shop/delivery' },
+		{ id: '4', title: 'Правила возврата', link: '/shop/refunds' },
 	]
 
 	const address = data?.contact_address?.trim()

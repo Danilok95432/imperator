@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, type SubmitHandler, FormProvider } from 'react-hook-form'
 import { useAdditionalCrumbs } from 'src/app/store/hooks/additionalCrumbs'
@@ -26,9 +27,12 @@ export const InfoPage = () => {
 	const methods = useForm<LkInputs>({
 		mode: 'onBlur',
 		resolver: yupResolver(lkInputsSchema),
+		defaultValues: {
+			password: '',
+			password2: '',
+		},
 	})
 	const onSubmit: SubmitHandler<LkInputs> = async (data) => {
-		console.log(data)
 		const formData = new FormData()
 		formData.append('firstname', data.firstname)
 		formData.append('surname', data.surname)
@@ -37,13 +41,16 @@ export const InfoPage = () => {
 		formData.append('password', data.password ?? '')
 		formData.append('password2', data.password2 ?? '')
 		formData.append('use_spam', booleanToNumberString(data.use_spam))
-		formData.append('use_org', booleanToNumberString(data.use_org))
-		if (data.use_org) {
+		formData.append('use_company', booleanToNumberString(data.use_company))
+		formData.append(
+			'citys',
+			typeof data.citys === 'string' ? data.citys : data.citys ? data.citys[0].value : '0',
+		)
+		formData.append('street', data.street ?? '')
+		formData.append('dom', data.dom ?? '')
+		formData.append('room', data.room ?? '')
+		if (data.use_company) {
 			formData.append('org_name', data.org_name ?? '')
-			formData.append('city', data.city ?? '')
-			formData.append('org_street', data.org_street ?? '')
-			formData.append('org_house', data.org_house ?? '')
-			formData.append('org_apartment', data.org_apartment ?? '')
 		}
 		const res = await savePersonalInfo(formData)
 		if (res && 'data' in res) {
@@ -53,11 +60,17 @@ export const InfoPage = () => {
 		}
 	}
 
-	const orgChecked = methods.watch('use_org')
+	const orgChecked = methods.watch('use_company')
 
 	useEffect(() => {
 		if (data) {
-			methods.reset({ ...data })
+			const citysOptions = data.citys ?? []
+			const cityOption = citysOptions.find((el) => Number(el.value) === Number(data.citys_id))
+			const { citys_id, citys, ...restData } = data
+			methods.reset({
+				citys: cityOption ? [cityOption] : [],
+				...restData,
+			})
 		}
 	}, [data])
 
@@ -78,48 +91,48 @@ export const InfoPage = () => {
 						<ControlledInput name='email' label='Email*' margin='0 0 32px 0' />
 						<ControlledInput name='telphone' label='Телефон*' margin='0 0 32px 0' isPhone />
 						<ControlledCheckbox
-							name='use_org'
+							name='use_company'
 							label='Я представляю организацию'
 							type='checkbox'
 							$margin='0 0 32px 0'
 						/>
-						{orgChecked && (
-							<FlexRow className={styles.orgBlock}>
+						<FlexRow className={styles.orgBlock}>
+							{orgChecked && (
 								<ControlledInput
 									name='org_name'
 									label='Название организации*'
 									margin='0 0 32px 0'
 									className={styles.input}
 								/>
-								<ControlledSelect
-									name='city'
-									label='Город*'
-									selectOptions={[]}
+							)}
+							<ControlledSelect
+								name='citys'
+								label='Город*'
+								selectOptions={data?.citys ?? []}
+								margin='0 0 32px 0'
+								className={styles.input}
+							/>
+							<ControlledInput
+								name='street'
+								label='Улица*'
+								margin='0 0 32px 0'
+								className={styles.input}
+							/>
+							<FlexRow className={styles.orgRow}>
+								<ControlledInput
+									name='dom'
+									label='Дом*'
 									margin='0 0 32px 0'
 									className={styles.input}
 								/>
 								<ControlledInput
-									name='org_street'
-									label='Улица*'
+									name='room'
+									label='Квартира/офис'
 									margin='0 0 32px 0'
 									className={styles.input}
 								/>
-								<FlexRow className={styles.orgRow}>
-									<ControlledInput
-										name='org_house'
-										label='Дом*'
-										margin='0 0 32px 0'
-										className={styles.input}
-									/>
-									<ControlledInput
-										name='org_apartment'
-										label='Квартира/офис'
-										margin='0 0 32px 0'
-										className={styles.input}
-									/>
-								</FlexRow>
 							</FlexRow>
-						)}
+						</FlexRow>
 						<FlexRow className={styles.inputRow}>
 							<ControlledInput
 								name='password'

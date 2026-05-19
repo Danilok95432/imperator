@@ -1,13 +1,21 @@
 import { FlexRow } from 'src/shared/ui/FlexRow/FlexRow'
 import styles from './index.module.scss'
-import classNames from 'classnames'
+import { useGetFooterPageInfoQuery } from 'src/features/home/api/home.api'
 
 export const DeliveryPage = () => {
-	const yandexMapsUrlFirst = `https://yandex.ru/maps/?mode=search&text=${encodeURIComponent('ул. Сестрорецкая, дом 6')}`
+	const { data } = useGetFooterPageInfoQuery('delivery')
+	// const yandexMapsUrlFirst = `https://yandex.ru/maps/?mode=search&text=${encodeURIComponent('ул. Сестрорецкая, дом 6')}`
 	return (
 		<div className={styles.elementPage}>
-			<h2 className={styles.title}>Самовывоз или доставка</h2>
-			<FlexRow className={styles.rowSection}>
+			<h2 className={styles.title}>{data?.page_name}</h2>
+			<FlexRow className={styles.content}>
+				<p className={styles.desc}>
+					{data?.page_text && (
+						<div className={styles.desc} dangerouslySetInnerHTML={{ __html: data.page_text }} />
+					)}
+				</p>
+			</FlexRow>
+			{/* <FlexRow className={styles.rowSection}>
 				<FlexRow className={styles.content}>
 					<p className={styles.desc}>
 						Обработка заказов в нашем интернет-магазине осуществляется с 9:00 до 18:00 c
@@ -64,7 +72,7 @@ export const DeliveryPage = () => {
 						<span className={styles.bold}>ПРИ ПОЛУЧЕНИИ!</span>
 					</p>
 				</FlexRow>
-			</FlexRow>
+			</FlexRow> */}
 		</div>
 	)
 }

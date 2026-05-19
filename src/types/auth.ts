@@ -1,3 +1,5 @@
+import { type SelOption } from './select'
+
 export type User = {
 	id: string
 	email: string
@@ -21,10 +23,11 @@ export type PersonalResponse = {
 	email: string
 	telphone: string
 	use_spam: boolean
-	use_org: boolean
+	use_company: boolean
 	org_name: string
-	city: string
-	org_street: string
-	org_house: string
-	org_apartment: string
+	citys: SelOption[]
+	citys_id: string
+	street: string
+	dom: string
+	room: string
 }

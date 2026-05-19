@@ -1,4 +1,5 @@
 div.elementPage {
+	width: 100%;
 	display: flex;
 	justify-content: center;
 	flex-direction: column;
@@ -15,6 +16,7 @@ div.elementPage {
     color: var(--main-theme-color-2);
 	}
 	.content {
+		width: 100%;
 		flex-direction: column;
 		gap: 48px;
 		.desc {

@@ -7,9 +7,9 @@ import { ChocolateItem } from 'src/pages/chocolate-page/components/chocolate-ite
 import { ChocolateList } from 'src/pages/chocolate-page/components/chocolate-list/chocolate-list'
 import { AboutPageLayout } from 'src/pages/about-page-layout/about-page-layout'
 import { AboutPage } from 'src/pages/about-page-layout/layout/about-page/about-page'
-import { DeliveryPage } from 'src/pages/about-page-layout/layout/delivery-page/delivary-page'
+import { DeliveryPage } from 'src/pages/shop-page-layout/layout/delivery-page/delivary-page'
 import { ContactsPage } from 'src/pages/about-page-layout/layout/contacts-page/contacts-page'
-import { PaymentPage } from 'src/pages/about-page-layout/layout/payment-page/payment-page'
+import { PaymentPage } from 'src/pages/shop-page-layout/layout/payment-page/payment-page'
 import { PoliticPage } from 'src/pages/about-page-layout/layout/politic-page/politic-page'
 import { AuthPage } from 'src/pages/auth-page-layout/layout/auth-page/auth-page'
 import { RegistrationPage } from 'src/pages/auth-page-layout/layout/registration-page/registration-page'
@@ -25,6 +25,9 @@ import { CanceledOrders } from 'src/pages/lk-page/layout/orders-page/layout/canc
 import { CompletedOrders } from 'src/pages/lk-page/layout/orders-page/layout/completed-orders/completed-orders'
 import { CurrentOrders } from 'src/pages/lk-page/layout/orders-page/layout/current-orders/current-orders'
 import { OneOrderPage } from 'src/pages/lk-page/layout/orders-page/layout/one-order-page/one-order-page'
+import { ShopPageLayout } from 'src/pages/shop-page-layout/shop-page-layout'
+import { ShopPage } from 'src/pages/shop-page-layout/layout/shop-page/shop-page'
+import { RefundsPage } from 'src/pages/shop-page-layout/layout/refunds-page/refunds-page'
 
 export const MainRoutes = () => {
 	return (
@@ -67,10 +70,14 @@ export const MainRoutes = () => {
 				</Route>
 				<Route path={AppRoute.ABOUT} element={<AboutPageLayout />}>
 					<Route index element={<AboutPage />} />
-					<Route path={`${AppRoute.ABOUT}/${AppRoute.DELIVERY}`} element={<DeliveryPage />} />
 					<Route path={`${AppRoute.ABOUT}/${AppRoute.CONTACTS}`} element={<ContactsPage />} />
-					<Route path={`${AppRoute.ABOUT}/${AppRoute.PAYMENT}`} element={<PaymentPage />} />
 					<Route path={`${AppRoute.ABOUT}/${AppRoute.POLITIC}`} element={<PoliticPage />} />
+				</Route>
+				<Route path={AppRoute.SHOP} element={<ShopPageLayout />}>
+					<Route index element={<ShopPage />} />
+					<Route path={`${AppRoute.SHOP}/${AppRoute.DELIVERY}`} element={<DeliveryPage />} />
+					<Route path={`${AppRoute.SHOP}/${AppRoute.PAYMENT}`} element={<PaymentPage />} />
+					<Route path={`${AppRoute.SHOP}/${AppRoute.REFUNDS}`} element={<RefundsPage />} />
 				</Route>
 			</Route>
 		</Routes>

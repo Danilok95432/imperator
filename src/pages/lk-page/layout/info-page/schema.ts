@@ -1,3 +1,4 @@
+import { type SelOption } from 'src/types/select'
 import * as yup from 'yup'
 
 export type LkInputs = {
@@ -6,12 +7,13 @@ export type LkInputs = {
 	email: string
 	telphone: string
 	use_spam?: boolean
-	use_org?: boolean
+	use_company?: boolean
 	org_name?: string
-	city?: string
-	org_street?: string
-	org_house?: string
-	org_apartment?: string
+	citys?: SelOption[] | string
+	citys_id?: string
+	street?: string
+	dom?: string
+	room?: string
 	password?: string
 	password2?: string
 }

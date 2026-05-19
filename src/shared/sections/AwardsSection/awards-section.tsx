@@ -48,7 +48,9 @@ export const AwardsSection = () => {
 						</SwiperSlide>
 					))}
 				</Swiper>
-				<SliderBtns className={styles.sliderBtns} swiperRef={swiperRef} smallControls />
+				{data?.awards && data?.awards.length > 3 && (
+					<SliderBtns className={styles.sliderBtns} swiperRef={swiperRef} smallControls />
+				)}
 			</Container>
 		</Section>
 	)

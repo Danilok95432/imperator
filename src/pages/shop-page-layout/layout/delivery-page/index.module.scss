@@ -15,6 +15,16 @@ div.elementPage {
 		margin-top: 48px;
 		color: var(--main-theme-color-2);
 	}
+	.content {
+		width: 100%;
+		flex-direction: column;
+		gap: 48px;
+		.desc {
+			font-size: 16px;
+			font-weight: 300;
+      color: #FFFFFFCC;
+		}
+	}
 	.rowSection {
 		width: 100%;
 		flex-direction: column;
