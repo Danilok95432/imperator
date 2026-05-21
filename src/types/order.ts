@@ -4,7 +4,8 @@ export type DeliveryOption = {
 	value: string
 	label: string
 	description?: string
-	price?: number
+	address?: string
+	price?: string | number
 	days?: string
 }
 

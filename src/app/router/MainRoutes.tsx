@@ -28,6 +28,9 @@ import { OneOrderPage } from 'src/pages/lk-page/layout/orders-page/layout/one-or
 import { ShopPageLayout } from 'src/pages/shop-page-layout/shop-page-layout'
 import { ShopPage } from 'src/pages/shop-page-layout/layout/shop-page/shop-page'
 import { RefundsPage } from 'src/pages/shop-page-layout/layout/refunds-page/refunds-page'
+import { SuccessPage } from 'src/pages/lk-page/layout/success-page/success-page'
+import { NotFoundPage } from 'src/pages/not-found-page/not-found-page'
+import { RecoverPage } from 'src/pages/auth-page-layout/layout/recover-page/recover-page'
 
 export const MainRoutes = () => {
 	return (
@@ -37,8 +40,10 @@ export const MainRoutes = () => {
 			<Route path={'terminal/print'} element={<PrintPage />} />
 				*/}
 			<Route path='/' element={<AppLayout />}>
+				<Route path='*' element={<NotFoundPage />} />
 				<Route path={AppRoute.AUTH} element={<AuthPageLayout />}>
 					<Route index element={<AuthPage />} />
+					<Route path={`${AppRoute.AUTH}/${AppRoute.RECOVER}`} element={<RecoverPage />} />
 					<Route
 						path={`${AppRoute.AUTH}/${AppRoute.REGISTRATION}`}
 						element={<RegistrationPage />}
@@ -46,6 +51,7 @@ export const MainRoutes = () => {
 				</Route>
 				<Route path={AppRoute.LK} element={<LkPageLayout />}>
 					<Route index element={<LkPage />} />
+					<Route path={`${AppRoute.LK}/${AppRoute.LKcart}/success`} element={<SuccessPage />} />
 					<Route path={`${AppRoute.LK}/${AppRoute.LKinfo}`} element={<InfoPage />} />
 					<Route path={`${AppRoute.LK}/${AppRoute.LKfavorite}`} element={<FavoriteItems />} />
 					<Route path={`${AppRoute.LK}/${AppRoute.LKorders}`} element={<OrdersPage />}>

@@ -10,8 +10,8 @@ export type OrderInputs = {
 	email: string
 	telphone: string
 	street: string
-	house: string
-	apartment: string
+	dom: string
+	room: string
 	comment: string
 }
 
@@ -68,9 +68,9 @@ export const orderInputsSchema = yup.object({
 		.min(2, 'Улица должна содержать минимум 2 символа')
 		.max(100, 'Улица не должна превышать 100 символов'),
 
-	house: yup.string().required('Введите дом').max(20, 'Слишком длинное значение'),
+	dom: yup.string().required('Введите дом').max(20, 'Слишком длинное значение'),
 
-	apartment: yup.string().required('Введите квартиру или офис').max(20, 'Слишком длинное значение'),
+	room: yup.string().required('Введите квартиру или офис').max(20, 'Слишком длинное значение'),
 
 	comment: yup.string().max(500, 'Комментарий не должен превышать 500 символов').defined(),
 })

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import styles from './index.module.scss'
 import { mockChocolates } from 'src/mock/chocolate'
 import { Container } from 'src/shared/ui/Container/Container'
@@ -7,18 +7,59 @@ import { Pagination } from 'src/widgets/pagination/pagination'
 import { useBreakPoint } from 'src/features/useBreakPoint/useBreakPoint'
 import { useGetCatalogQuery } from 'src/features/catalog/api/catalog.api'
 import { Loader } from 'src/shared/ui/loader/loader'
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
+import { toast } from 'react-toastify'
+import { type FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
 let ITEMS_PER_PAGE = 9
+
+type ApiErrorResponse = {
+	status: 'error'
+	error: string
+}
+
+const isFetchBaseQueryError = (error: unknown): error is FetchBaseQueryError => {
+	return typeof error === 'object' && error !== null && 'status' in error
+}
+
+const getApiErrorMessage = (error: unknown): string => {
+	if (isFetchBaseQueryError(error)) {
+		const errorData = error.data as Partial<ApiErrorResponse> | undefined
+
+		if (errorData?.status === 'error' && errorData?.error) {
+			return errorData.error
+		}
+	}
+
+	return 'Произошла ошибка при загрузке категории'
+}
 
 export const ChocolateList = () => {
 	const [currentPage, setCurrentPage] = useState(1)
 	const { menuId = '' } = useParams()
-	const { data, isLoading } = useGetCatalogQuery({
+	const {
+		data,
+		error: newsItemError,
+		isError: isNewsItemError,
+		isLoading,
+	} = useGetCatalogQuery({
 		id: menuId,
 		limit: String(0),
 		step: String(currentPage),
 	})
+
+	const navigate = useNavigate()
+	useEffect(() => {
+		if (!isNewsItemError) return
+
+		const message = getApiErrorMessage(newsItemError)
+
+		toast.error(message, {
+			toastId: `news-error-${menuId}`,
+		})
+
+		navigate('/', { replace: true })
+	}, [isNewsItemError, newsItemError, navigate, menuId])
 
 	const breakPoint = useBreakPoint()
 

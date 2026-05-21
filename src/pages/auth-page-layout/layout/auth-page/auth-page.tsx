@@ -68,7 +68,7 @@ export const AuthPage = () => {
 								type='password'
 								className={styles.input}
 							/>
-							<a href='#'>Забыли пароль?</a>
+							<a href='/auth/recover'>Забыли пароль?</a>
 						</FlexRow>
 						{breakPoint === 'S' && (
 							<MainButton type='submit' className={styles.enterBtnMobile}>

@@ -18,6 +18,7 @@ export enum AppRoute {
 	CONTACTS = '/contacts',
 	REFUNDS = '/refunds',
 	AUTH = '/auth',
+	RECOVER = 'recover',
 	REGISTRATION = 'registration',
 	Catalog = '/catalog',
 	CatalogItem = '/item',

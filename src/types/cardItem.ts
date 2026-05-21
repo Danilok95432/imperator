@@ -24,6 +24,7 @@ export interface CardItem {
 	moreitems: CardItem[]
 	favourite: boolean
 	in_cart: boolean
+	cart_count: number
 }
 
 export interface IFavotiteItem {
@@ -47,9 +48,18 @@ export type ItemsInOrder = {
 	item_fullprice: string
 }
 
+export type DeliveryOption = {
+	label: string
+	value: string
+	price: string
+	days: string
+	address: string
+}
+
 export interface ILKInfoOrder {
 	citys: SelOption[]
 	payments: SelOption[]
+	delivery: DeliveryOption[]
 	firstname: string
 	surname: string
 	email: string

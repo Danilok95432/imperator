@@ -11,7 +11,6 @@ import { ControlledSelect } from 'src/widgets/controlled-select/controlled-selec
 
 import styles from './index.module.scss'
 import { orderInputsSchema, type OrderInputs } from './schema'
-import { deliveryOptions } from 'src/mock/order'
 import { type EditSection } from 'src/types/order'
 import { DeliveryCard } from './components/delivery-card/delivery-card'
 import { OrderStep } from './components/order-step/order-step'
@@ -20,9 +19,13 @@ import { PaymentCard } from './components/payment-card/payment-card'
 import {
 	useGetItemsCartQuery,
 	useGetLkInfoForOrderQuery,
+	useSaveOrderInfoMutation,
 } from 'src/features/catalog/api/catalog.api'
 import { userID } from 'src/shared/helpers/consts'
 import { type SelOption } from 'src/types/select'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { AppRoute } from 'src/app/router/consts'
 
 const defaultValues: OrderInputs = {
 	citys: [],
@@ -33,8 +36,8 @@ const defaultValues: OrderInputs = {
 	email: '',
 	telphone: '',
 	street: '',
-	house: '',
-	apartment: '',
+	dom: '',
+	room: '',
 	comment: '',
 }
 
@@ -64,6 +67,7 @@ const getSelectLabel = (value: SelectFieldValue, options: SelOption[] = []) => {
 export const CartPage = () => {
 	const { data } = useGetItemsCartQuery(userID)
 	const { data: orderData } = useGetLkInfoForOrderQuery(userID)
+	const [saveOrder] = useSaveOrderInfoMutation()
 
 	const methods = useForm<OrderInputs>({
 		mode: 'onBlur',
@@ -79,6 +83,8 @@ export const CartPage = () => {
 		reset,
 		formState: { errors },
 	} = methods
+
+	console.log(errors)
 
 	const [editingSection, setEditingSection] = useState<EditSection>('region')
 
@@ -97,7 +103,7 @@ export const CartPage = () => {
 	const cityValue = getSelectValue(values.citys ?? [])
 	const cityLabel = getSelectLabel(values.citys ?? [], orderData?.citys)
 
-	const selectedDelivery = deliveryOptions.find((item) => item.value === values.deliveryId)
+	const selectedDelivery = orderData?.delivery.find((item) => item.value === values.deliveryId)
 
 	const selectedPayment = orderData?.payments.find((item) => item.value === values.paymentId)
 
@@ -114,29 +120,41 @@ export const CartPage = () => {
 		Boolean(values.email?.trim()) &&
 		Boolean(values.telphone?.trim()) &&
 		Boolean(values.street?.trim()) &&
-		Boolean(values.house?.trim()) &&
-		Boolean(values.apartment?.trim()) &&
+		Boolean(values.dom?.trim()) &&
+		Boolean(values.room?.trim()) &&
 		!errors.firstname &&
 		!errors.surname &&
 		!errors.email &&
 		!errors.telphone &&
 		!errors.street &&
-		!errors.house &&
-		!errors.apartment
+		!errors.dom &&
+		!errors.room
 
 	const isOrderReady = isRegionFilled && isDeliveryFilled && isPaymentFilled && isCustomerFilled
+	const navigate = useNavigate()
+	const onSubmit: SubmitHandler<OrderInputs> = async (data) => {
+		const selectedCityValue = getSelectValue(data.citys)
 
-	const onSubmit: SubmitHandler<OrderInputs> = async (formData) => {
-		const selectedCityValue = getSelectValue(formData.citys)
-		const selectedCityLabel = getSelectLabel(formData.citys, orderData?.citys)
-
-		const payload = {
-			...formData,
-			city_id: selectedCityValue,
-			city_name: selectedCityLabel,
+		const formData = new FormData()
+		formData.append('id_city', selectedCityValue)
+		formData.append('id_order_payment', data.paymentId)
+		formData.append('id_order_delivery', data.deliveryId)
+		formData.append('surname', data.surname)
+		formData.append('firstname', data.firstname)
+		formData.append('email', data.email)
+		formData.append('telphone', data.telphone)
+		formData.append('street', data.street)
+		formData.append('dom', data.dom ?? '')
+		formData.append('room', data.room ?? '')
+		formData.append('comment', data.comment)
+		try {
+			const res = await saveOrder(formData)
+			if (res) {
+				navigate(`${AppRoute.LK}/${AppRoute.LKcart}/success`)
+			}
+		} catch (e) {
+			toast.error('Ошибка при попытке оформления заказа. Попробуйте ещё раз')
 		}
-
-		console.log(payload)
 	}
 
 	const handleSaveRegion = async () => {
@@ -170,8 +188,8 @@ export const CartPage = () => {
 			'email',
 			'telphone',
 			'street',
-			'house',
-			'apartment',
+			'dom',
+			'room',
 			'comment',
 		])
 
@@ -190,8 +208,8 @@ export const CartPage = () => {
 			email: orderData.email ?? '',
 			telphone: orderData.telphone ?? '',
 			street: orderData.street ?? '',
-			house: orderData.dom ?? '',
-			apartment: orderData.room ?? '',
+			dom: orderData.dom ?? '',
+			room: orderData.room ?? '',
 			comment: orderData.comment ?? '',
 			citys: [],
 			deliveryId: '',
@@ -253,7 +271,7 @@ export const CartPage = () => {
 									{editingSection === 'delivery' ? (
 										<div className={styles.stepContent}>
 											<div className={styles.cards}>
-												{deliveryOptions.map((option) => (
+												{orderData?.delivery.map((option) => (
 													<DeliveryCard
 														key={option.value}
 														option={option}
@@ -408,14 +426,14 @@ export const CartPage = () => {
 												/>
 
 												<ControlledInput
-													name='house'
+													name='dom'
 													label='Дом*'
 													margin='0'
 													className={styles.input}
 												/>
 
 												<ControlledInput
-													name='apartment'
+													name='room'
 													label='Квартира / офис*'
 													margin='0'
 													className={styles.input}
@@ -456,8 +474,8 @@ export const CartPage = () => {
 											<div>E-mail: {getValues('email')}</div>
 											<div>Телефон: {getValues('telphone')}</div>
 											<div>Улица: {getValues('street')}</div>
-											<div>Дом: {getValues('house')}</div>
-											<div>Квартира / офис: {getValues('apartment')}</div>
+											<div>Дом: {getValues('dom')}</div>
+											<div>Квартира / офис: {getValues('room')}</div>
 
 											{getValues('comment') && <div>Комментарий: {getValues('comment')}</div>}
 										</div>

@@ -2,21 +2,21 @@ import { type DeliveryOption, type PaymentOption, type CartItem } from 'src/type
 
 export const deliveryOptions: DeliveryOption[] = [
 	{
-		id: 'cdek-courier',
+		id: '1',
 		title: 'СДЭК (Доставка курьером)',
 		description: 'Стоимость: 900 ₽',
 		price: 900,
 		days: '4 дня',
-		value: 'cdek-courier',
+		value: '1',
 		label: 'СДЭК (Доставка курьером)',
 	},
 	{
-		id: 'pickup-spb',
+		id: '2',
 		title: 'Самовывоз в Санкт-Петербурге',
 		description: 'Адрес: Сестрорецкая ул., д. 6, м. Черная речка',
 		price: 0,
 		days: '1 день',
-		value: 'pickup-spb',
+		value: '2',
 		label: 'Самовывоз в Санкт-Петербурге',
 	},
 ]

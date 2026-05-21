@@ -155,6 +155,17 @@ export const catalogApi = createApi({
 				}
 			},
 		}),
+		saveOrderInfo: build.mutation<{ status: string; errortext: string }, FieldValues>({
+			query: (formData) => {
+				const token = localStorage.getItem('token')
+				return {
+					url: 'order/save',
+					headers: token ? { Authorization: `${token}` } : undefined,
+					method: 'POST',
+					body: formData,
+				}
+			},
+		}),
 	}),
 })
 
@@ -172,4 +183,5 @@ export const {
 	useGetItemsFavoritesQuery,
 	useGetLkInfoForOrderQuery,
 	useGetCountItemsCartQuery,
+	useSaveOrderInfoMutation,
 } = catalogApi

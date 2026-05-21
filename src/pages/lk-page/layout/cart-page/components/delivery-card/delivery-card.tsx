@@ -15,9 +15,10 @@ export const DeliveryCard = ({ option, active, onClick }: Props) => {
 	return (
 		<button type='button' className={clsx(styles.card, active && styles.active)} onClick={onClick}>
 			<FlexRow className={styles.infoRow}>
-				<div className={styles.title}>{option?.title}</div>
-				{option?.description && <div className={styles.desc}>{option?.description}</div>}
-				{option?.days && <div className={styles.meta}>Доставка: {option?.days}</div>}
+				<div className={styles.title}>{option?.label}</div>
+				{option?.price !== '0.00' && <div className={styles.desc}>{option?.price}</div>}
+				{option?.address !== '' && <div className={styles.desc}>{option?.address}</div>}
+				{option?.days && <div className={styles.meta}>Дней доставки: {option?.days}</div>}
 			</FlexRow>
 
 			<div className={styles.check}>{active ? <CheckCartSVG /> : ''}</div>
