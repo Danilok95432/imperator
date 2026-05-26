@@ -1,8 +1,14 @@
-export const DeleteItemFromCartSVG = () => {
+import { type FC } from 'react'
+
+type DeleteItemFromCartSVGProps = {
+	isMobile?: boolean
+}
+
+export const DeleteItemFromCartSVG: FC<DeleteItemFromCartSVGProps> = ({ isMobile }) => {
 	return (
 		<svg
-			width='24px'
-			height='24px'
+			width={isMobile ? '36px' : '24px'}
+			height={isMobile ? '36px' : '24px'}
 			viewBox='0 0 24 24'
 			fill='none'
 			xmlns='http://www.w3.org/2000/svg'

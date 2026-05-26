@@ -14,6 +14,7 @@ export const LkPage = () => {
 	const handleLogout = async () => {
 		await logout({})
 		localStorage.removeItem('token')
+		localStorage.removeItem('userID')
 		navigate('/')
 	}
 	return (

@@ -56,7 +56,7 @@ export const BurgerMenu = () => {
 						<li className={styles.menuItem} key={index}>
 							<NavLink
 								className={({ isActive }) => setActive(isActive, styles.activeLink)}
-								to={'/catalog'}
+								to={`/catalog/${menuEl.id}`}
 								onClick={() => {
 									toggleMenu()
 									scrollToSection(`/catalog/${menuEl.id}`)

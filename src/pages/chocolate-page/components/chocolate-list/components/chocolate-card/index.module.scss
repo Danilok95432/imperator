@@ -7,7 +7,7 @@
 	gap: 24px;
 	justify-content: center;
 	align-items: center;
-	transition: all .3s ease-in-out;
+	transition: all 0.3s ease-in-out;
 	&:hover {
 		transform: translateY(-10px);
 	}
@@ -62,6 +62,11 @@
 		object-fit: cover;
 		max-height: 200px;
 		max-width: 280px;
+		img {
+			height: 100%;
+			width: 100%;
+			object-fit: cover;
+		}
 	}
 	.content {
 		gap: 0;
@@ -91,7 +96,10 @@
 				font-weight: 500;
 				color: var(--main-theme-color-2);
 				max-width: 268px;
-				white-space: nowrap;
+				max-height: 44px;
+				height: 44px;
+				line-clamp: 2;
+				-webkit-line-clamp: 2;
 				overflow: hidden;
 				text-overflow: ellipsis;
 				@media (max-width: 768px) {
@@ -223,7 +231,7 @@
 	gap: 24px;
 	justify-content: center;
 	align-items: center;
-	transition: all .3s ease-in-out;
+	transition: all 0.3s ease-in-out;
 	padding: 24px 0;
 	&:hover {
 		transform: translateY(-10px);

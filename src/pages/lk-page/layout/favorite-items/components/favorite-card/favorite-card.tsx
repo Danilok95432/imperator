@@ -89,7 +89,7 @@ export const FavoriteCard = ({ item, className, smallCard }: ItemCardProps) => {
 						<FlexRow className={styles.smallInfoWrapper}>
 							<h3 className={styles.title}>{`${item.item_price}.00 ₽`}</h3>
 							<p className={styles.subtitle}>{item.title}</p>
-							<p className={styles.weight}>{`${item.item_weight} г`}</p>
+							<p className={styles.weight}>{`${item.item_weight} гр.`}</p>
 						</FlexRow>
 
 						{breakPoint !== 'S' && (

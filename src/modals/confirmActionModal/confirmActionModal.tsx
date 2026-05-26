@@ -8,11 +8,20 @@ import { DeleteItemFromCartSVG } from 'src/shared/ui/icons/deleteItemFromCartSVG
 type ConfirmWindowProps = {
 	text?: string
 	submitHandle: () => void
+	actionBtnText?: string
+	cancelBtnText?: string
 	link?: string
 	notAllow?: boolean
 }
 
-export const ConfirmWindow: FC<ConfirmWindowProps> = ({ text, submitHandle, link, notAllow }) => {
+export const ConfirmWindow: FC<ConfirmWindowProps> = ({
+	text,
+	submitHandle,
+	link,
+	notAllow,
+	actionBtnText,
+	cancelBtnText,
+}) => {
 	const { closeModal } = useActions()
 	const navigate = useNavigate()
 
@@ -35,7 +44,7 @@ export const ConfirmWindow: FC<ConfirmWindowProps> = ({ text, submitHandle, link
 					disabled={notAllow}
 					onClick={handleClick}
 				>
-					Удалить
+					{actionBtnText ?? 'Удалить'}
 				</MainButton>
 				<MainButton
 					type='submit'
@@ -44,7 +53,7 @@ export const ConfirmWindow: FC<ConfirmWindowProps> = ({ text, submitHandle, link
 						closeModal()
 					}}
 				>
-					Отмена
+					{cancelBtnText ?? 'Отмена'}
 				</MainButton>
 			</div>
 		</div>

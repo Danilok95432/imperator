@@ -31,6 +31,20 @@ export const authApi = createApi({
 				body: formData,
 			}),
 		}),
+		regRecover: build.mutation<{ status: string }, FieldValues>({
+			query: (formData) => ({
+				url: '/reg_recovery/recovery',
+				method: 'POST',
+				body: formData,
+			}),
+		}),
+		regActivateRecover: build.mutation<{ status: string }, FieldValues>({
+			query: (formData) => ({
+				url: '/reg_recovery/activate',
+				method: 'POST',
+				body: formData,
+			}),
+		}),
 		loginUser: build.mutation<AuthResponse, FieldValues>({
 			query: (formData) => ({
 				url: '/auth/auth',
@@ -161,4 +175,6 @@ export const {
 	useGetPersonalInfoQuery,
 	useSavePersonalInfoMutation,
 	useLazyCheckAuthQuery,
+	useRegRecoverMutation,
+	useRegActivateRecoverMutation,
 } = authApi

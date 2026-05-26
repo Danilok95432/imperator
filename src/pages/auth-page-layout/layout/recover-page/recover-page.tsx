@@ -13,6 +13,10 @@ import { FlexRow } from 'src/shared/ui/FlexRow/FlexRow'
 
 import { type RecoverInputs, recoverInputsSchema } from './schema'
 import styles from './index.module.scss'
+import {
+	useRegActivateRecoverMutation,
+	useRegRecoverMutation,
+} from 'src/features/auth/api/auth.api'
 
 type RecoverStep = 'email' | 'code' | 'password'
 
@@ -20,7 +24,8 @@ const CORRECT_MOCK_CODE = '123456'
 
 export const RecoverPage = () => {
 	const navigate = useNavigate()
-
+	const [regRecover] = useRegRecoverMutation()
+	const [regActivateRecover] = useRegActivateRecoverMutation()
 	const [step, setStep] = useState<RecoverStep>('email')
 	const [isLoading, setIsLoading] = useState(false)
 
@@ -48,10 +53,9 @@ export const RecoverPage = () => {
 
 		try {
 			setIsLoading(true)
-
-			console.log('Запрос на отправку кода восстановления:', {
-				email: data.email,
-			})
+			const formData = new FormData()
+			formData.append('email', data.email)
+			await regRecover(formData).unwrap()
 
 			toast.success('Код восстановления отправлен на почту')
 			setStep('code')
@@ -74,10 +78,10 @@ export const RecoverPage = () => {
 		try {
 			setIsLoading(true)
 
-			console.log('Запрос на проверку кода восстановления:', {
-				email: data.email,
-				code: data.code,
-			})
+			const formData = new FormData()
+			formData.append('email', data.email)
+			formData.append('code', data.code)
+			await regActivateRecover(formData).unwrap()
 
 			if (data.code !== CORRECT_MOCK_CODE) {
 				toast.error('Неверный код восстановления')
@@ -147,7 +151,7 @@ export const RecoverPage = () => {
 						{step === 'code' && (
 							<FlexRow className={styles.step}>
 								<p className={styles.description}>
-									Введите код восстановления. Для теста используй код <b>{CORRECT_MOCK_CODE}</b>.
+									Введите код восстановления. Код отправлен на вашу почту.
 								</p>
 
 								<ControlledInput

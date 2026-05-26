@@ -1,5 +1,5 @@
 import { type FieldValues } from 'react-hook-form'
-import { type RefObject, useEffect, useRef, useState } from 'react'
+import { type MouseEvent, type RefObject, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Swiper, type SwiperRef, SwiperSlide } from 'swiper/react'
 import { Pagination } from 'swiper/modules'
@@ -22,7 +22,6 @@ import {
 	useGetCatalogQuery,
 	useGetItemCatalogByIDQuery,
 } from 'src/features/catalog/api/catalog.api'
-import { userID } from 'src/shared/helpers/consts'
 
 import { sliderOptions } from './consts'
 import styles from './index.module.scss'
@@ -31,10 +30,13 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 import { type FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { toast } from 'react-toastify'
+import { useActions } from 'src/app/store/hooks/actions'
+import { ConfirmWindow } from 'src/modals/confirmActionModal/confirmActionModal'
 
 type CartResponse = {
-	item_count: string
+	item_count?: string
 	status: string
+	errortext?: string
 }
 
 type ApiErrorResponse = {
@@ -60,6 +62,7 @@ const getApiErrorMessage = (error: unknown): string => {
 
 export const ChocolateItem = () => {
 	const { menuId = '', itemId = '' } = useParams()
+	const userID = localStorage.getItem('userID') ?? ''
 
 	const {
 		data,
@@ -67,17 +70,18 @@ export const ChocolateItem = () => {
 		isError: isNewsItemError,
 	} = useGetItemCatalogByIDQuery({
 		id: itemId,
-		userId: userID ?? '',
+		userId: userID,
 	})
 
 	const { data: catalogData } = useGetCatalogQuery({
 		id: menuId,
 		limit: '0',
 		step: '1',
-		userId: userID ?? '',
+		userId: userID,
 	})
 
 	const navigate = useNavigate()
+
 	useEffect(() => {
 		if (!isNewsItemError) return
 
@@ -112,7 +116,7 @@ export const ChocolateItem = () => {
 	const hasMoreItems = chocolate.moreitems && chocolate.moreitems.length > 0
 	const hasWeight = Number(chocolate.item_weight) > 0
 	const hasPrice = Number(chocolate.item_price) > 0
-	const hasShort = Boolean(chocolate.short)
+	const hasFull = Boolean(chocolate.full)
 	const hasComposition = Boolean(chocolate.item_desc)
 
 	const createAddFormData = (count: string) => {
@@ -128,7 +132,9 @@ export const ChocolateItem = () => {
 		return formData
 	}
 
-	const handleAddToCart = async (e: React.MouseEvent, countValue: string) => {
+	const { openModal } = useActions()
+
+	const handleAddToCart = async (e: MouseEvent, countValue: string) => {
 		e.preventDefault()
 		e.stopPropagation()
 
@@ -136,27 +142,48 @@ export const ChocolateItem = () => {
 
 		if (isCartUpdating || (delta < 0 && cartCount <= 0)) return
 
-		try {
-			setIsCartUpdating(true)
+		const updateCart = async () => {
+			try {
+				setIsCartUpdating(true)
 
-			const response = (await addItemToCart(
-				createAddFormData(countValue) as unknown as FieldValues,
-			).unwrap()) as unknown as CartResponse
+				const response = (await addItemToCart(
+					createAddFormData(countValue) as unknown as FieldValues,
+				).unwrap()) as CartResponse
 
-			setCartCount((prev) => {
-				const nextCount = Number(response.item_count)
-
-				if (Number.isFinite(nextCount)) {
-					return nextCount
+				if (response?.status === 'error') {
+					console.error('Ошибка при изменении товара в корзине:', response.errortext)
+					return
 				}
 
-				return Math.max(0, prev + delta)
-			})
-		} catch (error) {
-			console.error('Ошибка при изменении товара в корзине:', error)
-		} finally {
-			setIsCartUpdating(false)
+				setCartCount((prev) => {
+					const nextCount = Number(response?.item_count)
+
+					if (Number.isFinite(nextCount)) {
+						return Math.max(0, nextCount)
+					}
+
+					return Math.max(0, prev + delta)
+				})
+			} catch (error) {
+				console.error('Ошибка при изменении товара в корзине:', error)
+			} finally {
+				setIsCartUpdating(false)
+			}
 		}
+
+		if (delta < 0 && cartCount === 1) {
+			openModal(
+				<ConfirmWindow
+					text='Вы действительно хотите удалить товар из корзины? Отменить это действие будет нельзя'
+					submitHandle={updateCart}
+					link={`/catalog/${menuId}/item/${itemId}`}
+				/>,
+			)
+
+			return
+		}
+
+		await updateCart()
 	}
 
 	return (
@@ -167,7 +194,7 @@ export const ChocolateItem = () => {
 						crumbsLinksMap={[
 							{
 								title: catalogData?.title ?? 'Шоколад',
-								link: `catalog`,
+								link: 'catalog',
 							},
 						]}
 						isCatalog
@@ -185,7 +212,7 @@ export const ChocolateItem = () => {
 								modules={[Pagination]}
 								pagination={{ clickable: true }}
 							>
-								{images.map((slideEl, idx) => {
+								{images?.reverse().map((slideEl, idx) => {
 									return (
 										<SwiperSlide key={`${slideEl.original}-${idx}`}>
 											<FlexRow className={styles.slideRow}>
@@ -207,15 +234,25 @@ export const ChocolateItem = () => {
 							)}
 						</FlexRow>
 					)}
+
 					{!hasImages && <div className={styles.noSlider}></div>}
 
 					<FlexRow className={styles.infoWrapper}>
 						<FlexRow className={styles.info}>
 							{chocolate.title && <p className={styles.title}>{chocolate.title}</p>}
 
-							{hasWeight && <p className={styles.weight}>{`${chocolate.item_weight} г`}</p>}
+							{hasWeight && <p className={styles.weight}>{`${chocolate.item_weight} гр.`}</p>}
 
-							{hasShort && <p className={styles.desc}>{chocolate.short}</p>}
+							{hasFull && (
+								<p className={styles.desc}>
+									{chocolate?.full && (
+										<div
+											className={styles.desc}
+											dangerouslySetInnerHTML={{ __html: chocolate?.full }}
+										/>
+									)}
+								</p>
+							)}
 
 							{hasComposition && (
 								<p className={styles.composition}>{`Состав: ${chocolate.item_desc}`}</p>
@@ -232,7 +269,7 @@ export const ChocolateItem = () => {
 									[styles.loading]: isCartUpdating,
 								})}
 								disabled={isCartUpdating}
-								onClick={(e: React.MouseEvent) => {
+								onClick={(e: MouseEvent) => {
 									e.preventDefault()
 									e.stopPropagation()
 								}}
@@ -240,7 +277,7 @@ export const ChocolateItem = () => {
 								{cartCount === 0 ? (
 									<p
 										className={styles.btnText}
-										onClick={async (e: React.MouseEvent) => await handleAddToCart(e, '1')}
+										onClick={async (e: MouseEvent) => await handleAddToCart(e, '1')}
 									>
 										В корзину
 									</p>
@@ -248,7 +285,7 @@ export const ChocolateItem = () => {
 									<FlexRow className={styles.counterCart}>
 										<div
 											className={styles.vector}
-											onClick={async (e: React.MouseEvent) => await handleAddToCart(e, '-1')}
+											onClick={async (e: MouseEvent) => await handleAddToCart(e, '-1')}
 										>
 											<MinusSVG />
 										</div>
@@ -257,7 +294,7 @@ export const ChocolateItem = () => {
 
 										<div
 											className={styles.vector}
-											onClick={async (e: React.MouseEvent) => await handleAddToCart(e, '1')}
+											onClick={async (e: MouseEvent) => await handleAddToCart(e, '1')}
 										>
 											<PlusSVG />
 										</div>

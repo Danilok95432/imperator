@@ -9,10 +9,33 @@ import {
 	type CartListItemsResponse,
 	type ILKInfoOrder,
 } from 'src/types/cardItem'
+import { type UserOrdersList } from 'src/types/order'
+
+type BaseMutationResponse = {
+	status: string
+	errortext?: string
+}
+
+export type CartMutationResponse = BaseMutationResponse & {
+	item_count?: string
+	cart_items?: string
+}
+
+const getAuthHeaders = (withBearer = false) => {
+	const token = localStorage.getItem('token')
+
+	if (!token) {
+		return undefined
+	}
+
+	return {
+		Authorization: withBearer ? `Bearer ${token}` : token,
+	}
+}
 
 export const catalogApi = createApi({
 	reducerPath: ReducerPath.Catalog,
-	tagTypes: ['Catalog'],
+	tagTypes: ['Catalog', 'CatalogItem', 'Cart', 'Favorites'],
 	baseQuery: baseQueryWithReauth,
 	endpoints: (build) => ({
 		getCatalog: build.query<
@@ -20,7 +43,7 @@ export const catalogApi = createApi({
 			{ id?: string; limit?: string; step?: string; userId?: string }
 		>({
 			query: ({ id, limit, step, userId }) => ({
-				url: `catalog/item`,
+				url: 'catalog/item',
 				params: {
 					id,
 					limit,
@@ -28,143 +51,167 @@ export const catalogApi = createApi({
 					id_user: userId,
 				},
 			}),
+			providesTags: ['Catalog', 'Cart', 'Favorites'],
 		}),
+
 		getItemCatalogByID: build.query<CardItem, { id: string; userId?: string }>({
 			query: ({ id, userId }) => ({
-				url: `catalog/tovar`,
+				url: 'catalog/tovar',
 				params: {
 					id,
 					id_user: userId,
 				},
 			}),
+			providesTags: (_result, _error, { id }) => [
+				'Catalog',
+				'Cart',
+				'Favorites',
+				{ type: 'CatalogItem' as const, id },
+			],
 		}),
+
 		getCategoriesCatalog: build.query<CatalogListItemsResponse, null>({
 			query: () => ({
-				url: `catalog/list_items`,
+				url: 'catalog/list_items',
 			}),
 		}),
+
 		getUserFavorites: build.query<ICatalog, null>({
-			query: () => {
-				const token = localStorage.getItem('token')
-				return {
-					url: 'user_favourites/list',
-					headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-				}
-			},
+			query: () => ({
+				url: 'user_favourites/list',
+				headers: getAuthHeaders(true),
+			}),
+			providesTags: ['Favorites'],
 		}),
+
 		getItemsCart: build.query<CartListItemsResponse, string>({
-			query: (idUser) => {
-				const token = localStorage.getItem('token')
-				return {
-					url: 'cart/list',
-					headers: token ? { Authorization: `${token}` } : undefined,
-					params: {
-						id_user: idUser,
-					},
-				}
-			},
+			query: (idUser) => ({
+				url: 'cart/list',
+				headers: getAuthHeaders(),
+				params: {
+					id_user: idUser,
+				},
+			}),
+			providesTags: ['Cart'],
 		}),
+
 		getCountItemsCart: build.query<{ cart_items: string }, string>({
-			query: (idUser) => {
-				const token = localStorage.getItem('token')
-				return {
-					url: 'cart/items_count',
-					headers: token ? { Authorization: `${token}` } : undefined,
-					params: {
-						id_user: idUser,
-					},
-				}
-			},
+			query: (idUser) => ({
+				url: 'cart/items_count',
+				headers: getAuthHeaders(),
+				params: {
+					id_user: idUser,
+				},
+			}),
+			providesTags: ['Cart'],
 		}),
-		addItemToCart: build.mutation<{ status: string; errortext: string }, FieldValues>({
-			query: (formData) => {
-				const token = localStorage.getItem('token')
-				return {
-					url: 'cart/add_to_cart',
-					headers: token ? { Authorization: `${token}` } : undefined,
-					method: 'POST',
-					body: formData,
-				}
-			},
+
+		addItemToCart: build.mutation<CartMutationResponse, FieldValues>({
+			query: (formData) => ({
+				url: 'cart/add_to_cart',
+				headers: getAuthHeaders(),
+				method: 'POST',
+				body: formData,
+			}),
+			invalidatesTags: ['Cart', 'Catalog', 'CatalogItem'],
 		}),
-		deleteItemFromCart: build.mutation<string, FieldValues>({
-			query: (formData) => {
-				const token = localStorage.getItem('token')
-				return {
-					url: 'cart/delete_from_cart',
-					headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-					method: 'POST',
-					body: formData,
-				}
-			},
+
+		deleteItemFromCart: build.mutation<BaseMutationResponse | string, FieldValues>({
+			query: (formData) => ({
+				url: 'cart/delete_from_cart',
+				headers: getAuthHeaders(true),
+				method: 'POST',
+				body: formData,
+			}),
+			invalidatesTags: ['Cart', 'Catalog', 'CatalogItem'],
 		}),
+
 		clearCart: build.mutation<null, FieldValues>({
-			query: (formData) => {
-				const token = localStorage.getItem('token')
-				return {
-					url: `cart/clear`,
-					headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-					method: 'POST',
-					body: formData,
-				}
-			},
+			query: (formData) => ({
+				url: 'cart/clear',
+				headers: getAuthHeaders(true),
+				method: 'POST',
+				body: formData,
+			}),
+			invalidatesTags: ['Cart', 'Catalog', 'CatalogItem'],
 		}),
-		addToFavorites: build.mutation<{ status: string; errortext: string }, FieldValues>({
-			query: (formData) => {
-				const token = localStorage.getItem('token')
-				return {
-					url: 'favourite/add',
-					headers: token ? { Authorization: `${token}` } : undefined,
-					method: 'POST',
-					body: formData,
-				}
-			},
+
+		addToFavorites: build.mutation<BaseMutationResponse, FieldValues>({
+			query: (formData) => ({
+				url: 'favourite/add',
+				headers: getAuthHeaders(),
+				method: 'POST',
+				body: formData,
+			}),
+			invalidatesTags: ['Favorites', 'Catalog', 'CatalogItem'],
 		}),
-		deleteFromFavorites: build.mutation<{ status: string; errortext: string }, FieldValues>({
-			query: (formData) => {
-				const token = localStorage.getItem('token')
-				return {
-					url: 'favourite/delete',
-					headers: token ? { Authorization: `${token}` } : undefined,
-					method: 'POST',
-					body: formData,
-				}
-			},
+
+		deleteFromFavorites: build.mutation<BaseMutationResponse, FieldValues>({
+			query: (formData) => ({
+				url: 'favourite/delete',
+				headers: getAuthHeaders(),
+				method: 'POST',
+				body: formData,
+			}),
+			invalidatesTags: ['Favorites', 'Catalog', 'CatalogItem'],
 		}),
+
 		getItemsFavorites: build.query<ICatalog, string>({
-			query: (idUser) => {
-				const token = localStorage.getItem('token')
-				return {
-					url: 'favourite/list',
-					headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-					params: {
-						id_user: idUser,
-					},
-				}
-			},
+			query: (idUser) => ({
+				url: 'favourite/list',
+				headers: getAuthHeaders(true),
+				params: {
+					id_user: idUser,
+				},
+			}),
+			providesTags: ['Favorites'],
 		}),
+
 		getLkInfoForOrder: build.query<ILKInfoOrder, string>({
-			query: (idUser) => {
-				const token = localStorage.getItem('token')
-				return {
-					url: 'order/getinfo',
-					headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-					params: {
-						id_user: idUser,
-					},
-				}
-			},
+			query: (idUser) => ({
+				url: 'order/getinfo',
+				headers: getAuthHeaders(true),
+				params: {
+					id_user: idUser,
+				},
+			}),
 		}),
-		saveOrderInfo: build.mutation<{ status: string; errortext: string }, FieldValues>({
-			query: (formData) => {
-				const token = localStorage.getItem('token')
-				return {
-					url: 'order/save',
-					headers: token ? { Authorization: `${token}` } : undefined,
-					method: 'POST',
-					body: formData,
-				}
-			},
+
+		saveOrderInfo: build.mutation<BaseMutationResponse, FieldValues>({
+			query: (formData) => ({
+				url: 'order/save',
+				headers: getAuthHeaders(),
+				method: 'POST',
+				body: formData,
+			}),
+		}),
+		getUserOrdersList: build.query<UserOrdersList, { idUser: string; type?: string }>({
+			query: ({ idUser, type }) => ({
+				url: 'user_orders/list',
+				headers: getAuthHeaders(true),
+				params: {
+					id_user: idUser,
+					type,
+				},
+			}),
+		}),
+		getUserOrdersListItemInfo: build.query<UserOrdersList, string>({
+			query: (id) => ({
+				url: 'user_orders/item',
+				headers: getAuthHeaders(true),
+				params: {
+					id,
+				},
+			}),
+		}),
+		cancelOrderItem: build.mutation<UserOrdersList, string>({
+			query: (id) => ({
+				url: 'user_orders/cancel',
+				headers: getAuthHeaders(true),
+				params: {
+					id,
+				},
+			}),
 		}),
 	}),
 })
@@ -184,4 +231,7 @@ export const {
 	useGetLkInfoForOrderQuery,
 	useGetCountItemsCartQuery,
 	useSaveOrderInfoMutation,
+	useGetUserOrdersListQuery,
+	useGetUserOrdersListItemInfoQuery,
+	useCancelOrderItemMutation,
 } = catalogApi

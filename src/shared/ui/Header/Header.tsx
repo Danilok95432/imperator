@@ -9,17 +9,22 @@ import { MainNavigation } from 'src/widgets/main-navigation/main-navigation'
 import { LogoSVG } from '../icons/logoSVG'
 import { useCheckAuthQuery } from 'src/features/auth/api/auth.api'
 import { useGetCountItemsCartQuery } from 'src/features/catalog/api/catalog.api'
-import { userID } from 'src/shared/helpers/consts'
 
 export const Header = () => {
 	const navigate = useNavigate()
 	const location = useLocation()
 	const { data } = useCheckAuthQuery(null)
-	const { data: countCartData } = useGetCountItemsCartQuery(userID)
+
+	const token = localStorage.getItem('token')
+	const userId = localStorage.getItem('userID') ?? ''
 
 	const authorized = useMemo(() => {
-		return Boolean(data?.token && data?.user && localStorage.getItem('token') !== null)
-	}, [data, location.pathname])
+		return Boolean(data?.token && data?.user && token !== null)
+	}, [data, token, location.pathname])
+
+	const { data: countCartData } = useGetCountItemsCartQuery(authorized && userId ? userId : '')
+
+	const cartItemsCount = Number(countCartData?.cart_items ?? 0)
 
 	return (
 		<header className={styles.header}>
@@ -37,14 +42,10 @@ export const Header = () => {
 								<PersonSVG />
 							</div>
 
-							<div
-								className={styles.cartVector}
-								onClick={() => navigate(authorized ? '/lk/cart' : '/auth')}
-							>
+							<div className={styles.cartVector} onClick={() => navigate('/lk/cart')}>
 								<CartIconSVG />
-								{Number(countCartData?.cart_items) > 0 && (
-									<span className={styles.cartBadge}>{Number(countCartData?.cart_items)}</span>
-								)}
+
+								{cartItemsCount > 0 && <span className={styles.cartBadge}>{cartItemsCount}</span>}
 							</div>
 						</FlexRow>
 					</FlexRow>

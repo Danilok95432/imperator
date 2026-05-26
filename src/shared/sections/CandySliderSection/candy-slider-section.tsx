@@ -51,7 +51,7 @@ export const CandySliderSection: FC<CandySliderSectionProps> = ({ title = 'На�
 									</div>
 									<div className={styles.name}>{item.title}</div>
 									<FlexRow className={styles.metaRow}>
-										<span className={styles.weight}>{item.item_weight} г.</span>
+										<span className={styles.weight}>{item.item_weight} гр.</span>
 										<span className={styles.price}>{formatPrice(Number(item.item_price))}</span>
 									</FlexRow>
 								</FlexRow>

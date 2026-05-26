@@ -23,7 +23,6 @@ import { PlusSVG } from 'src/shared/ui/icons/plusSVG'
 import skeleton from 'src/assets/img/candy(2).png'
 import cn from 'classnames'
 import styles from './index.module.scss'
-import { userID } from 'src/shared/helpers/consts'
 import { DeleteItemFromCartSVG } from 'src/shared/ui/icons/deleteItemFromCartSVG'
 import { useActions } from 'src/app/store/hooks/actions'
 import { ConfirmWindow } from 'src/modals/confirmActionModal/confirmActionModal'
@@ -63,8 +62,10 @@ export const MyCartPage = () => {
 	useAdditionalCrumbs('Моя корзина')
 
 	const navigate = useNavigate()
+	const { openModal } = useActions()
+	const userID = localStorage.getItem('userID') ?? ''
 
-	const { data, isLoading, isFetching, refetch } = useGetItemsCartQuery(userID)
+	const { data, isLoading, isFetching } = useGetItemsCartQuery(userID ?? '')
 
 	const [addItemToCart] = useAddItemToCartMutation()
 	const [deleteItemFromCart] = useDeleteItemFromCartMutation()
@@ -106,9 +107,11 @@ export const MyCartPage = () => {
 
 	const createClearDeleteFormData = () => {
 		const formData = new FormData()
+
 		if (userID) {
 			formData.append('id_user', userID)
 		}
+
 		return formData
 	}
 
@@ -116,47 +119,78 @@ export const MyCartPage = () => {
 		e.preventDefault()
 		e.stopPropagation()
 
-		try {
-			setUpdatingItemId(item.id_item)
+		const delta = Number(count)
+		const currentCount = Number(item.item_count) || 0
 
-			await addItemToCart(createAddFormData(item.id_item, count) as unknown as FieldValues).unwrap()
-			await refetch()
-		} catch (error) {
-			console.error('Ошибка при добавлении товара в корзину:', error)
-		} finally {
-			setUpdatingItemId(null)
+		if (delta < 0 && currentCount <= 0) return
+
+		const updateCartItemCount = async () => {
+			try {
+				setUpdatingItemId(item.id_item)
+
+				await addItemToCart(
+					createAddFormData(item.id_item, count) as unknown as FieldValues,
+				).unwrap()
+			} catch (error) {
+				console.error('Ошибка при изменении товара в корзине:', error)
+			} finally {
+				setUpdatingItemId(null)
+			}
 		}
+
+		if (delta < 0 && currentCount === 1) {
+			openModal(
+				<ConfirmWindow
+					text='Вы действительно хотите удалить товар из корзины? Отменить это действие будет нельзя'
+					submitHandle={updateCartItemCount}
+					link='/lk/cart'
+				/>,
+			)
+
+			return
+		}
+
+		await updateCartItemCount()
 	}
 
 	const handleRemoveFromCart = async (e: React.MouseEvent, item: CartListItem) => {
 		e.preventDefault()
 		e.stopPropagation()
+
 		openModal(
 			<ConfirmWindow
 				text='Вы действительно хотите удалить товар из корзины? Отменить это действие будет нельзя'
 				submitHandle={async () => {
-					setUpdatingItemId(item.id_item)
-					await deleteItemFromCart(
-						createDeleteFormData(item.id_item) as unknown as FieldValues,
-					).unwrap()
-					await refetch()
+					try {
+						setUpdatingItemId(item.id_item)
+
+						await deleteItemFromCart(
+							createDeleteFormData(item.id_item) as unknown as FieldValues,
+						).unwrap()
+					} catch (error) {
+						console.error('Ошибка при удалении товара из корзины:', error)
+					} finally {
+						setUpdatingItemId(null)
+					}
 				}}
 				link='/lk/cart'
 			/>,
 		)
 	}
 
-	const { openModal } = useActions()
-
 	const handleClearCart = () => {
 		openModal(
 			<ConfirmWindow
 				text='Вы действительно хотите удалить все товары из корзины? Отменить это действие будет нельзя'
 				submitHandle={async () => {
-					setIsClearing(true)
-					await clearCart(createClearDeleteFormData()).unwrap()
-					await refetch()
-					setIsClearing(false)
+					try {
+						setIsClearing(true)
+						await clearCart(createClearDeleteFormData()).unwrap()
+					} catch (error) {
+						console.error('Ошибка при очистке корзины:', error)
+					} finally {
+						setIsClearing(false)
+					}
 				}}
 				link='/lk/cart'
 			/>,
@@ -191,6 +225,12 @@ export const MyCartPage = () => {
 
 							return (
 								<FlexRow className={styles.elementRow} key={item.id_item}>
+									<div
+										className={styles.deleteVectorMobile}
+										onClick={async (e) => await handleRemoveFromCart(e, item)}
+									>
+										<DeleteItemFromCartSVG isMobile />
+									</div>
 									<FlexRow className={styles.contentRow}>
 										<img className={styles.img} src={skeleton} alt='' />
 
@@ -231,6 +271,7 @@ export const MyCartPage = () => {
 										</MainButton>
 
 										<p className={styles.totalPrice}>{formatPrice(item.item_fullprice)}</p>
+
 										<div
 											className={styles.deleteVector}
 											onClick={async (e) => await handleRemoveFromCart(e, item)}

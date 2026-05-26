@@ -1,17 +1,14 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import styles from './index.module.scss'
-import { mockChocolates } from 'src/mock/chocolate'
 import { Container } from 'src/shared/ui/Container/Container'
 import { ChocolateCard } from './components/chocolate-card/chocolate-card'
 import { Pagination } from 'src/widgets/pagination/pagination'
 import { useBreakPoint } from 'src/features/useBreakPoint/useBreakPoint'
 import { useGetCatalogQuery } from 'src/features/catalog/api/catalog.api'
 import { Loader } from 'src/shared/ui/loader/loader'
-import { useNavigate, useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { type FetchBaseQueryError } from '@reduxjs/toolkit/query'
-
-let ITEMS_PER_PAGE = 9
 
 type ApiErrorResponse = {
 	status: 'error'
@@ -37,6 +34,12 @@ const getApiErrorMessage = (error: unknown): string => {
 export const ChocolateList = () => {
 	const [currentPage, setCurrentPage] = useState(1)
 	const { menuId = '' } = useParams()
+	const navigate = useNavigate()
+	const breakPoint = useBreakPoint()
+
+	const userId = localStorage.getItem('userID') ?? ''
+	const itemsPerPage = breakPoint === 'S' ? 8 : 9
+
 	const {
 		data,
 		error: newsItemError,
@@ -44,11 +47,11 @@ export const ChocolateList = () => {
 		isLoading,
 	} = useGetCatalogQuery({
 		id: menuId,
-		limit: String(0),
+		limit: '0',
 		step: String(currentPage),
+		userId,
 	})
 
-	const navigate = useNavigate()
 	useEffect(() => {
 		if (!isNewsItemError) return
 
@@ -61,28 +64,14 @@ export const ChocolateList = () => {
 		navigate('/', { replace: true })
 	}, [isNewsItemError, newsItemError, navigate, menuId])
 
-	const breakPoint = useBreakPoint()
-
-	if (breakPoint === 'S') ITEMS_PER_PAGE = 8
-
-	const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
-	const endIndex = startIndex + ITEMS_PER_PAGE
-	const currentItems = data?.items ? data?.items.slice(startIndex, endIndex) : []
-
-	const handlePageChange = (page: number) => {
-		setCurrentPage(page)
-		window.scrollTo({ top: 0, behavior: 'smooth' })
-	}
-
 	const paginationData = useMemo(() => {
-		const totalItems = data?.totalitems ?? data?.items.length ?? 1
-		const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE)
+		const items = data?.items ?? []
+		const totalItems = data?.totalitems ?? items.length
+		const totalPages = Math.ceil(totalItems / itemsPerPage)
 
-		const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
-		const endIndex = startIndex + ITEMS_PER_PAGE
-		const currentItems = data?.items
-			? data?.items.slice(startIndex, endIndex)
-			: mockChocolates.slice(startIndex, endIndex)
+		const startIndex = (currentPage - 1) * itemsPerPage
+		const endIndex = startIndex + itemsPerPage
+		const currentItems = items.slice(startIndex, endIndex)
 
 		return {
 			totalItems,
@@ -91,14 +80,20 @@ export const ChocolateList = () => {
 			startIndex: startIndex + 1,
 			endIndex: Math.min(endIndex, totalItems),
 		}
-	}, [mockChocolates, currentPage, ITEMS_PER_PAGE])
+	}, [currentPage, data, itemsPerPage])
+
+	const handlePageChange = (page: number) => {
+		setCurrentPage(page)
+		window.scrollTo({ top: 0, behavior: 'smooth' })
+	}
 
 	if (!data?.items || isLoading) return <Loader />
+
 	return (
 		<Container className={styles.cont}>
 			<div className={styles.grid}>
-				{currentItems.length > 0 ? (
-					currentItems.map((chocolate) => (
+				{paginationData.currentItems.length > 0 ? (
+					paginationData.currentItems.map((chocolate) => (
 						<ChocolateCard key={chocolate.id} chocolate={chocolate} />
 					))
 				) : (

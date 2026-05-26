@@ -23,18 +23,51 @@ export type CartItem = {
 	quantity: number
 }
 
-export type OrderItem = {
+export type CartUserListItem = {
 	id: string
+	item_name: string
+	item_count: string
+	item_price: string
+}
+
+export type OneItemOrder = {
+	id: string
+	order_date: string
+	price_items: string
+	price_delivery: string
+	price_total: string
+	items_count: string
+	delivery: string
+	payment: string
+	status: string
+	status_keyword: string
+	finish_date: string
+	cancel_date: string
+	delivery_date: string
+	order_items: CartUserListItem[]
+}
+
+export type OrderItem = {
 	number: string
-	date: string
-	items: CartItem[]
-	deliveryPrice: string
-	totalPrice: string
-	itemsTotal: string
-	deliver: string
+	id: string
+	items_count: string
+	order_date: string
+	order_items: CartUserListItem[]
+	price_delivery: string
+	price_total: string
+	price_items: string
+	delivery: string
 	status: string
 	deliverDate: string
 	type: 'current' | 'completed' | 'canceled'
+	status_keyword: string
+	finish_date?: string
+	cancel_date?: string
+	delivery_date?: string
 }
 
 export type EditSection = 'region' | 'delivery' | 'payment' | 'customer' | null
+
+export type UserOrdersList = {
+	orders: OrderItem[]
+}

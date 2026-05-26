@@ -107,7 +107,7 @@ export const CartPage = () => {
 
 	const selectedPayment = orderData?.payments.find((item) => item.value === values.paymentId)
 
-	const deliveryPrice = 0
+	const deliveryPrice = selectedDelivery?.price ? Number(selectedDelivery.price) : 0
 	const totalPrice = itemsTotal + deliveryPrice
 
 	const isRegionFilled = Boolean(cityValue && cityValue !== '0')

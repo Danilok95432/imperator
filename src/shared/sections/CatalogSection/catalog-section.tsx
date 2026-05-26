@@ -8,9 +8,11 @@ import { useGetCategoriesCatalogQuery } from 'src/features/catalog/api/catalog.a
 import { AppRoute } from 'src/app/router/consts'
 
 import skeleton from 'src/assets/img/catalog(1).png'
+import { useBreakPoint } from 'src/features/useBreakPoint/useBreakPoint'
 
 export const CatalogSection = () => {
 	const { data } = useGetCategoriesCatalogQuery(null)
+	const breakPoint = useBreakPoint()
 	return (
 		<Section className={styles.catalog}>
 			<Container>
@@ -19,32 +21,65 @@ export const CatalogSection = () => {
 				</FlexRow>
 				<FlexRow className={styles.catalogRow}>
 					{data?.catalogs.map((el) => {
-						return (
-							<FlexRow className={styles.catalogEl} key={el.id}>
-								<div className={styles.imgWrapper}>
-									<img src={el.img && el.img.length > 0 ? el.img[0].original : skeleton} alt='' />
-								</div>
-								<p className={styles.title}>{el.title}</p>
-								<FlexRow className={styles.bottomRow}>
-									<FlexRow className={styles.linksRow}>
-										{el.subcats?.map((elem) => {
-											return (
-												<Link
-													to={`/catalog/${el.id}/item/${elem.id}`}
-													key={elem.id}
-													className={styles.link}
-												>
-													{elem.title}
-												</Link>
-											)
-										})}
+						if (breakPoint === 'S')
+							return (
+								<Link to={`/catalog/${el.id}`} className={styles.catalogLinkWrapper}>
+									<FlexRow className={styles.catalogEl} key={el.id}>
+										<div className={styles.imgWrapper}>
+											<img
+												src={el.img && el.img.length > 0 ? el.img[0].original : skeleton}
+												alt=''
+											/>
+										</div>
+										<p className={styles.title}>{el.title}</p>
+										<FlexRow className={styles.bottomRow}>
+											<FlexRow className={styles.linksRow}>
+												{el.subcats?.map((elem) => {
+													return (
+														<Link
+															to={`/catalog/${el.id}/item/${elem.id}`}
+															key={elem.id}
+															className={styles.link}
+														>
+															{elem.title}
+														</Link>
+													)
+												})}
+											</FlexRow>
+											<Link to={`${AppRoute.Catalog}/${el.id}`} className={styles.catalogBtn}>
+												<p>{`В каталог "${el.title}"`}</p>
+											</Link>
+										</FlexRow>
 									</FlexRow>
-									<Link to={`${AppRoute.Catalog}/${el.id}`} className={styles.catalogBtn}>
-										<p>{`В каталог "${el.title}"`}</p>
-									</Link>
+								</Link>
+							)
+						else
+							return (
+								<FlexRow className={styles.catalogEl} key={el.id}>
+									<div className={styles.imgWrapper}>
+										<img src={el.img && el.img.length > 0 ? el.img[0].original : skeleton} alt='' />
+									</div>
+									<p className={styles.title}>{el.title}</p>
+									<FlexRow className={styles.bottomRow}>
+										<FlexRow className={styles.linksRow}>
+											{el.subcats?.map((elem) => {
+												return (
+													<Link
+														to={`/catalog/${el.id}/item/${elem.id}`}
+														key={elem.id}
+														className={styles.link}
+													>
+														{elem.title}
+													</Link>
+												)
+											})}
+										</FlexRow>
+										<Link to={`${AppRoute.Catalog}/${el.id}`} className={styles.catalogBtn}>
+											<p>{`В каталог "${el.title}"`}</p>
+										</Link>
+									</FlexRow>
 								</FlexRow>
-							</FlexRow>
-						)
+							)
 					})}
 				</FlexRow>
 			</Container>
