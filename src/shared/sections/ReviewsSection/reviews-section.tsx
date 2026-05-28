@@ -42,6 +42,7 @@ export const ReviewSection = () => {
 	// 	},
 	// ]
 	const { data } = useGetReviewsListQuery(null)
+	if (data?.reviews && data?.reviews.length === 0) return null
 	return (
 		<Section className={cn(styles.reviewSlider)}>
 			<Container className={styles.sliderCont}>

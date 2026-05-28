@@ -21,6 +21,7 @@ export type SliderItem = {
 	title: string
 	itemdesc: string
 	use_main: boolean
+	category_id: string
 }
 
 export type SliderListResponse = {
@@ -57,6 +58,8 @@ export type BestItem = {
 	item_weight: string
 	item_price: string
 	img: ImageItemWithText[]
+	category_id: string
+	favourite: boolean
 }
 
 export type BestListResponse = {

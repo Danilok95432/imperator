@@ -8,18 +8,22 @@ import { userID } from 'src/shared/helpers/consts'
 
 export const CurrentOrders = () => {
 	const { data: ordersData } = useGetUserOrdersListQuery({ idUser: userID ?? '' })
+
+	const orders = Array.isArray(ordersData) ? ordersData : ordersData?.orders ?? []
+
+	const currentOrders = orders.filter((order) => order.status_keyword === 'created')
+
 	return (
 		<Section className={styles.currentOrders}>
 			<Container>
 				<FlexRow className={styles.ordersList}>
-					{ordersData?.orders.length === 0 && (
+					{currentOrders.length === 0 ? (
 						<p className={styles.noOrders}>У вас нет текущих заказов</p>
-					)}
-					{ordersData?.orders
-						.filter((order) => order.status_keyword === 'created')
-						.map((order) => {
+					) : (
+						currentOrders.map((order) => {
 							return <OneOrder key={order.id} order={order} />
-						})}
+						})
+					)}
 				</FlexRow>
 			</Container>
 		</Section>

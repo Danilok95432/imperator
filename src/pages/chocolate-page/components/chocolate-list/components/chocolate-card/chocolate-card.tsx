@@ -198,7 +198,7 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 	}
 
 	const imageSrc = chocolate.img && chocolate.img.length > 0 ? chocolate.img[0].original : skeleton
-	const linkTo = `${AppRoute.Catalog}/${menuId}/item/${chocolate.id}`
+	const linkTo = `${AppRoute.Catalog}/${chocolate.category_id ?? menuId}/item/${chocolate.id}`
 
 	if (smallCard) {
 		return (

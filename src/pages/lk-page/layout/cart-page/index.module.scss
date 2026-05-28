@@ -141,6 +141,9 @@ section.section {
 		.items {
 			display: flex;
 			flex-direction: column;
+			.itemRowLinkOrder {
+				width: 100%;
+			}
 		}
 
 		.itemRow {
@@ -153,12 +156,18 @@ section.section {
 			&:last-child {
 				border-bottom: none;
 			}
+			&:hover {
+				.itemName {
+					color: #fff;
+				}
+			}
 		}
 
 		.itemName {
 			font-size: 24px;
 			color: var(--main-theme-color-2);
 			font-weight: 400;
+			transition: all 0.3s ease-in-out;
 		}
 
 		.itemQty {

@@ -15,7 +15,9 @@ export type OrderInputs = {
 	comment: string
 }
 
-export const orderInputsSchema = yup.object({
+const isDeliveryAddressRequired = (deliveryId: unknown) => String(deliveryId) === '1'
+
+export const orderInputsSchema: yup.ObjectSchema<OrderInputs> = yup.object({
 	citys: yup
 		.mixed<SelOption[] | string>()
 		.defined()
@@ -31,12 +33,13 @@ export const orderInputsSchema = yup.object({
 			return false
 		}),
 
-	deliveryId: yup.string().required('Выберите способ доставки'),
+	deliveryId: yup.string().ensure().required('Выберите способ доставки'),
 
-	paymentId: yup.string().required('Выберите способ оплаты'),
+	paymentId: yup.string().ensure().required('Выберите способ оплаты'),
 
 	firstname: yup
 		.string()
+		.ensure()
 		.required('Введите имя')
 		.min(2, 'Имя должно содержать минимум 2 символа')
 		.max(30, 'Имя не должно превышать 30 символов')
@@ -44,19 +47,19 @@ export const orderInputsSchema = yup.object({
 
 	surname: yup
 		.string()
+		.ensure()
 		.required('Введите фамилию')
 		.min(2, 'Фамилия должна содержать минимум 2 символа')
 		.max(30, 'Фамилия не должна превышать 30 символов')
 		.matches(/^[а-яА-ЯёЁa-zA-Z\s-]+$/, 'Фамилия может содержать только буквы, пробел и дефис'),
 
-	email: yup.string().required('Введите почту').email('Введите корректный email адрес'),
+	email: yup.string().ensure().required('Введите почту').email('Введите корректный email адрес'),
 
 	telphone: yup
 		.string()
+		.ensure()
 		.required('Введите номер телефона')
 		.test('phone-length', 'Номер телефона должен содержать 11 цифр', (value) => {
-			if (!value) return false
-
 			const numbers = value.replace(/\D/g, '')
 
 			return numbers.length === 11
@@ -64,13 +67,35 @@ export const orderInputsSchema = yup.object({
 
 	street: yup
 		.string()
-		.required('Введите улицу')
-		.min(2, 'Улица должна содержать минимум 2 символа')
-		.max(100, 'Улица не должна превышать 100 символов'),
+		.ensure()
+		.when('deliveryId', {
+			is: isDeliveryAddressRequired,
+			then: (schema) =>
+				schema
+					.required('Введите улицу')
+					.min(2, 'Улица должна содержать минимум 2 символа')
+					.max(100, 'Улица не должна превышать 100 символов'),
+			otherwise: (schema) => schema,
+		}),
 
-	dom: yup.string().required('Введите дом').max(20, 'Слишком длинное значение'),
+	dom: yup
+		.string()
+		.ensure()
+		.when('deliveryId', {
+			is: isDeliveryAddressRequired,
+			then: (schema) => schema.required('Введите дом').max(20, 'Слишком длинное значение'),
+			otherwise: (schema) => schema,
+		}),
 
-	room: yup.string().required('Введите квартиру или офис').max(20, 'Слишком длинное значение'),
+	room: yup
+		.string()
+		.ensure()
+		.when('deliveryId', {
+			is: isDeliveryAddressRequired,
+			then: (schema) =>
+				schema.required('Введите квартиру или офис').max(20, 'Слишком длинное значение'),
+			otherwise: (schema) => schema,
+		}),
 
-	comment: yup.string().max(500, 'Комментарий не должен превышать 500 символов').defined(),
+	comment: yup.string().ensure().max(500, 'Комментарий не должен превышать 500 символов'),
 })

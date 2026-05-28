@@ -13,19 +13,13 @@ import { FlexRow } from 'src/shared/ui/FlexRow/FlexRow'
 
 import { type RecoverInputs, recoverInputsSchema } from './schema'
 import styles from './index.module.scss'
-import {
-	useRegActivateRecoverMutation,
-	useRegRecoverMutation,
-} from 'src/features/auth/api/auth.api'
+import { useRegRecoverMutation } from 'src/features/auth/api/auth.api'
 
 type RecoverStep = 'email' | 'code' | 'password'
-
-const CORRECT_MOCK_CODE = '123456'
 
 export const RecoverPage = () => {
 	const navigate = useNavigate()
 	const [regRecover] = useRegRecoverMutation()
-	const [regActivateRecover] = useRegActivateRecoverMutation()
 	const [step, setStep] = useState<RecoverStep>('email')
 	const [isLoading, setIsLoading] = useState(false)
 
@@ -56,44 +50,17 @@ export const RecoverPage = () => {
 			const formData = new FormData()
 			formData.append('email', data.email)
 			await regRecover(formData).unwrap()
-
-			toast.success('Код восстановления отправлен на почту')
+			toast.success(
+				'Перейдите по ссылке, отправленной на почтовый ящик, для продолжения восстановления пароля',
+			)
 			setStep('code')
 		} catch {
-			toast.error('Не удалось отправить код восстановления')
+			toast.success(
+				'Перейдите по ссылке, отправленной на почтовый ящик, для продолжения восстановления пароля',
+			)
 		} finally {
 			setIsLoading(false)
-		}
-	}
-
-	const checkRecoverCode = async () => {
-		const isValid = await trigger('code')
-
-		if (!isValid) {
-			return
-		}
-
-		const data = getValues()
-
-		try {
-			setIsLoading(true)
-
-			const formData = new FormData()
-			formData.append('email', data.email)
-			formData.append('code', data.code)
-			await regActivateRecover(formData).unwrap()
-
-			if (data.code !== CORRECT_MOCK_CODE) {
-				toast.error('Неверный код восстановления')
-				return
-			}
-
-			toast.success('Код подтверждён')
-			setStep('password')
-		} catch {
-			toast.error('Не удалось проверить код')
-		} finally {
-			setIsLoading(false)
+			navigate(`/auth`)
 		}
 	}
 
@@ -136,75 +103,21 @@ export const RecoverPage = () => {
 									type='email'
 									placeholder='Введите почту'
 								/>
-
-								<MainButton
-									className={styles.enterBtn}
-									type='button'
-									onClick={sendRecoverCode}
-									disabled={isLoading}
-								>
-									Получить код
-								</MainButton>
+								<FlexRow className={styles.linksRow}>
+									<Link className={styles.link} to={`${AppRoute.AUTH}`}>
+										Вернуться к авторизации
+									</Link>
+									<MainButton
+										className={styles.enterBtn}
+										type='button'
+										onClick={sendRecoverCode}
+										disabled={isLoading}
+									>
+										Получить код
+									</MainButton>
+								</FlexRow>
 							</FlexRow>
 						)}
-
-						{step === 'code' && (
-							<FlexRow className={styles.step}>
-								<p className={styles.description}>
-									Введите код восстановления. Код отправлен на вашу почту.
-								</p>
-
-								<ControlledInput
-									className={styles.input}
-									name='code'
-									type='text'
-									placeholder='Введите код'
-								/>
-
-								<MainButton
-									className={styles.enterBtn}
-									type='button'
-									onClick={checkRecoverCode}
-									disabled={isLoading}
-								>
-									Подтвердить код
-								</MainButton>
-
-								<button
-									type='button'
-									className={styles.backButton}
-									onClick={() => setStep('email')}
-								>
-									Изменить почту
-								</button>
-							</FlexRow>
-						)}
-
-						{step === 'password' && (
-							<FlexRow className={styles.step}>
-								<ControlledInput
-									className={styles.input}
-									name='password'
-									type='password'
-									placeholder='Введите новый пароль'
-								/>
-
-								<ControlledInput
-									className={styles.input}
-									name='repeat_password'
-									type='password'
-									placeholder='Повторите новый пароль'
-								/>
-
-								<MainButton className={styles.enterBtn} type='submit' disabled={isLoading}>
-									Сменить пароль
-								</MainButton>
-							</FlexRow>
-						)}
-
-						<Link className={styles.authLink} to={`/${AppRoute.AUTH}`}>
-							Вернуться к авторизации
-						</Link>
 					</form>
 				</FormProvider>
 			</Container>

@@ -25,6 +25,7 @@ export interface CardItem {
 	favourite: boolean
 	in_cart: boolean
 	cart_count: number
+	category_id: string
 }
 
 export interface IFavotiteItem {
@@ -101,6 +102,7 @@ export interface CartListItem {
 	item_count: string
 	item_price: string
 	item_fullprice: string
+	category_id: string
 }
 
 export interface CartListItemsResponse {

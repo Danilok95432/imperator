@@ -27,6 +27,7 @@ type ControlledInputProps = {
 	bigFont?: boolean
 	locked?: boolean
 	isPhone?: boolean
+	isCart?: boolean
 	isAutoCompleteOff?: boolean
 } & React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>
 
@@ -49,6 +50,7 @@ export const ControlledInput: FC<ControlledInputProps> = ({
 	locked = false,
 	subLabel,
 	isPhone = false,
+	isCart = false,
 	isAutoCompleteOff = false,
 	...props
 }) => {
@@ -59,6 +61,8 @@ export const ControlledInput: FC<ControlledInputProps> = ({
 	} = useFormContext()
 
 	const [isVisiblePass, setIsVisiblePass] = useState<boolean>(false)
+
+	const getOnlyDigits = (value: string) => value.replace(/\D/g, '')
 
 	if (isTextarea) {
 		return (
@@ -77,7 +81,9 @@ export const ControlledInput: FC<ControlledInputProps> = ({
 							{label} {isRequired ? <span className={styles.reqStar}>*</span> : null}
 						</p>
 					)}
+
 					{subLabel && <p className={styles.subLabel}>{subLabel}</p>}
+
 					<textarea
 						{...register(name)}
 						{...props}
@@ -90,12 +96,15 @@ export const ControlledInput: FC<ControlledInputProps> = ({
 						style={{ height }}
 					/>
 				</label>
+
 				{locked && (
 					<div className={styles.locked}>
 						<LockedInputSVG />
 					</div>
 				)}
+
 				{dynamicError && <p className={styles.warningMessage}>{dynamicError.message}</p>}
+
 				{errors[name] && (
 					<p className={styles.warningMessage}>
 						<ErrorMessage errors={errors} name={name} />
@@ -105,33 +114,37 @@ export const ControlledInput: FC<ControlledInputProps> = ({
 		)
 	}
 
-	if (type === 'password')
+	if (type === 'password') {
 		return (
 			<div className={cn(styles.inputEl, className)} style={{ margin, width, maxWidth }}>
 				<label className={styles.inputWrapper}>
 					{label && <p>{label}</p>}
+
 					<div className={styles.passwordInputWrapper}>
 						<input
 							{...register(name)}
 							{...props}
 							type={isVisiblePass ? 'text' : 'password'}
 							readOnly={isReadOnly}
+							disabled={disabled}
 							className={cn(styles.controlledInput, {
 								[styles.noValid]: errors[name],
 							})}
 							autoComplete={isAutoCompleteOff ? 'off' : 'on'}
 						/>
+
 						<button
 							className={cn(styles.passEyeBtn, { [styles._crossOut]: isVisiblePass })}
 							onClick={() => setIsVisiblePass(!isVisiblePass)}
 							type='button'
 						>
-							{<PasswordEyeSvg />}
+							<PasswordEyeSvg />
 						</button>
 					</div>
 				</label>
 
 				{dynamicError && <p className={styles.warningMessage}>{dynamicError.message}</p>}
+
 				{errors[name] && (
 					<p className={styles.warningMessage}>
 						<ErrorMessage errors={errors} name={name} />
@@ -139,8 +152,8 @@ export const ControlledInput: FC<ControlledInputProps> = ({
 				)}
 			</div>
 		)
+	}
 
-	// В компоненте
 	if (isPhone) {
 		return (
 			<div
@@ -153,7 +166,9 @@ export const ControlledInput: FC<ControlledInputProps> = ({
 							{label} {isRequired ? <span className={styles.reqStar}>*</span> : null}
 						</p>
 					)}
+
 					{subLabel && <p className={styles.subLabel}>{subLabel}</p>}
+
 					<Controller
 						name={name}
 						control={control}
@@ -165,7 +180,7 @@ export const ControlledInput: FC<ControlledInputProps> = ({
 								onBlur={field.onBlur}
 								onChange={(e) => {
 									field.onChange(e.target.value)
-									if (props.onChange) props.onChange(e)
+									props.onChange?.(e)
 								}}
 								readOnly={isReadOnly}
 								disabled={disabled}
@@ -181,12 +196,134 @@ export const ControlledInput: FC<ControlledInputProps> = ({
 						)}
 					/>
 				</label>
+
 				{locked && (
 					<div className={styles.locked}>
 						<LockedInputSVG />
 					</div>
 				)}
+
 				{dynamicError && <p className={styles.warningMessage}>{dynamicError.message}</p>}
+
+				{errors[name] && (
+					<p className={styles.warningMessage}>
+						<ErrorMessage errors={errors} name={name} />
+					</p>
+				)}
+			</div>
+		)
+	}
+
+	if (isCart) {
+		return (
+			<div
+				className={cn(styles.inputEl, { [styles.inputElBig]: bigFont }, className)}
+				style={{ margin, width, maxWidth }}
+			>
+				<label className={styles.inputWrapper}>
+					{label && (
+						<p>
+							{label} {isRequired ? <span className={styles.reqStar}>*</span> : null}
+						</p>
+					)}
+
+					{subLabel && <p className={styles.subLabel}>{subLabel}</p>}
+
+					<Controller
+						name={name}
+						control={control}
+						render={({ field }) => (
+							<input
+								{...props}
+								type='text'
+								inputMode='numeric'
+								pattern='[0-9]*'
+								value={field.value ?? ''}
+								readOnly={isReadOnly}
+								disabled={disabled}
+								className={cn(styles.controlledInput, {
+									[styles.noValid]: errors[name],
+									[styles.noBorder]: isLogin,
+									[styles.disabled]: locked,
+								})}
+								autoComplete={isAutoCompleteOff ? 'off' : 'on'}
+								onChange={(e) => {
+									const onlyDigits = getOnlyDigits(e.target.value)
+
+									field.onChange(onlyDigits)
+
+									e.target.value = onlyDigits
+									props.onChange?.(e)
+								}}
+								onBlur={(e) => {
+									field.onBlur()
+									props.onBlur?.(e)
+								}}
+								onKeyDown={(e) => {
+									const allowedKeys = [
+										'Backspace',
+										'Delete',
+										'Tab',
+										'Escape',
+										'Enter',
+										'ArrowLeft',
+										'ArrowRight',
+										'ArrowUp',
+										'ArrowDown',
+										'Home',
+										'End',
+									]
+
+									const isCtrlCombination = e.ctrlKey || e.metaKey
+									const isDigit = /^\d$/.test(e.key)
+
+									if (!isDigit && !allowedKeys.includes(e.key) && !isCtrlCombination) {
+										e.preventDefault()
+										return
+									}
+
+									props.onKeyDown?.(e)
+								}}
+								onPaste={(e) => {
+									e.preventDefault()
+
+									const pastedText = e.clipboardData.getData('text')
+									const pastedDigits = getOnlyDigits(pastedText)
+
+									if (!pastedDigits) return
+
+									const input = e.currentTarget
+									const currentValue = String(field.value ?? '')
+									const selectionStart = input.selectionStart ?? currentValue.length
+									const selectionEnd = input.selectionEnd ?? currentValue.length
+
+									const nextValue =
+										currentValue.slice(0, selectionStart) +
+										pastedDigits +
+										currentValue.slice(selectionEnd)
+
+									field.onChange(nextValue)
+
+									requestAnimationFrame(() => {
+										const nextCursorPosition = selectionStart + pastedDigits.length
+										input.setSelectionRange(nextCursorPosition, nextCursorPosition)
+									})
+
+									props.onPaste?.(e)
+								}}
+							/>
+						)}
+					/>
+				</label>
+
+				{locked && (
+					<div className={styles.locked}>
+						<LockedInputSVG />
+					</div>
+				)}
+
+				{dynamicError && <p className={styles.warningMessage}>{dynamicError.message}</p>}
+
 				{errors[name] && (
 					<p className={styles.warningMessage}>
 						<ErrorMessage errors={errors} name={name} />
@@ -207,24 +344,32 @@ export const ControlledInput: FC<ControlledInputProps> = ({
 						{label} {isRequired ? <span className={styles.reqStar}>*</span> : null}
 					</p>
 				)}
+
 				{subLabel && <p className={styles.subLabel}>{subLabel}</p>}
+
 				<input
 					{...register(name)}
 					{...props}
+					type={type}
 					readOnly={isReadOnly}
 					className={cn(styles.controlledInput, {
 						[styles.noValid]: errors[name],
 						[styles.noBorder]: isLogin,
+						[styles.disabled]: locked,
 					})}
 					disabled={disabled}
+					autoComplete={isAutoCompleteOff ? 'off' : 'on'}
 				/>
 			</label>
+
 			{locked && (
 				<div className={styles.locked}>
 					<LockedInputSVG />
 				</div>
 			)}
+
 			{dynamicError && <p className={styles.warningMessage}>{dynamicError.message}</p>}
+
 			{errors[name] && (
 				<p className={styles.warningMessage}>
 					<ErrorMessage errors={errors} name={name} />

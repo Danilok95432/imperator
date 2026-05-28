@@ -8,6 +8,11 @@
 			font-size: 24px;
 			color: var(--main-theme-color-2);
 			font-family: 'Tinos';
+			display: flex;
+			width: 100%;
+			justify-content: center;
+			align-items: center;
+			margin-top: 32px;
 		}
 		.order {
 			width: 100%;

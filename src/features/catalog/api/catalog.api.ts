@@ -35,7 +35,7 @@ const getAuthHeaders = (withBearer = false) => {
 
 export const catalogApi = createApi({
 	reducerPath: ReducerPath.Catalog,
-	tagTypes: ['Catalog', 'CatalogItem', 'Cart', 'Favorites'],
+	tagTypes: ['Catalog', 'CatalogItem', 'Cart', 'Favorites', 'Orders'],
 	baseQuery: baseQueryWithReauth,
 	endpoints: (build) => ({
 		getCatalog: build.query<
@@ -193,6 +193,7 @@ export const catalogApi = createApi({
 					id_user: idUser,
 					type,
 				},
+				providesTags: ['Orders'],
 			}),
 		}),
 		getUserOrdersListItemInfo: build.query<UserOrdersList, string>({
@@ -211,6 +212,7 @@ export const catalogApi = createApi({
 				params: {
 					id,
 				},
+				invalidatesTags: ['Orders'],
 			}),
 		}),
 	}),

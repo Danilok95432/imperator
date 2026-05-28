@@ -8,10 +8,12 @@ import { FlexRow } from 'src/shared/ui/FlexRow/FlexRow'
 import { SliderBtns } from 'src/widgets/Slider-btns/slider-btns'
 import { sliderOptions } from './consts'
 import { useGetSliderListQuery } from 'src/features/home/api/home.api'
+import { useNavigate } from 'react-router-dom'
 
 export const MainSliderSection = () => {
 	const swiperRef: RefObject<SwiperRef> = useRef<SwiperRef>(null)
 	const { data } = useGetSliderListQuery(null)
+	const navigate = useNavigate()
 	return (
 		<Section className={cn(styles.mainSlider)}>
 			<Container className={styles.sliderCont}>
@@ -25,7 +27,14 @@ export const MainSliderSection = () => {
 											<FlexRow className={styles.contentSlide}>
 												<p className={styles.slideTitle}>{slideEl.title}</p>
 												<p className={styles.slideDesc}>{slideEl.itemdesc}</p>
-												<button className={styles.infoBtn}>Подробнее</button>
+												<button
+													className={styles.infoBtn}
+													onClick={() =>
+														navigate(`/catalog/${slideEl.category_id}/item/${slideEl.id}`)
+													}
+												>
+													Подробнее
+												</button>
 											</FlexRow>
 											<div className={styles.imgWrapper}>
 												{slideEl.img[0]?.original && (

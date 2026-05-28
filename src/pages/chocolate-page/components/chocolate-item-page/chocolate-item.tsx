@@ -1,5 +1,5 @@
 import { type FieldValues } from 'react-hook-form'
-import { type MouseEvent, type RefObject, useEffect, useRef, useState } from 'react'
+import { type MouseEvent, type RefObject, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Swiper, type SwiperRef, SwiperSlide } from 'swiper/react'
 import { Pagination } from 'swiper/modules'
@@ -32,6 +32,8 @@ import { type FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { toast } from 'react-toastify'
 import { useActions } from 'src/app/store/hooks/actions'
 import { ConfirmWindow } from 'src/modals/confirmActionModal/confirmActionModal'
+import { Loader } from 'src/shared/ui/loader/loader'
+import { FullscreenGallery } from 'src/widgets/fullscreen-gallery/fullscreen-gallery'
 
 type CartResponse = {
 	item_count?: string
@@ -67,6 +69,7 @@ export const ChocolateItem = () => {
 	const {
 		data,
 		error: newsItemError,
+		isLoading,
 		isError: isNewsItemError,
 	} = useGetItemCatalogByIDQuery({
 		id: itemId,
@@ -100,24 +103,37 @@ export const ChocolateItem = () => {
 
 	useAdditionalCrumbs(chocolate?.title)
 
+	const { openModal } = useActions()
+
 	const [addItemToCart] = useAddItemToCartMutation()
 
 	const [cartCount, setCartCount] = useState<number>(0)
 	const [isCartUpdating, setIsCartUpdating] = useState<boolean>(false)
+	const [isFullscreenOpen, setIsFullscreenOpen] = useState(false)
+	const [fullscreenInitialSlide, setFullscreenInitialSlide] = useState(0)
+
+	const images = useMemo(() => {
+		return [...(chocolate?.images?.filter((image) => Boolean(image?.original)) ?? [])].reverse()
+	}, [chocolate?.images])
 
 	useEffect(() => {
 		setCartCount(Number(chocolate?.cart_count ?? 0))
 	}, [chocolate?.cart_count])
 
-	if (!chocolate) return null
+	if (!data || isLoading) return <Loader />
 
-	const images = chocolate.images?.filter((image) => Boolean(image?.original)) ?? []
+	if (!chocolate) return null
 	const hasImages = images.length > 0
 	const hasMoreItems = chocolate.moreitems && chocolate.moreitems.length > 0
 	const hasWeight = Number(chocolate.item_weight) > 0
 	const hasPrice = Number(chocolate.item_price) > 0
 	const hasFull = Boolean(chocolate.full)
 	const hasComposition = Boolean(chocolate.item_desc)
+
+	const openFullscreen = (index: number) => {
+		setFullscreenInitialSlide(index)
+		setIsFullscreenOpen(true)
+	}
 
 	const createAddFormData = (count: string) => {
 		const formData = new FormData()
@@ -131,8 +147,6 @@ export const ChocolateItem = () => {
 
 		return formData
 	}
-
-	const { openModal } = useActions()
 
 	const handleAddToCart = async (e: MouseEvent, countValue: string) => {
 		e.preventDefault()
@@ -185,7 +199,7 @@ export const ChocolateItem = () => {
 
 		await updateCart()
 	}
-
+	if (!data || isLoading) return <Loader />
 	return (
 		<Section className={styles.chocolatePage}>
 			<Container className={styles.cont}>
@@ -212,17 +226,22 @@ export const ChocolateItem = () => {
 								modules={[Pagination]}
 								pagination={{ clickable: true }}
 							>
-								{images?.reverse().map((slideEl, idx) => {
+								{images.map((slideEl, idx) => {
 									return (
 										<SwiperSlide key={`${slideEl.original}-${idx}`}>
 											<FlexRow className={styles.slideRow}>
-												<div className={styles.imgWrapper}>
+												<button
+													type='button'
+													className={styles.imgWrapper}
+													onClick={() => openFullscreen(idx)}
+													aria-label='Открыть изображение в полноэкранном режиме'
+												>
 													<img
 														className={styles.sliderImg}
 														src={slideEl.original}
 														alt={chocolate.title ?? 'image'}
 													/>
-												</div>
+												</button>
 											</FlexRow>
 										</SwiperSlide>
 									)
@@ -319,6 +338,14 @@ export const ChocolateItem = () => {
 					</FlexRow>
 				)}
 			</Container>
+			{isFullscreenOpen && (
+				<FullscreenGallery
+					images={images}
+					initialSlide={fullscreenInitialSlide}
+					title={chocolate.title ?? 'Изображение товара'}
+					onClose={() => setIsFullscreenOpen(false)}
+				/>
+			)}
 		</Section>
 	)
 }

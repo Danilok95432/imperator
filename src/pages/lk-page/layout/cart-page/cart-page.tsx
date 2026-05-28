@@ -23,7 +23,7 @@ import {
 } from 'src/features/catalog/api/catalog.api'
 import { userID } from 'src/shared/helpers/consts'
 import { type SelOption } from 'src/types/select'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { AppRoute } from 'src/app/router/consts'
 
@@ -84,8 +84,6 @@ export const CartPage = () => {
 		formState: { errors },
 	} = methods
 
-	console.log(errors)
-
 	const [editingSection, setEditingSection] = useState<EditSection>('region')
 
 	const values = useWatch({
@@ -114,21 +112,27 @@ export const CartPage = () => {
 	const isDeliveryFilled = Boolean(values.deliveryId)
 	const isPaymentFilled = Boolean(values.paymentId)
 
+	const isAddressRequired = selectedDelivery?.value !== '1'
+
+	const isAddressFilled =
+		!isAddressRequired ||
+		(Boolean(!values.street?.trim()) &&
+			Boolean(!values.dom?.trim()) &&
+			Boolean(!values.room?.trim()) &&
+			!errors.street &&
+			!errors.dom &&
+			!errors.room)
+
 	const isCustomerFilled =
 		Boolean(values.firstname?.trim()) &&
 		Boolean(values.surname?.trim()) &&
 		Boolean(values.email?.trim()) &&
 		Boolean(values.telphone?.trim()) &&
-		Boolean(values.street?.trim()) &&
-		Boolean(values.dom?.trim()) &&
-		Boolean(values.room?.trim()) &&
 		!errors.firstname &&
 		!errors.surname &&
 		!errors.email &&
 		!errors.telphone &&
-		!errors.street &&
-		!errors.dom &&
-		!errors.room
+		isAddressFilled
 
 	const isOrderReady = isRegionFilled && isDeliveryFilled && isPaymentFilled && isCustomerFilled
 	const navigate = useNavigate()
@@ -420,21 +424,21 @@ export const CartPage = () => {
 
 												<ControlledInput
 													name='street'
-													label='Улица*'
+													label='Улица'
 													margin='0'
 													className={styles.input}
 												/>
 
 												<ControlledInput
 													name='dom'
-													label='Дом*'
+													label='Дом'
 													margin='0'
 													className={styles.input}
 												/>
 
 												<ControlledInput
 													name='room'
-													label='Квартира / офис*'
+													label='Квартира / офис'
 													margin='0'
 													className={styles.input}
 												/>
@@ -488,18 +492,24 @@ export const CartPage = () => {
 
 								<div className={styles.items}>
 									{cartItems.map((item) => (
-										<div key={item.id_item} className={styles.itemRow}>
-											<div className={styles.itemName}>{item.item_name}</div>
+										<Link
+											key={item.id_item}
+											to={`/catalog/${item.category_id}/item/${item.id_item}`}
+											className={styles.itemRowLinkOrder}
+										>
+											<div key={item.id_item} className={styles.itemRow}>
+												<div className={styles.itemName}>{item.item_name}</div>
 
-											<div className={styles.itemQty}>{item.item_count} шт.</div>
+												<div className={styles.itemQty}>{item.item_count} шт.</div>
 
-											<div className={styles.itemPrice}>
-												{(Number(item.item_price) * Number(item.item_count)).toLocaleString(
-													'ru-RU',
-												)}{' '}
-												₽
+												<div className={styles.itemPrice}>
+													{(Number(item.item_price) * Number(item.item_count)).toLocaleString(
+														'ru-RU',
+													)}{' '}
+													₽
+												</div>
 											</div>
-										</div>
+										</Link>
 									))}
 								</div>
 							</div>

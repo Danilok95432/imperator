@@ -16,42 +16,43 @@ export const CanceledOrders = () => {
 		idUser: userID ?? '',
 		type: 'canceled',
 	})
+
+	const orders = Array.isArray(ordersData) ? ordersData : ordersData?.orders ?? []
+
+	const canceledOrders = orders.filter((order) => order.status_keyword === 'canceled')
 	return (
 		<Section className={styles.cancelledOrders}>
 			<Container>
 				<FlexRow className={styles.ordersList}>
-					{ordersData?.orders.length === 0 && (
+					{canceledOrders.length === 0 && (
 						<p className={styles.noOrders}>У вас нет отмененных заказов</p>
 					)}
-					{ordersData?.orders
-						.filter((order) => order.status_keyword === 'canceled')
-						.map((order) => {
-							return (
-								<FlexRow className={styles.order} key={order.id}>
-									<FlexRow className={styles.orderInfo}>
-										<FlexRow className={styles.orderRow}>
-											<FlexRow className={styles.orderNumberRow}>
-												<p className={styles.orderNumber}>
-													Заказ {`№ ${order.id}`}{' '}
-													<span>{`от ${formatDate(order.order_date)}`}</span>
-												</p>
-												<p>{`${order.order_items.length} ${getItemsWord(order.order_items.length)} на сумму ${order.price_total} ₽`}</p>
-											</FlexRow>
+					{canceledOrders.map((order) => {
+						return (
+							<FlexRow className={styles.order} key={order.id}>
+								<FlexRow className={styles.orderInfo}>
+									<FlexRow className={styles.orderRow}>
+										<FlexRow className={styles.orderNumberRow}>
 											<p className={styles.orderNumber}>
-												{`Отменен`} <span>{`${formatDate(order.cancel_date ?? '')}`}</span>
+												Заказ {`№ ${order.id}`} <span>{`от ${formatDate(order.order_date)}`}</span>
 											</p>
+											<p>{`${order.order_items.length} ${getItemsWord(order.order_items.length)} на сумму ${order.price_total} ₽`}</p>
 										</FlexRow>
+										<p className={styles.orderNumber}>
+											{`Отменен`} <span>{`${formatDate(order.cancel_date ?? '')}`}</span>
+										</p>
 									</FlexRow>
-									<MainButton
-										type='button'
-										className={styles.moreBtn}
-										onClick={() => navigate(`${AppRoute.LK}/${AppRoute.LKorders}/${order.id}`)}
-									>
-										Подробнее о заказе
-									</MainButton>
 								</FlexRow>
-							)
-						})}
+								<MainButton
+									type='button'
+									className={styles.moreBtn}
+									onClick={() => navigate(`${AppRoute.LK}/${AppRoute.LKorders}/${order.id}`)}
+								>
+									Подробнее о заказе
+								</MainButton>
+							</FlexRow>
+						)
+					})}
 				</FlexRow>
 			</Container>
 		</Section>
