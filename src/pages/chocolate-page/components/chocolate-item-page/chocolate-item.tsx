@@ -1,4 +1,4 @@
-import { type FieldValues } from 'react-hook-form'
+import { FormProvider, type SubmitHandler, useForm, type FieldValues } from 'react-hook-form'
 import { type MouseEvent, type RefObject, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Swiper, type SwiperRef, SwiperSlide } from 'swiper/react'
@@ -34,6 +34,9 @@ import { useActions } from 'src/app/store/hooks/actions'
 import { ConfirmWindow } from 'src/modals/confirmActionModal/confirmActionModal'
 import { Loader } from 'src/shared/ui/loader/loader'
 import { FullscreenGallery } from 'src/widgets/fullscreen-gallery/fullscreen-gallery'
+import { ControlledInput } from 'src/widgets/controlled-input/controlled-input'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { type OneItemInputs, oneItemInputsSchema } from './schema'
 
 type CartResponse = {
 	item_count?: string
@@ -82,6 +85,18 @@ export const ChocolateItem = () => {
 		step: '1',
 		userId: userID,
 	})
+
+	const methods = useForm<OneItemInputs>({
+		mode: 'onBlur',
+		resolver: yupResolver(oneItemInputsSchema),
+	})
+
+	const onSubmit: SubmitHandler<OneItemInputs> = async (data) => {
+		const formData = new FormData()
+		formData.append('weight', data.weight)
+	}
+
+	const ves = true
 
 	const navigate = useNavigate()
 
@@ -199,153 +214,175 @@ export const ChocolateItem = () => {
 
 		await updateCart()
 	}
+
 	if (!data || isLoading) return <Loader />
 	return (
 		<Section className={styles.chocolatePage}>
-			<Container className={styles.cont}>
-				<FlexRow className={styles.headRow}>
-					<BreadCrumbs
-						crumbsLinksMap={[
-							{
-								title: catalogData?.title ?? 'Шоколад',
-								link: 'catalog',
-							},
-						]}
-						isCatalog
-						idLink={menuId}
-					/>
-				</FlexRow>
-
-				<FlexRow className={styles.previewProduct}>
-					{hasImages && (
-						<FlexRow className={styles.slider}>
-							<Swiper
-								{...sliderOptions}
-								ref={swiperRef}
-								className={styles.sliderMain}
-								modules={[Pagination]}
-								pagination={{ clickable: true }}
-							>
-								{images.map((slideEl, idx) => {
-									return (
-										<SwiperSlide key={`${slideEl.original}-${idx}`}>
-											<FlexRow className={styles.slideRow}>
-												<button
-													type='button'
-													className={styles.imgWrapper}
-													onClick={() => openFullscreen(idx)}
-													aria-label='Открыть изображение в полноэкранном режиме'
-												>
-													<img
-														className={styles.sliderImg}
-														src={slideEl.original}
-														alt={chocolate.title ?? 'image'}
-													/>
-												</button>
-											</FlexRow>
-										</SwiperSlide>
-									)
-								})}
-							</Swiper>
-
-							{images.length > 1 && (
-								<SliderBtns className={styles.sliderBtns} swiperRef={swiperRef} />
-							)}
-						</FlexRow>
-					)}
-
-					{!hasImages && <div className={styles.noSlider}></div>}
-
-					<FlexRow className={styles.infoWrapper}>
-						<FlexRow className={styles.info}>
-							{chocolate.title && <p className={styles.title}>{chocolate.title}</p>}
-
-							{hasWeight && <p className={styles.weight}>{`${chocolate.item_weight} гр.`}</p>}
-
-							{hasFull && (
-								<p className={styles.desc}>
-									{chocolate?.full && (
-										<div
-											className={styles.desc}
-											dangerouslySetInnerHTML={{ __html: chocolate?.full }}
-										/>
-									)}
-								</p>
-							)}
-
-							{hasComposition && (
-								<p className={styles.composition}>{`Состав: ${chocolate.item_desc}`}</p>
-							)}
+			<FormProvider {...methods}>
+				<form
+					className={styles.form}
+					onSubmit={methods.handleSubmit(onSubmit)}
+					noValidate
+					autoComplete='off'
+				>
+					<Container className={styles.cont}>
+						<FlexRow className={styles.headRow}>
+							<BreadCrumbs
+								crumbsLinksMap={[
+									{
+										title: catalogData?.title ?? 'Шоколад',
+										link: 'catalog',
+									},
+								]}
+								isCatalog
+								idLink={menuId}
+							/>
 						</FlexRow>
 
-						<FlexRow className={styles.buySection}>
-							{hasPrice && <p className={styles.price}>{`${chocolate.item_price} ₽`}</p>}
-
-							<MainButton
-								type='button'
-								className={cn(styles.buyButton, {
-									[styles.filled]: cartCount > 0,
-									[styles.loading]: isCartUpdating,
-								})}
-								disabled={isCartUpdating}
-								onClick={(e: MouseEvent) => {
-									e.preventDefault()
-									e.stopPropagation()
-								}}
-							>
-								{cartCount === 0 ? (
-									<p
-										className={styles.btnText}
-										onClick={async (e: MouseEvent) => await handleAddToCart(e, '1')}
+						<FlexRow className={styles.previewProduct}>
+							{hasImages && (
+								<FlexRow className={styles.slider}>
+									<Swiper
+										{...sliderOptions}
+										ref={swiperRef}
+										className={styles.sliderMain}
+										modules={[Pagination]}
+										pagination={{ clickable: true }}
 									>
-										В корзину
-									</p>
-								) : (
-									<FlexRow className={styles.counterCart}>
-										<div
-											className={styles.vector}
-											onClick={async (e: MouseEvent) => await handleAddToCart(e, '-1')}
-										>
-											<MinusSVG />
-										</div>
+										{images.map((slideEl, idx) => {
+											return (
+												<SwiperSlide key={`${slideEl.original}-${idx}`}>
+													<FlexRow className={styles.slideRow}>
+														<button
+															type='button'
+															className={styles.imgWrapper}
+															onClick={() => openFullscreen(idx)}
+															aria-label='Открыть изображение в полноэкранном режиме'
+														>
+															<img
+																className={styles.sliderImg}
+																src={slideEl.original}
+																alt={chocolate.title ?? 'image'}
+															/>
+														</button>
+													</FlexRow>
+												</SwiperSlide>
+											)
+										})}
+									</Swiper>
 
-										<p>{cartCount}</p>
+									{images.length > 1 && (
+										<SliderBtns className={styles.sliderBtns} swiperRef={swiperRef} />
+									)}
+								</FlexRow>
+							)}
 
-										<div
-											className={styles.vector}
-											onClick={async (e: MouseEvent) => await handleAddToCart(e, '1')}
-										>
-											<PlusSVG />
-										</div>
-									</FlexRow>
-								)}
-							</MainButton>
+							{!hasImages && <div className={styles.noSlider}></div>}
+
+							<FlexRow className={styles.infoWrapper}>
+								<FlexRow className={styles.info}>
+									{chocolate.title && <p className={styles.title}>{chocolate.title}</p>}
+
+									{hasWeight && <p className={styles.weight}>{`${chocolate.item_weight} гр.`}</p>}
+
+									{hasFull && (
+										<p className={styles.desc}>
+											{chocolate?.full && (
+												<div
+													className={styles.desc}
+													dangerouslySetInnerHTML={{ __html: chocolate?.full }}
+												/>
+											)}
+										</p>
+									)}
+
+									{hasComposition && (
+										<p className={styles.composition}>{`Состав: ${chocolate.item_desc}`}</p>
+									)}
+
+									{ves && (
+										<FlexRow className={styles.weightRow}>
+											<ControlledInput className={styles.input} name='weight' label='Укажите вес' />
+											<p>гр., 6 шт.</p>
+										</FlexRow>
+									)}
+								</FlexRow>
+
+								<FlexRow className={styles.buySection}>
+									{hasPrice && <p className={styles.price}>{`${chocolate.item_price} ₽`}</p>}
+
+									<MainButton
+										type='button'
+										className={cn(styles.buyButton, {
+											[styles.filled]: cartCount > 0,
+											[styles.loading]: isCartUpdating,
+										})}
+										disabled={isCartUpdating}
+										onClick={(e: MouseEvent) => {
+											e.preventDefault()
+											e.stopPropagation()
+										}}
+									>
+										{cartCount === 0 ? (
+											<p
+												className={styles.btnText}
+												onClick={async (e: MouseEvent) => await handleAddToCart(e, '1')}
+											>
+												В корзину
+											</p>
+										) : (
+											<FlexRow className={styles.counterCart}>
+												<div
+													className={styles.vector}
+													onClick={async (e: MouseEvent) => await handleAddToCart(e, '-1')}
+												>
+													<MinusSVG />
+												</div>
+
+												<p>{cartCount}</p>
+
+												<div
+													className={styles.vector}
+													onClick={async (e: MouseEvent) => await handleAddToCart(e, '1')}
+												>
+													<PlusSVG />
+												</div>
+											</FlexRow>
+										)}
+									</MainButton>
+								</FlexRow>
+							</FlexRow>
 						</FlexRow>
-					</FlexRow>
-				</FlexRow>
 
-				{hasMoreItems && (
-					<FlexRow className={styles.alsoItems}>
-						<p className={styles.subtitle}>Попробуйте также</p>
+						{hasMoreItems && (
+							<FlexRow className={styles.alsoItems}>
+								<p className={styles.subtitle}>Попробуйте также</p>
 
-						<div className={styles.alsoList}>
-							{chocolate.moreitems.map((el) => {
-								return (
-									<ChocolateCard key={el.id} chocolate={el} className={styles.alsoCard} smallCard />
-								)
-							})}
-						</div>
-					</FlexRow>
-				)}
-			</Container>
-			{isFullscreenOpen && (
-				<FullscreenGallery
-					images={images}
-					initialSlide={fullscreenInitialSlide}
-					title={chocolate.title ?? 'Изображение товара'}
-					onClose={() => setIsFullscreenOpen(false)}
-				/>
-			)}
+								<div className={styles.alsoList}>
+									{chocolate.moreitems.map((el) => {
+										return (
+											<ChocolateCard
+												key={el.id}
+												chocolate={el}
+												className={styles.alsoCard}
+												smallCard
+											/>
+										)
+									})}
+								</div>
+							</FlexRow>
+						)}
+					</Container>
+					{isFullscreenOpen && (
+						<FullscreenGallery
+							images={images}
+							initialSlide={fullscreenInitialSlide}
+							title={chocolate.title ?? 'Изображение товара'}
+							onClose={() => setIsFullscreenOpen(false)}
+						/>
+					)}
+				</form>
+			</FormProvider>
 		</Section>
 	)
 }

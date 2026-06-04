@@ -110,9 +110,27 @@ section.chocolatePage {
 		}
 		.infoWrapper {
 			flex-direction: column;
-			gap: 44px;
+			gap: 24px;
 			justify-content: center;
 			align-items: center;
+			.weightRow {
+				gap: 8px;
+				align-items: end;
+				margin-top: 24px;
+				.input {
+					width: 125px;
+					p {
+						margin-bottom: 0px;
+						font-size: 18px;
+						color: #fff;
+					}
+				}
+				p {
+					margin-bottom: 17px;
+					font-size: 18px;
+					color: #fff;
+				}
+			}
 			.info {
 				flex-direction: column;
 				gap: 12px;
