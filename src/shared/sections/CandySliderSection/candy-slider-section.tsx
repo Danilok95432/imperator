@@ -38,6 +38,10 @@ type BestItem = {
 	item_price: string | number
 	item_weight: string | number
 	favourite?: boolean
+	use_weight?: boolean
+	weight_price_kg?: string
+	weight_default?: string
+	weight_one?: string
 	img?: Array<{
 		original?: string
 	}>
@@ -73,13 +77,13 @@ export const CandySliderSection: FC<CandySliderSectionProps> = ({ title = 'На�
 		const numberValue = Number(normalizedValue)
 
 		if (Number.isNaN(numberValue)) {
-			return `${value} ₽`
+			return `${value}`
 		}
 
 		return `${numberValue.toLocaleString('ru-RU', {
 			minimumFractionDigits: 2,
 			maximumFractionDigits: 2,
-		})} ₽`
+		})}`
 	}
 
 	const createFavoriteFormData = (idItem: string | number) => {
@@ -198,10 +202,16 @@ export const CandySliderSection: FC<CandySliderSectionProps> = ({ title = 'На�
 											<div className={styles.name}>{item.title}</div>
 
 											<FlexRow className={styles.metaRow}>
-												{Number(item.item_weight) > 0 && (
-													<span className={styles.weight}>{item.item_weight} гр.</span>
+												{Number(item.item_weight) > 0 && !item.use_weight ? (
+													<p className={styles.weight}>{`${item.item_weight} гр.`}</p>
+												) : (
+													<p className={styles.weight}>{`весовой товар`}</p>
 												)}
-												<span className={styles.price}>{formatPrice(item.item_price)}</span>
+												<span className={styles.price}>
+													{item.use_weight
+														? `${formatPrice(item.weight_price_kg ?? item.item_price)} ₽/кг`
+														: `${formatPrice(item.item_price)} ₽`}
+												</span>
 											</FlexRow>
 										</FlexRow>
 									</Link>

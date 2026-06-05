@@ -224,8 +224,10 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 						<FlexRow className={styles.smallInfoWrapper}>
 							<h3 className={styles.title}>{`${chocolate.item_price} ₽`}</h3>
 							<p className={styles.subtitle}>{chocolate.title}</p>
-							{Number(chocolate.item_weight) > 0 && (
+							{Number(chocolate.item_weight) > 0 && !chocolate.use_weight ? (
 								<p className={styles.weight}>{`${chocolate.item_weight} гр.`}</p>
+							) : (
+								<p className={styles.weight}>{`весовой товар`}</p>
 							)}
 						</FlexRow>
 
@@ -319,10 +321,16 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 
 				<FlexRow className={styles.content}>
 					<FlexRow className={styles.infoWrapper}>
-						<h3 className={styles.title}>{`${chocolate.item_price} ₽`}</h3>
+						<h3 className={styles.title}>
+							{chocolate.use_weight
+								? `${chocolate.weight_price_kg} ₽/кг`
+								: `${chocolate.item_price} ₽`}
+						</h3>
 						<p className={styles.subtitle}>{chocolate.title}</p>
-						{Number(chocolate.item_weight) > 0 && (
+						{Number(chocolate.item_weight) > 0 && !chocolate.use_weight ? (
 							<p className={styles.weight}>{`${chocolate.item_weight} гр.`}</p>
+						) : (
+							<p className={styles.weight}>{`весовой товар`}</p>
 						)}
 					</FlexRow>
 

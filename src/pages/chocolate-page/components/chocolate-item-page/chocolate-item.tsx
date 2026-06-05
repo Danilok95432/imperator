@@ -1,4 +1,10 @@
-import { FormProvider, type SubmitHandler, useForm, type FieldValues } from 'react-hook-form'
+import {
+	FormProvider,
+	type SubmitHandler,
+	useForm,
+	type FieldValues,
+	useWatch,
+} from 'react-hook-form'
 import { type MouseEvent, type RefObject, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Swiper, type SwiperRef, SwiperSlide } from 'swiper/react'
@@ -65,8 +71,29 @@ const getApiErrorMessage = (error: unknown): string => {
 	return 'Произошла ошибка при загрузке категории'
 }
 
+const getNumber = (value: unknown): number => {
+	const numberValue = Number(value)
+
+	return Number.isFinite(numberValue) ? numberValue : 0
+}
+
+const getBoolean = (value: unknown): boolean => {
+	return value === true || value === 'true' || value === 1 || value === '1'
+}
+
+const roundUpToMultiplicity = (value: number, multiplicity: number): number => {
+	if (value <= 0 || multiplicity <= 0) return 0
+
+	return Math.ceil(value / multiplicity) * multiplicity
+}
+
+const formatPrice = (value: number): string => {
+	return `${Math.round(value).toLocaleString('ru-RU')} ₽`
+}
+
 export const ChocolateItem = () => {
 	const { menuId = '', itemId = '' } = useParams()
+	const navigate = useNavigate()
 	const userID = localStorage.getItem('userID') ?? ''
 
 	const {
@@ -89,28 +116,15 @@ export const ChocolateItem = () => {
 	const methods = useForm<OneItemInputs>({
 		mode: 'onBlur',
 		resolver: yupResolver(oneItemInputsSchema),
+		defaultValues: {
+			weight: '',
+		},
 	})
 
-	const onSubmit: SubmitHandler<OneItemInputs> = async (data) => {
-		const formData = new FormData()
-		formData.append('weight', data.weight)
-	}
-
-	const ves = true
-
-	const navigate = useNavigate()
-
-	useEffect(() => {
-		if (!isNewsItemError) return
-
-		const message = getApiErrorMessage(newsItemError)
-
-		toast.error(message, {
-			toastId: `news-error-${menuId}`,
-		})
-
-		navigate('/', { replace: true })
-	}, [isNewsItemError, newsItemError, navigate, menuId])
+	const weightValue = useWatch({
+		control: methods.control,
+		name: 'weight',
+	})
 
 	const swiperRef: RefObject<SwiperRef> = useRef<SwiperRef>(null)
 
@@ -131,17 +145,98 @@ export const ChocolateItem = () => {
 		return [...(chocolate?.images?.filter((image) => Boolean(image?.original)) ?? [])].reverse()
 	}, [chocolate?.images])
 
+	const isWeightProduct = getBoolean(chocolate?.use_weight)
+
+	const weightOne = getNumber(chocolate?.weight_one)
+	const weightPriceKg = getNumber(chocolate?.weight_price_kg)
+
+	const rawWeight = getNumber(weightValue)
+
+	const roundedWeight = isWeightProduct ? roundUpToMultiplicity(rawWeight, weightOne) : 0
+
+	const weightItemsCount =
+		isWeightProduct && weightOne > 0 && roundedWeight > 0 ? roundedWeight / weightOne : 0
+
+	const calculatedWeightPrice =
+		isWeightProduct && roundedWeight > 0 && weightPriceKg > 0
+			? (weightPriceKg / 1000) * roundedWeight
+			: 0
+
+	const displayedPrice = isWeightProduct ? calculatedWeightPrice : getNumber(chocolate?.item_price)
+
+	const hasPrice = displayedPrice > 0
+
 	useEffect(() => {
-		setCartCount(Number(chocolate?.cart_count ?? 0))
-	}, [chocolate?.cart_count])
+		if (!isNewsItemError) return
+
+		const message = getApiErrorMessage(newsItemError)
+
+		toast.error(message, {
+			toastId: `news-error-${menuId}`,
+		})
+
+		navigate('/', { replace: true })
+	}, [isNewsItemError, newsItemError, navigate, menuId])
+
+	useEffect(() => {
+		const nextCartCount = Number(chocolate?.cart_count ?? 0)
+
+		setCartCount(Number.isFinite(nextCartCount) ? Math.max(0, nextCartCount) : 0)
+
+		if (isWeightProduct && nextCartCount > 0) {
+			methods.setValue('weight', String(nextCartCount), {
+				shouldDirty: false,
+				shouldValidate: true,
+			})
+		}
+	}, [chocolate?.cart_count, isWeightProduct, methods])
+
+	useEffect(() => {
+		if (!isWeightProduct || weightOne <= 0) return
+
+		const currentWeight = methods.getValues('weight')
+
+		if (currentWeight) return
+
+		methods.setValue('weight', String(weightOne), {
+			shouldDirty: false,
+			shouldValidate: true,
+		})
+	}, [isWeightProduct, weightOne, methods])
+
+	useEffect(() => {
+		if (!isWeightProduct || weightOne <= 0) return
+		if (!weightValue) return
+
+		const timer = window.setTimeout(() => {
+			const numericWeight = getNumber(weightValue)
+
+			if (numericWeight <= 0) return
+
+			const nextWeight = roundUpToMultiplicity(numericWeight, weightOne)
+
+			if (nextWeight !== numericWeight) {
+				methods.setValue('weight', String(nextWeight), {
+					shouldDirty: true,
+					shouldValidate: true,
+				})
+			}
+		}, 500)
+
+		return () => {
+			window.clearTimeout(timer)
+		}
+	}, [isWeightProduct, weightOne, weightValue, methods])
+
+	const onSubmit: SubmitHandler<OneItemInputs> = async () => {}
 
 	if (!data || isLoading) return <Loader />
 
 	if (!chocolate) return null
+
 	const hasImages = images.length > 0
 	const hasMoreItems = chocolate.moreitems && chocolate.moreitems.length > 0
 	const hasWeight = Number(chocolate.item_weight) > 0
-	const hasPrice = Number(chocolate.item_price) > 0
 	const hasFull = Boolean(chocolate.full)
 	const hasComposition = Boolean(chocolate.item_desc)
 
@@ -163,7 +258,25 @@ export const ChocolateItem = () => {
 		return formData
 	}
 
-	const handleAddToCart = async (e: MouseEvent, countValue: string) => {
+	const setWeightFieldValue = (value: number) => {
+		if (!isWeightProduct) return
+
+		const nextValue = value > 0 ? value : weightOne
+
+		methods.setValue('weight', String(nextValue), {
+			shouldDirty: true,
+			shouldValidate: true,
+		})
+	}
+
+	const getCurrentRoundedWeight = () => {
+		const currentWeight = getNumber(methods.getValues('weight'))
+		const baseWeight = currentWeight > 0 ? currentWeight : weightOne
+
+		return roundUpToMultiplicity(baseWeight, weightOne)
+	}
+
+	const handleQuantityCartChange = async (e: MouseEvent, countValue: string) => {
 		e.preventDefault()
 		e.stopPropagation()
 
@@ -215,7 +328,78 @@ export const ChocolateItem = () => {
 		await updateCart()
 	}
 
-	if (!data || isLoading) return <Loader />
+	const handleWeightCartChange = async (e: MouseEvent, weightDelta: number) => {
+		e.preventDefault()
+		e.stopPropagation()
+
+		if (!isWeightProduct || weightOne <= 0) return
+		if (isCartUpdating || (weightDelta < 0 && cartCount <= 0)) return
+
+		const updateCart = async () => {
+			try {
+				setIsCartUpdating(true)
+
+				const response = (await addItemToCart(
+					createAddFormData(String(weightDelta)) as unknown as FieldValues,
+				).unwrap()) as CartResponse
+
+				if (response?.status === 'error') {
+					console.error('Ошибка при изменении товара в корзине:', response.errortext)
+					return
+				}
+
+				setCartCount((prev) => {
+					const responseCount = Number(response?.item_count)
+
+					const nextCount = Number.isFinite(responseCount)
+						? Math.max(0, responseCount)
+						: Math.max(0, prev + weightDelta)
+
+					setWeightFieldValue(nextCount)
+
+					return nextCount
+				})
+			} catch (error) {
+				console.error('Ошибка при изменении товара в корзине:', error)
+			} finally {
+				setIsCartUpdating(false)
+			}
+		}
+
+		if (weightDelta < 0 && cartCount <= weightOne) {
+			openModal(
+				<ConfirmWindow
+					text='Вы действительно хотите удалить товар из корзины? Отменить это действие будет нельзя'
+					submitHandle={updateCart}
+					link={`/catalog/${menuId}/item/${itemId}`}
+				/>,
+			)
+
+			return
+		}
+
+		await updateCart()
+	}
+
+	const handleAddWeightToCart = async (e: MouseEvent) => {
+		e.preventDefault()
+		e.stopPropagation()
+
+		if (!isWeightProduct || weightOne <= 0 || isCartUpdating) return
+
+		const isValid = await methods.trigger('weight')
+
+		if (!isValid) return
+
+		const currentRoundedWeight = getCurrentRoundedWeight()
+
+		if (currentRoundedWeight <= 0) return
+
+		setWeightFieldValue(currentRoundedWeight)
+
+		await handleWeightCartChange(e, currentRoundedWeight)
+	}
+
 	return (
 		<Section className={styles.chocolatePage}>
 			<FormProvider {...methods}>
@@ -286,30 +470,31 @@ export const ChocolateItem = () => {
 									{hasWeight && <p className={styles.weight}>{`${chocolate.item_weight} гр.`}</p>}
 
 									{hasFull && (
-										<p className={styles.desc}>
-											{chocolate?.full && (
-												<div
-													className={styles.desc}
-													dangerouslySetInnerHTML={{ __html: chocolate?.full }}
-												/>
-											)}
-										</p>
+										<div
+											className={styles.desc}
+											dangerouslySetInnerHTML={{ __html: chocolate.full }}
+										/>
 									)}
 
 									{hasComposition && (
 										<p className={styles.composition}>{`Состав: ${chocolate.item_desc}`}</p>
 									)}
 
-									{ves && (
+									{isWeightProduct && (
 										<FlexRow className={styles.weightRow}>
-											<ControlledInput className={styles.input} name='weight' label='Укажите вес' />
-											<p>гр., 6 шт.</p>
+											<ControlledInput
+												className={styles.input}
+												name='weight'
+												label='Укажите вес'
+												isSum
+											/>
+											<p>{`гр., ${weightItemsCount} шт.`}</p>
 										</FlexRow>
 									)}
 								</FlexRow>
 
 								<FlexRow className={styles.buySection}>
-									{hasPrice && <p className={styles.price}>{`${chocolate.item_price} ₽`}</p>}
+									{hasPrice && <p className={styles.price}>{formatPrice(displayedPrice)}</p>}
 
 									<MainButton
 										type='button'
@@ -323,10 +508,38 @@ export const ChocolateItem = () => {
 											e.stopPropagation()
 										}}
 									>
-										{cartCount === 0 ? (
+										{isWeightProduct ? (
+											cartCount === 0 ? (
+												<p className={styles.btnText} onClick={handleAddWeightToCart}>
+													В корзину
+												</p>
+											) : (
+												<FlexRow className={styles.counterCart}>
+													<div
+														className={styles.vector}
+														onClick={async (e: MouseEvent) =>
+															await handleWeightCartChange(e, -weightOne)
+														}
+													>
+														<MinusSVG />
+													</div>
+
+													<p>{`${cartCount} гр.`}</p>
+
+													<div
+														className={styles.vector}
+														onClick={async (e: MouseEvent) =>
+															await handleWeightCartChange(e, weightOne)
+														}
+													>
+														<PlusSVG />
+													</div>
+												</FlexRow>
+											)
+										) : cartCount === 0 ? (
 											<p
 												className={styles.btnText}
-												onClick={async (e: MouseEvent) => await handleAddToCart(e, '1')}
+												onClick={async (e: MouseEvent) => await handleQuantityCartChange(e, '1')}
 											>
 												В корзину
 											</p>
@@ -334,7 +547,7 @@ export const ChocolateItem = () => {
 											<FlexRow className={styles.counterCart}>
 												<div
 													className={styles.vector}
-													onClick={async (e: MouseEvent) => await handleAddToCart(e, '-1')}
+													onClick={async (e: MouseEvent) => await handleQuantityCartChange(e, '-1')}
 												>
 													<MinusSVG />
 												</div>
@@ -343,7 +556,7 @@ export const ChocolateItem = () => {
 
 												<div
 													className={styles.vector}
-													onClick={async (e: MouseEvent) => await handleAddToCart(e, '1')}
+													onClick={async (e: MouseEvent) => await handleQuantityCartChange(e, '1')}
 												>
 													<PlusSVG />
 												</div>
@@ -373,6 +586,7 @@ export const ChocolateItem = () => {
 							</FlexRow>
 						)}
 					</Container>
+
 					{isFullscreenOpen && (
 						<FullscreenGallery
 							images={images}

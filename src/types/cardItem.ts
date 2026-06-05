@@ -26,6 +26,10 @@ export interface CardItem {
 	in_cart: boolean
 	cart_count: number
 	category_id: string
+	use_weight: boolean
+	weight_default: string
+	weight_one: string
+	weight_price_kg: string
 }
 
 export interface IFavotiteItem {

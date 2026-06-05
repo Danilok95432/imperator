@@ -5,5 +5,5 @@ export type OneItemInputs = {
 }
 
 export const oneItemInputsSchema: yup.ObjectSchema<OneItemInputs> = yup.object({
-	weight: yup.string().required(''),
+	weight: yup.string().required('').matches(/^\d+$/, 'Вес должен содержать только цифры'),
 })
