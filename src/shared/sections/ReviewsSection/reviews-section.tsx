@@ -69,7 +69,12 @@ export const ReviewSection = () => {
 													slideEl.id ? `rate-${slideEl.id}` : `rate-${slideEl.name}-${slideEl.role}`
 												}
 											/>
-											<p className={styles.slideDesc}>{slideEl.comment}</p>
+											{slideEl.comment && (
+												<div
+													className={styles.slideDesc}
+													dangerouslySetInnerHTML={{ __html: slideEl.comment }}
+												/>
+											)}
 										</FlexRow>
 									</FlexRow>
 								</SwiperSlide>

@@ -482,12 +482,7 @@ export const ChocolateItem = () => {
 
 									{isWeightProduct && (
 										<FlexRow className={styles.weightRow}>
-											<ControlledInput
-												className={styles.input}
-												name='weight'
-												label='Укажите вес'
-												isSum
-											/>
+											<ControlledInput className={styles.input} name='weight' label='Укажите вес' />
 											<p>{`гр., ${weightItemsCount} шт.`}</p>
 										</FlexRow>
 									)}

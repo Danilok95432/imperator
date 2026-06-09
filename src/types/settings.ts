@@ -12,4 +12,5 @@ export type SettingsResponse = {
 	contact_vk: string
 	info_copyright: string
 	site_title: string
+	metric: string
 }
