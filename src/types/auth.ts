@@ -17,6 +17,15 @@ export type AuthResponse = {
 	status: string
 }
 
+export type FeedbackInfoResponse = {
+	firstname: string
+	telphone: string
+	email: string
+	text: string
+	topic: SelOption[]
+	topic_id: string
+}
+
 export type PersonalResponse = {
 	firstname: string
 	surname: string

@@ -38,9 +38,47 @@ type CartResponse = {
 	errortext?: string
 }
 
+type WeightProductFields = {
+	use_weight?: unknown
+	weight_default?: unknown
+	weight_price_kg?: unknown
+	cart_count?: unknown
+	item_count?: unknown
+	item_weight?: unknown
+}
+
+const getNumber = (value: unknown): number => {
+	const normalizedValue = String(value ?? '')
+		.replace(/\s/g, '')
+		.replace(',', '.')
+
+	const numberValue = Number(normalizedValue)
+
+	return Number.isFinite(numberValue) ? numberValue : 0
+}
+
+const getBoolean = (value: unknown): boolean => {
+	return value === true || value === 'true' || value === 1 || value === '1'
+}
+
+const getCartCount = (item: WeightProductFields): number => {
+	const itemCount = getNumber(item.item_count ?? item.cart_count)
+
+	return Number.isFinite(itemCount) ? Math.max(0, itemCount) : 0
+}
+
+const formatPrice = (value: number): string => {
+	return `${Math.round(value).toLocaleString('ru-RU')} ₽`
+}
+
 export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCardProps) => {
+	const weightProductFields = chocolate as WeightProductFields
+	const isWeightProduct = getBoolean(weightProductFields.use_weight)
+	const weightDefault = getNumber(weightProductFields.weight_default)
+	const weightPriceKg = getNumber(weightProductFields.weight_price_kg)
+
 	const [filled, setFilled] = useState<boolean>(Boolean(chocolate.favourite))
-	const [cartCount, setCartCount] = useState<number>(Number(chocolate.cart_count ?? 0))
+	const [cartCount, setCartCount] = useState<number>(getCartCount(weightProductFields))
 	const [isHovered, setIsHovered] = useState<boolean>(false)
 	const [isJumping, setIsJumping] = useState<boolean>(false)
 	const [isCartUpdating, setIsCartUpdating] = useState<boolean>(false)
@@ -48,22 +86,30 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 
 	const breakPoint = useBreakPoint()
 	const { menuId = '' } = useParams()
+	const { openModal } = useActions()
 
 	const [addItemToCart] = useAddItemToCartMutation()
 	const [addToFavorites] = useAddToFavoritesMutation()
 	const [deleteFromFavorites] = useDeleteFromFavoritesMutation()
+
+	const userID = localStorage.getItem('userID') ?? ''
+
+	const hasCartValue = cartCount > 0
+	const priceText = isWeightProduct
+		? `${formatPrice(weightPriceKg)}/кг`
+		: `${chocolate.item_price} ₽`
+	const isWeightButtonDisabled = isWeightProduct && hasCartValue
+	const isBuyButtonDisabled = isCartUpdating || isWeightButtonDisabled
 
 	useEffect(() => {
 		setFilled(Boolean(chocolate.favourite))
 	}, [chocolate.favourite])
 
 	useEffect(() => {
-		setCartCount(Number(chocolate.cart_count ?? 0))
-	}, [chocolate.cart_count])
+		setCartCount(getCartCount(weightProductFields))
+	}, [chocolate.cart_count, weightProductFields.item_count])
 
-	const userID = localStorage.getItem('userID') ?? ''
-
-	const createAddFormData = (count: string) => {
+	const createAddFormData = (count: string, itemWeight?: string | number) => {
 		const formData = new FormData()
 
 		if (userID) {
@@ -72,6 +118,9 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 
 		formData.append('id_item', String(chocolate.id))
 		formData.append('item_count', count)
+		if (itemWeight !== undefined) {
+			formData.append('item_weight', String(itemWeight))
+		}
 
 		return formData
 	}
@@ -96,11 +145,11 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 		}, 400)
 	}
 
-	const { openModal } = useActions()
-
 	const handleAddToCart = async (e: MouseEvent, countValue: string) => {
 		e.preventDefault()
 		e.stopPropagation()
+
+		if (isWeightProduct) return
 
 		const delta = Number(countValue)
 
@@ -154,6 +203,48 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 		await updateCart()
 	}
 
+	const handleAddWeightToCart = async (e: MouseEvent) => {
+		e.preventDefault()
+		e.stopPropagation()
+
+		if (!isWeightProduct || isCartUpdating || hasCartValue) return
+		if (weightDefault <= 0) {
+			console.error('Не указан weight_default для весового товара')
+			return
+		}
+
+		try {
+			setIsCartUpdating(true)
+
+			const response = (await addItemToCart(
+				createAddFormData('1', weightDefault) as unknown as FieldValues,
+			).unwrap()) as CartResponse
+
+			if (response?.status === 'error') {
+				console.error('Ошибка при добавлении весового товара в корзину:', response.errortext)
+				return
+			}
+
+			const nextCount = Number(response?.item_count)
+
+			setCartCount(Number.isFinite(nextCount) ? Math.max(1, nextCount) : 1)
+			startJumpAnimation()
+		} catch (error) {
+			console.error('Ошибка при добавлении весового товара в корзину:', error)
+		} finally {
+			setIsCartUpdating(false)
+		}
+	}
+
+	const handleBuyClick = async (e: MouseEvent) => {
+		if (isWeightProduct) {
+			await handleAddWeightToCart(e)
+			return
+		}
+
+		await handleAddToCart(e, '1')
+	}
+
 	const handleHeartClick = async (e: MouseEvent) => {
 		e.preventDefault()
 		e.stopPropagation()
@@ -199,6 +290,12 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 
 	const imageSrc = chocolate.img && chocolate.img.length > 0 ? chocolate.img[0].original : skeleton
 	const linkTo = `${AppRoute.Catalog}/${chocolate.category_id ?? menuId}/item/${chocolate.id}`
+	const weightText = isWeightProduct
+		? 'весовой товар'
+		: Number(chocolate.item_weight) > 0
+			? `${chocolate.item_weight} гр.`
+			: ''
+	const weightMobileButtonText = hasCartValue ? 'В корзине' : 'В корзину'
 
 	if (smallCard) {
 		return (
@@ -222,26 +319,22 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 
 					<FlexRow className={styles.smallContent}>
 						<FlexRow className={styles.smallInfoWrapper}>
-							<h3 className={styles.title}>{`${chocolate.item_price} ₽`}</h3>
+							<h3 className={styles.title}>{priceText}</h3>
 							<p className={styles.subtitle}>{chocolate.title}</p>
-							{Number(chocolate.item_weight) > 0 && !chocolate.use_weight ? (
-								<p className={styles.weight}>{`${chocolate.item_weight} гр.`}</p>
-							) : (
-								<p className={styles.weight}>{`весовой товар`}</p>
-							)}
+							{weightText && <p className={styles.weight}>{weightText}</p>}
 						</FlexRow>
 
 						{breakPoint !== 'S' && (
 							<MainButton
 								type='button'
 								className={cn(styles.smallBuyBtn, {
-									[styles.filled]: cartCount > 0 && breakPoint === 'S',
+									[styles.filled]: !isWeightProduct && hasCartValue && breakPoint === 'S',
 									[styles.loading]: isCartUpdating,
 								})}
-								disabled={isCartUpdating}
+								disabled={isBuyButtonDisabled}
 								onMouseEnter={() => setIsHovered(true)}
 								onMouseLeave={() => setIsHovered(false)}
-								onClick={async (e: MouseEvent) => await handleAddToCart(e, '1')}
+								onClick={handleBuyClick}
 							>
 								<CardIconCatalogSVG
 									small
@@ -249,7 +342,9 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 									className={isJumping ? styles.jump : ''}
 								/>
 
-								{cartCount > 0 && <div className={styles.counter}>{cartCount}</div>}
+								{!isWeightProduct && hasCartValue && (
+									<div className={styles.counter}>{cartCount}</div>
+								)}
 							</MainButton>
 						)}
 
@@ -257,20 +352,22 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 							<MainButton
 								type='button'
 								className={cn(styles.smallBuyBtn, styles.mobileBuyBtn, {
-									[styles.filled]: cartCount > 0,
+									[styles.filled]: !isWeightProduct && hasCartValue,
 									[styles.loading]: isCartUpdating,
+									[styles.disabled]: isBuyButtonDisabled,
 								})}
-								disabled={isCartUpdating}
+								disabled={isBuyButtonDisabled}
 								onClick={(e: MouseEvent) => {
 									e.preventDefault()
 									e.stopPropagation()
 								}}
 							>
-								{cartCount === 0 ? (
-									<p
-										className={styles.btnText}
-										onClick={async (e: MouseEvent) => await handleAddToCart(e, '1')}
-									>
+								{isWeightProduct ? (
+									<p className={styles.btnText} onClick={handleBuyClick}>
+										{weightMobileButtonText}
+									</p>
+								) : cartCount === 0 ? (
+									<p className={styles.btnText} onClick={handleBuyClick}>
 										В корзину
 									</p>
 								) : (
@@ -321,34 +418,29 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 
 				<FlexRow className={styles.content}>
 					<FlexRow className={styles.infoWrapper}>
-						<h3 className={styles.title}>
-							{chocolate.use_weight
-								? `${chocolate.weight_price_kg} ₽/кг`
-								: `${chocolate.item_price} ₽`}
-						</h3>
+						<h3 className={styles.title}>{priceText}</h3>
 						<p className={styles.subtitle}>{chocolate.title}</p>
-						{Number(chocolate.item_weight) > 0 && !chocolate.use_weight ? (
-							<p className={styles.weight}>{`${chocolate.item_weight} гр.`}</p>
-						) : (
-							<p className={styles.weight}>{`весовой товар`}</p>
-						)}
+						{weightText && <p className={styles.weight}>{weightText}</p>}
 					</FlexRow>
 
 					{breakPoint !== 'S' && (
 						<MainButton
 							type='button'
 							className={cn(styles.buyBtn, {
-								[styles.filled]: cartCount > 0 && breakPoint === 'S',
+								[styles.filled]: !isWeightProduct && hasCartValue && breakPoint === 'S',
 								[styles.loading]: isCartUpdating,
+								[styles.disabled]: isBuyButtonDisabled,
 							})}
-							disabled={isCartUpdating}
+							disabled={isBuyButtonDisabled}
 							onMouseEnter={() => setIsHovered(true)}
 							onMouseLeave={() => setIsHovered(false)}
-							onClick={async (e: MouseEvent) => await handleAddToCart(e, '1')}
+							onClick={handleBuyClick}
 						>
 							<CardIconCatalogSVG filled={isHovered} className={isJumping ? styles.jump : ''} />
 
-							{cartCount > 0 && <div className={styles.counter}>{cartCount}</div>}
+							{!isWeightProduct && hasCartValue && (
+								<div className={styles.counter}>{cartCount}</div>
+							)}
 						</MainButton>
 					)}
 
@@ -356,20 +448,22 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 						<MainButton
 							type='button'
 							className={cn(styles.buyBtn, styles.mobileBuyBtn, {
-								[styles.filled]: cartCount > 0,
+								[styles.filled]: !isWeightProduct && hasCartValue,
 								[styles.loading]: isCartUpdating,
+								[styles.disabled]: isBuyButtonDisabled,
 							})}
-							disabled={isCartUpdating}
+							disabled={isBuyButtonDisabled}
 							onClick={(e: MouseEvent) => {
 								e.preventDefault()
 								e.stopPropagation()
 							}}
 						>
-							{cartCount === 0 ? (
-								<p
-									className={styles.btnText}
-									onClick={async (e: MouseEvent) => await handleAddToCart(e, '1')}
-								>
+							{isWeightProduct ? (
+								<p className={styles.btnText} onClick={handleBuyClick}>
+									{weightMobileButtonText}
+								</p>
+							) : cartCount === 0 ? (
+								<p className={styles.btnText} onClick={handleBuyClick}>
 									В корзину
 								</p>
 							) : (

@@ -26,6 +26,7 @@ import { type SelOption } from 'src/types/select'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { AppRoute } from 'src/app/router/consts'
+import { FeedBackBlock } from 'src/widgets/feedback-block/feedback-block'
 
 const defaultValues: OrderInputs = {
 	citys: [],
@@ -539,6 +540,7 @@ export const CartPage = () => {
 							/>
 						</aside>
 					</form>
+					<FeedBackBlock fullScreenMode />
 				</FormProvider>
 			</Container>
 		</Section>

@@ -29,6 +29,7 @@ import { DeleteItemFromCartSVG } from 'src/shared/ui/icons/deleteItemFromCartSVG
 import { useActions } from 'src/app/store/hooks/actions'
 import { ConfirmWindow } from 'src/modals/confirmActionModal/confirmActionModal'
 import { type ImageItemWithText } from 'src/types/photos'
+import { FeedBackBlock } from 'src/widgets/feedback-block/feedback-block'
 
 export interface CartListItem {
 	id_item: string
@@ -38,6 +39,14 @@ export interface CartListItem {
 	item_fullprice: string
 	img: ImageItemWithText[]
 	category_id: string
+	use_weight?: string | number | boolean
+	weight_default?: string | number
+	weight_one?: string | number
+	weight_price_kg?: string | number
+	item_weight?: string | number
+	cart_weight?: string | number
+	item_cart_weight?: string | number
+	cart_item_weight?: string | number
 }
 
 export interface CartListItemsResponse {
@@ -47,9 +56,81 @@ export interface CartListItemsResponse {
 
 type CartCounterFormValues = Record<string, string>
 
+type CartMutationResponse = {
+	status?: string
+	errortext?: string
+	item_count?: string
+	item_weight?: string
+	cart_weight?: string
+	weight?: string
+}
+
 const MAX_ITEM_COUNT = 99
 
 const getCounterName = (idItem: string) => `counter_${idItem}`
+
+const getNumber = (value: unknown): number => {
+	const normalizedValue = String(value ?? '')
+		.replace(/\s/g, '')
+		.replace(/[^\d.,-]/g, '')
+		.replace(',', '.')
+
+	const numberValue = Number(normalizedValue)
+
+	return Number.isFinite(numberValue) ? numberValue : 0
+}
+
+const getPositiveNumber = (...values: unknown[]): number => {
+	for (const value of values) {
+		const numberValue = getNumber(value)
+
+		if (numberValue > 0) return numberValue
+	}
+
+	return 0
+}
+
+const getBoolean = (value: unknown): boolean => {
+	return value === true || value === 'true' || value === 1 || value === '1'
+}
+
+const roundUpToMultiplicity = (value: number, multiplicity: number): number => {
+	if (value <= 0 || multiplicity <= 0) return 0
+
+	return Math.ceil(value / multiplicity) * multiplicity
+}
+
+const getCartItemCount = (item: CartListItem): number => {
+	const itemCount = getNumber(item.item_count)
+
+	return Number.isFinite(itemCount) ? Math.max(0, itemCount) : 0
+}
+
+const getCartItemWeight = (item: CartListItem): number => {
+	return getPositiveNumber(
+		item.item_weight,
+		item.cart_weight,
+		item.item_cart_weight,
+		item.cart_item_weight,
+	)
+}
+
+const getWeightStep = (item: CartListItem): number => {
+	return getPositiveNumber(item.weight_one, item.weight_default)
+}
+
+const getResponseWeight = (
+	response: CartMutationResponse | undefined,
+	fallbackWeight: number,
+): number => {
+	const responseWeight = getPositiveNumber(
+		response?.item_weight,
+		response?.cart_weight,
+		response?.weight,
+	)
+
+	return responseWeight > 0 ? responseWeight : Math.max(0, fallbackWeight)
+}
 
 const formatPrice = (value: string | number) => {
 	const normalizedValue = String(value)
@@ -99,14 +180,17 @@ export const MyCartPage = () => {
 
 	useEffect(() => {
 		cartItems.forEach((item) => {
-			setValue(getCounterName(item.id_item), String(Number(item.item_count) || 0), {
+			const isWeightProduct = getBoolean(item.use_weight)
+			const counterValue = isWeightProduct ? getCartItemWeight(item) : getCartItemCount(item)
+
+			setValue(getCounterName(item.id_item), String(counterValue), {
 				shouldDirty: false,
 				shouldValidate: false,
 			})
 		})
 	}, [cartItems, setValue])
 
-	const createAddFormData = (idItem: string, count: string) => {
+	const createAddFormData = (idItem: string, count: string, itemWeight?: string | number) => {
 		const formData = new FormData()
 
 		if (userID) {
@@ -115,6 +199,10 @@ export const MyCartPage = () => {
 
 		formData.append('id_item', idItem)
 		formData.append('item_count', count)
+
+		if (itemWeight !== undefined) {
+			formData.append('item_weight', String(itemWeight))
+		}
 
 		return formData
 	}
@@ -142,7 +230,10 @@ export const MyCartPage = () => {
 	}
 
 	const resetCounterInput = (item: CartListItem) => {
-		setValue(getCounterName(item.id_item), String(Number(item.item_count) || 0), {
+		const isWeightProduct = getBoolean(item.use_weight)
+		const counterValue = isWeightProduct ? getCartItemWeight(item) : getCartItemCount(item)
+
+		setValue(getCounterName(item.id_item), String(counterValue), {
 			shouldDirty: false,
 			shouldValidate: false,
 		})
@@ -150,7 +241,7 @@ export const MyCartPage = () => {
 
 	const changeCartItemCount = async (item: CartListItem, count: string) => {
 		const delta = Number(count)
-		const currentCount = Number(item.item_count) || 0
+		const currentCount = getCartItemCount(item)
 		const nextCount = currentCount + delta
 		const counterName = getCounterName(item.id_item)
 
@@ -177,9 +268,15 @@ export const MyCartPage = () => {
 			try {
 				setUpdatingItemId(item.id_item)
 
-				await addItemToCart(
+				const response = (await addItemToCart(
 					createAddFormData(item.id_item, count) as unknown as FieldValues,
-				).unwrap()
+				).unwrap()) as CartMutationResponse
+
+				if (response?.status === 'error') {
+					console.error('Ошибка при изменении товара в корзине:', response.errortext)
+					resetCounterInput(item)
+					return
+				}
 
 				setValue(counterName, String(nextCount), {
 					shouldDirty: false,
@@ -212,16 +309,88 @@ export const MyCartPage = () => {
 		await updateCartItemCount()
 	}
 
-	const handleIncrease = async (e: MouseEvent, item: CartListItem, count: string) => {
+	const changeCartItemWeight = async (
+		item: CartListItem,
+		weightDelta: number,
+		baseWeight?: number,
+	) => {
+		const weightStep = getWeightStep(item)
+		const counterName = getCounterName(item.id_item)
+		const formWeight = getNumber(getValues(counterName))
+		const currentWeight = baseWeight ?? (formWeight > 0 ? formWeight : getCartItemWeight(item))
+		const nextWeight = currentWeight + weightDelta
+
+		if (weightStep <= 0) return
+		if (!Number.isFinite(weightDelta) || weightDelta === 0) return
+		if (weightDelta < 0 && currentWeight <= 0) return
+
+		if (nextWeight < 0) {
+			resetCounterInput(item)
+			return
+		}
+
+		const updateCartItemWeight = async () => {
+			try {
+				setUpdatingItemId(item.id_item)
+
+				const response = (await addItemToCart(
+					createAddFormData(item.id_item, '1', weightDelta) as unknown as FieldValues,
+				).unwrap()) as CartMutationResponse
+
+				if (response?.status === 'error') {
+					console.error('Ошибка при изменении веса товара в корзине:', response.errortext)
+					resetCounterInput(item)
+					return
+				}
+
+				setValue(counterName, String(getResponseWeight(response, nextWeight)), {
+					shouldDirty: false,
+					shouldValidate: false,
+				})
+			} catch (error) {
+				console.error('Ошибка при изменении веса товара в корзине:', error)
+				resetCounterInput(item)
+			} finally {
+				setUpdatingItemId(null)
+			}
+		}
+
+		if (weightDelta < 0 && nextWeight <= 0) {
+			resetCounterInput(item)
+
+			openModal(
+				<ConfirmWindow
+					text='Вы действительно хотите удалить товар из корзины? Отменить это действие будет нельзя'
+					submitHandle={() => {
+						void updateCartItemWeight()
+					}}
+					link='/lk/cart'
+				/>,
+			)
+
+			return
+		}
+
+		await updateCartItemWeight()
+	}
+
+	const handleIncrease = async (e: MouseEvent, item: CartListItem, value: string) => {
 		e.preventDefault()
 		e.stopPropagation()
 
-		await changeCartItemCount(item, count)
+		if (getBoolean(item.use_weight)) {
+			await changeCartItemWeight(item, Number(value))
+			return
+		}
+
+		await changeCartItemCount(item, value)
 	}
 
 	const handleCounterBlur = async (item: CartListItem) => {
 		const counterName = getCounterName(item.id_item)
-		const currentCount = Number(item.item_count) || 0
+		const isWeightProduct = getBoolean(item.use_weight)
+		const currentValue = isWeightProduct ? getCartItemWeight(item) : getCartItemCount(item)
+		const weightStep = getWeightStep(item)
 
 		const rawValue = String(getValues(counterName) ?? '')
 		const normalizedValue = rawValue.replace(/\D/g, '')
@@ -231,16 +400,41 @@ export const MyCartPage = () => {
 			return
 		}
 
-		let nextCount = Number(normalizedValue)
+		let nextValue = Number(normalizedValue)
 
-		if (!Number.isFinite(nextCount) || nextCount < 0) {
+		if (!Number.isFinite(nextValue) || nextValue < 0) {
 			resetCounterInput(item)
 			return
 		}
 
-		if (nextCount > MAX_ITEM_COUNT) {
+		if (isWeightProduct) {
+			if (weightStep <= 0) {
+				resetCounterInput(item)
+				return
+			}
+
+			nextValue = roundUpToMultiplicity(nextValue, weightStep)
+
+			if (nextValue === currentValue) {
+				setValue(counterName, String(currentValue), {
+					shouldDirty: false,
+					shouldValidate: false,
+				})
+				return
+			}
+
+			setValue(counterName, String(nextValue), {
+				shouldDirty: false,
+				shouldValidate: false,
+			})
+
+			await changeCartItemWeight(item, nextValue - currentValue, currentValue)
+			return
+		}
+
+		if (nextValue > MAX_ITEM_COUNT) {
 			toast.error('Не более 99 единиц одного товара в одном заказе')
-			nextCount = MAX_ITEM_COUNT
+			nextValue = MAX_ITEM_COUNT
 
 			setValue(counterName, String(MAX_ITEM_COUNT), {
 				shouldDirty: false,
@@ -248,17 +442,15 @@ export const MyCartPage = () => {
 			})
 		}
 
-		if (nextCount === currentCount) {
-			setValue(counterName, String(currentCount), {
+		if (nextValue === currentValue) {
+			setValue(counterName, String(currentValue), {
 				shouldDirty: false,
 				shouldValidate: false,
 			})
 			return
 		}
 
-		const delta = nextCount - currentCount
-
-		await changeCartItemCount(item, String(delta))
+		await changeCartItemCount(item, String(nextValue - currentValue))
 	}
 
 	const handleRemoveFromCart = async (e: MouseEvent, item: CartListItem) => {
@@ -337,7 +529,14 @@ export const MyCartPage = () => {
 							<p>Корзина пуста</p>
 						) : (
 							cartItems.map((item) => {
-								const count = Number(item.item_count) || 0
+								const isWeightProduct = getBoolean(item.use_weight)
+								const weightStep = getWeightStep(item)
+								const count = getCartItemCount(item)
+								const itemWeight = getCartItemWeight(item)
+								const hasCartValue = isWeightProduct ? itemWeight > 0 : count > 0
+								const price = isWeightProduct
+									? getPositiveNumber(item.weight_price_kg, item.item_price)
+									: item.item_price
 								const isItemUpdating = updatingItemId === item.id_item
 
 								return (
@@ -365,13 +564,13 @@ export const MyCartPage = () => {
 
 										<FlexRow className={styles.infoRow}>
 											<FlexRow className={styles.priceRow}>
-												<p className={styles.price}>{formatPrice(item.item_price)}</p>
-												<p>цена за 1 шт.</p>
+												<p className={styles.price}>{formatPrice(price)}</p>
+												<p>{isWeightProduct ? 'цена за 1 кг' : 'цена за 1 шт.'}</p>
 											</FlexRow>
 
 											<div
 												className={cn(styles.smallBuyBtn, styles.mobileBuyBtn, {
-													[styles.filled]: count > 0,
+													[styles.filled]: hasCartValue,
 													[styles.loading]: isItemUpdating,
 													[styles.disabled]: isItemUpdating || isFetching,
 												})}
@@ -381,8 +580,13 @@ export const MyCartPage = () => {
 														className={styles.vector}
 														onClick={async (e) => {
 															if (isItemUpdating || isFetching) return
+															if (isWeightProduct && weightStep <= 0) return
 
-															await handleIncrease(e, item, '-1')
+															await handleIncrease(
+																e,
+																item,
+																isWeightProduct ? String(-weightStep) : '-1',
+															)
 														}}
 													>
 														<MinusSVG color='#C09F3D' />
@@ -401,7 +605,6 @@ export const MyCartPage = () => {
 														<ControlledInput
 															name={getCounterName(item.id_item)}
 															type='number'
-															isCart
 															className={styles.counterInput}
 															margin='0'
 															onBlur={() => {
@@ -419,12 +622,19 @@ export const MyCartPage = () => {
 														/>
 													</div>
 
+													{isWeightProduct && <p className={styles.gramm}>гр.</p>}
+
 													<div
 														className={styles.vector}
 														onClick={async (e) => {
 															if (isItemUpdating || isFetching) return
+															if (isWeightProduct && weightStep <= 0) return
 
-															await handleIncrease(e, item, '1')
+															await handleIncrease(
+																e,
+																item,
+																isWeightProduct ? String(weightStep) : '1',
+															)
 														}}
 													>
 														<PlusSVG color='#C09F3D' />
@@ -463,6 +673,7 @@ export const MyCartPage = () => {
 							Оформить заказ
 						</MainButton>
 					</FlexRow>
+					<FeedBackBlock fullScreenMode />
 				</Container>
 			</Section>
 		</FormProvider>

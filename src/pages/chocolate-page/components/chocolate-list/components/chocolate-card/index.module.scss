@@ -123,6 +123,12 @@
 				}
 			}
 		}
+		.disabled {
+			background-color: var(--main-theme-color-2) !important;
+			svg {
+				filter: brightness(0);
+			}
+		}
 		.buyBtn {
 			padding: 14px;
 			height: auto;
@@ -177,6 +183,15 @@
 				position: absolute;
 				top: -6px;
 				right: -8px;
+			}
+		}
+		.disabled {
+			background-color: var(--main-theme-color-2) !important;
+			p {
+				color: #000!important;
+			}
+			svg {
+				filter: brightness(0);
 			}
 		}
 		.mobileBuyBtn {

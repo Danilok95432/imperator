@@ -140,7 +140,6 @@ export const InfoPage = () => {
 								type='password'
 								className={styles.input}
 								margin='0 0 32px 0'
-								isAutoCompleteOff={true}
 							/>
 						</FlexRow>
 						<FlexRow className={styles.inputRow}>
@@ -149,7 +148,6 @@ export const InfoPage = () => {
 								label='Подтверждение нового пароля*'
 								type='password'
 								className={styles.input}
-								isAutoCompleteOff={true}
 							/>
 						</FlexRow>
 						<FlexRow className={styles.controlsWrapper}>

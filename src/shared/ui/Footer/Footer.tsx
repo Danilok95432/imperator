@@ -31,6 +31,7 @@ export const Footer = () => {
 		{ id: '1', title: 'О нас', link: '/about' },
 		{ id: '2', title: 'Контакты', link: '/about/contacts' },
 		{ id: '3', title: 'Политика конфиденциальности', link: '/about/politic' },
+		{ id: '3', title: 'Партнерские магазины', link: '/' },
 	]
 	const LCLinks = [
 		{ id: '1', title: 'Личный кабинет', link: authorized ? '/lk' : '/auth' },
@@ -41,8 +42,8 @@ export const Footer = () => {
 		},
 		{
 			id: '3',
-			title: 'Избранное',
-			link: authorized ? `${AppRoute.LK}${AppRoute.LKfavorite}` : '/auth',
+			title: 'Обратная связь',
+			link: `${AppRoute.Feedback}`,
 		},
 		// { id: '4', title: 'Рассылка', link: '/' },
 	]

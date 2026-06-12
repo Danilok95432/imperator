@@ -17,6 +17,9 @@ import { useActions } from 'src/app/store/hooks/actions'
 import { useLoginUserMutation, useRegistrationUserMutation } from 'src/features/auth/api/auth.api'
 import { toast } from 'react-toastify'
 import { type User } from 'src/types/response'
+import { VkSVG } from 'src/shared/ui/icons/vkSVG'
+import { YandexSVG } from 'src/shared/ui/icons/yandexSVG'
+import { FeedBackBlock } from 'src/widgets/feedback-block/feedback-block'
 
 export type ServerError = {
 	errortext?: string
@@ -146,23 +149,38 @@ export const RegistrationPage = () => {
 								label='Подтверждение пароля*'
 								type='password'
 								className={styles.input}
+								margin='0 0 32px 0'
 							/>
 						</FlexRow>
 
-						<FlexRow className={styles.controlsWrapper}>
+						<FlexRow className={styles.contolsBlock}>
 							<ControlledCheckbox
 								name='use_spam'
 								label='Хочу получать новости на почту'
 								type='checkbox'
 							/>
 
-							<MainButton type='submit' className={styles.enterBtn}>
-								Зарегистрироваться
-							</MainButton>
-
-							<Link to={AppRoute.AUTH} className={styles.link}>
-								Авторизация
-							</Link>
+							<FlexRow className={styles.controlsWrapper}>
+								<FlexRow className={styles.controls}>
+									<MainButton type='submit' className={styles.enterBtn}>
+										Зарегистрироваться
+									</MainButton>
+									<FlexRow className={styles.socialsRow}>
+										<MainButton type='submit' className={styles.enterSocials}>
+											<YandexSVG />
+											Войти с Яндекс ID
+										</MainButton>
+										<MainButton type='submit' className={styles.enterSocials}>
+											<VkSVG />
+											Войти через VK
+										</MainButton>
+									</FlexRow>
+									<Link to={AppRoute.AUTH} className={styles.link}>
+										Авторизоваться
+									</Link>
+								</FlexRow>
+							</FlexRow>
+							<FeedBackBlock />
 						</FlexRow>
 					</form>
 				</FormProvider>

@@ -157,7 +157,7 @@ section.section {
 				}
 
 				.mobileBuyBtn {
-					width: 152px;
+					width: max-content;
 					border-radius: 8px;
 					height: auto;
 					min-height: 58px;
@@ -180,7 +180,7 @@ section.section {
 					&:hover .btnText {
 						color: black;
 					}
-
+					&:hover .gramm,
 					&:hover .counter,
 					&:hover .counterInput,
 					&:hover .counterInput input {
@@ -214,6 +214,11 @@ section.section {
 						@media (max-width: 649px) {
 							justify-content: space-between;
 							gap: 0;
+						}
+
+						.gramm {
+							color: var(--main-theme-color-2);
+							margin-right: 8px;
 						}
 
 						.counter {

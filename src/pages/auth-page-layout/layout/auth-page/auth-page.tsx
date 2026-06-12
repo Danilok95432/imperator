@@ -17,6 +17,9 @@ import { useActions } from 'src/app/store/hooks/actions'
 import { useLoginUserMutation, useRegActivateRecoverMutation } from 'src/features/auth/api/auth.api'
 import { toast } from 'react-toastify'
 import { type LoginResponse, getErrorMessage } from '../registration-page/registration-page'
+import { YandexSVG } from 'src/shared/ui/icons/yandexSVG'
+import { VkSVG } from 'src/shared/ui/icons/vkSVG'
+import { FeedBackBlock } from 'src/widgets/feedback-block/feedback-block'
 
 type RecoverResponse = {
 	status?: string
@@ -125,8 +128,11 @@ export const AuthPage = () => {
 								type='password'
 								className={styles.input}
 							/>
+						</FlexRow>
 
+						<FlexRow className={styles.dop}>
 							<a href='/auth/recover'>Забыли пароль?</a>
+							<ControlledCheckbox name='remember' label='Запомнить меня' type='checkbox' />
 						</FlexRow>
 
 						{breakPoint === 'S' && (
@@ -136,18 +142,26 @@ export const AuthPage = () => {
 						)}
 
 						<FlexRow className={styles.controlsWrapper}>
-							<ControlledCheckbox name='remember' label='Запомнить меня' type='checkbox' />
-
 							<FlexRow className={styles.controls}>
-								<Link to={`${AppRoute.AUTH}/${AppRoute.REGISTRATION}`} className={styles.link}>
-									Регистрация
-								</Link>
-
 								<MainButton type='submit' className={styles.enterBtn}>
 									Войти
 								</MainButton>
+								<FlexRow className={styles.socialsRow}>
+									<MainButton type='submit' className={styles.enterSocials}>
+										<YandexSVG />
+										Войти с Яндекс ID
+									</MainButton>
+									<MainButton type='submit' className={styles.enterSocials}>
+										<VkSVG />
+										Войти через VK
+									</MainButton>
+								</FlexRow>
+								<Link to={`${AppRoute.AUTH}/${AppRoute.REGISTRATION}`} className={styles.link}>
+									Зарегистрироваться
+								</Link>
 							</FlexRow>
 						</FlexRow>
+						<FeedBackBlock />
 					</form>
 				</FormProvider>
 			</Container>

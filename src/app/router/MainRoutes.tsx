@@ -31,6 +31,7 @@ import { RefundsPage } from 'src/pages/shop-page-layout/layout/refunds-page/refu
 import { SuccessPage } from 'src/pages/lk-page/layout/success-page/success-page'
 import { NotFoundPage } from 'src/pages/not-found-page/not-found-page'
 import { RecoverPage } from 'src/pages/auth-page-layout/layout/recover-page/recover-page'
+import { FeedbackPage } from 'src/pages/feedback-page/feedback-page'
 
 export const MainRoutes = () => {
 	return (
@@ -49,6 +50,7 @@ export const MainRoutes = () => {
 						element={<RegistrationPage />}
 					/>
 				</Route>
+				<Route path={AppRoute.Feedback} element={<FeedbackPage />} />
 				<Route path={AppRoute.LK} element={<LkPageLayout />}>
 					<Route index element={<LkPage />} />
 					<Route path={`${AppRoute.LK}/${AppRoute.LKcart}/success`} element={<SuccessPage />} />

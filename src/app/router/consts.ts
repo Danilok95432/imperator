@@ -25,4 +25,5 @@ export enum AppRoute {
 	MyCart = '/cart',
 	Completed = 'completed',
 	Canceled = 'canceled',
+	Feedback = 'feedback',
 }

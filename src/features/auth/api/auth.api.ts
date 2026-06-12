@@ -1,7 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { type FieldValues } from 'react-hook-form'
 import { baseQueryWithReauth } from 'src/shared/helpers/base-query'
-import { type PersonalResponse, type AuthResponse } from 'src/types/auth'
+import { type PersonalResponse, type AuthResponse, type FeedbackInfoResponse } from 'src/types/auth'
 import {
 	type SelOption,
 	type MultiSelOption,
@@ -75,6 +75,26 @@ export const authApi = createApi({
 				const token = localStorage.getItem('token')
 				return {
 					url: 'user_personal/saveinfo',
+					headers: token ? { Authorization: `${token}` } : undefined,
+					method: 'POST',
+					body: formData,
+				}
+			},
+		}),
+		getFeedBackInfo: build.query<FeedbackInfoResponse, null>({
+			query: () => {
+				const token = localStorage.getItem('token')
+				return {
+					url: 'feedback/getinfo',
+					headers: token ? { Authorization: `${token}` } : undefined,
+				}
+			},
+		}),
+		saveFeedbackInfo: build.mutation<{ status: string; errortext: string }, FieldValues>({
+			query: (formData) => {
+				const token = localStorage.getItem('token')
+				return {
+					url: 'feedback/save',
 					headers: token ? { Authorization: `${token}` } : undefined,
 					method: 'POST',
 					body: formData,
@@ -177,4 +197,6 @@ export const {
 	useLazyCheckAuthQuery,
 	useRegRecoverMutation,
 	useRegActivateRecoverMutation,
+	useGetFeedBackInfoQuery,
+	useSaveFeedbackInfoMutation,
 } = authApi
