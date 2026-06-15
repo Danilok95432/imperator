@@ -2,16 +2,17 @@ import { type SelOption } from 'src/types/select'
 import * as yup from 'yup'
 
 export type FeedbackInputs = {
-	firstname: string
+	fio: string
 	email: string
 	telphone: string
-	topic: SelOption[] | string
-	text: string
+	message_themes: SelOption[] | string
+	id_message_theme?: string
+	message: string
 }
 
 export const feedbackInputsSchema = yup.object().shape({
 	// Проверка имени
-	firstname: yup
+	fio: yup
 		.string()
 		.required('Введите имя')
 		.min(2, 'Имя должно содержать минимум 2 символа')
@@ -26,8 +27,8 @@ export const feedbackInputsSchema = yup.object().shape({
 
 	// Проверка телефона - 11 цифр
 	telphone: yup.string().required('Введите номер телефона'),
-	text: yup.string().required('Введите текст обращения'),
-	topic: yup
+	message: yup.string().required('Введите текст обращения'),
+	message_themes: yup
 		.mixed<SelOption[] | string>()
 		.defined()
 		.test('city-selected', 'Выберите тему обращения', (value) => {

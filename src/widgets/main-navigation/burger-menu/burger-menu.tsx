@@ -37,6 +37,18 @@ export const BurgerMenu = () => {
 		}
 	}, [isOpen])
 
+	const getSortedCatalogs = () => {
+		const catalogs = data?.catalogs ?? []
+		const novinki = catalogs.find((cat) => cat.title === 'Новинки')
+		const thematic = catalogs.find((cat) => cat.title === 'Тематическая серия')
+		const others = catalogs.filter(
+			(cat) => cat.title !== 'Новинки' && cat.title !== 'Тематическая серия',
+		)
+		return [...(novinki ? [novinki] : []), ...others, ...(thematic ? [thematic] : [])]
+	}
+
+	const sortedCatalogs = getSortedCatalogs()
+
 	return (
 		<div className={styles.burgerMenu}>
 			<div className={styles.burgerIcon} onClick={toggleMenu}>
@@ -52,7 +64,7 @@ export const BurgerMenu = () => {
 					<span></span>
 				</div>
 				<ul>
-					{data?.catalogs.map((menuEl, index) => (
+					{sortedCatalogs.map((menuEl, index) => (
 						<li className={styles.menuItem} key={index}>
 							<NavLink
 								className={({ isActive }) => setActive(isActive, styles.activeLink)}

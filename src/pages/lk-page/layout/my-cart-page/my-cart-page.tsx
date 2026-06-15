@@ -66,6 +66,8 @@ type CartMutationResponse = {
 }
 
 const MAX_ITEM_COUNT = 99
+const MAX_WEIGHT_GRAMS = 10000
+const MAX_WEIGHT_ERROR = 'Больше 10 000 гр. по весу нельзя'
 
 const getCounterName = (idItem: string) => `counter_${idItem}`
 
@@ -313,12 +315,13 @@ export const MyCartPage = () => {
 		item: CartListItem,
 		weightDelta: number,
 		baseWeight?: number,
+		options: { skipMaxWeightToast?: boolean } = {},
 	) => {
 		const weightStep = getWeightStep(item)
 		const counterName = getCounterName(item.id_item)
 		const formWeight = getNumber(getValues(counterName))
 		const currentWeight = baseWeight ?? (formWeight > 0 ? formWeight : getCartItemWeight(item))
-		const nextWeight = currentWeight + weightDelta
+		let nextWeight = currentWeight + weightDelta
 
 		if (weightStep <= 0) return
 		if (!Number.isFinite(weightDelta) || weightDelta === 0) return
@@ -329,12 +332,30 @@ export const MyCartPage = () => {
 			return
 		}
 
+		if (nextWeight > MAX_WEIGHT_GRAMS) {
+			nextWeight = MAX_WEIGHT_GRAMS
+
+			if (!options.skipMaxWeightToast) {
+				toast.error(MAX_WEIGHT_ERROR)
+			}
+		}
+
+		const nextWeightDelta = nextWeight - currentWeight
+
+		if (nextWeightDelta === 0) {
+			setValue(counterName, String(nextWeight), {
+				shouldDirty: false,
+				shouldValidate: false,
+			})
+			return
+		}
+
 		const updateCartItemWeight = async () => {
 			try {
 				setUpdatingItemId(item.id_item)
 
 				const response = (await addItemToCart(
-					createAddFormData(item.id_item, '1', weightDelta) as unknown as FieldValues,
+					createAddFormData(item.id_item, '1', nextWeightDelta) as unknown as FieldValues,
 				).unwrap()) as CartMutationResponse
 
 				if (response?.status === 'error') {
@@ -355,7 +376,7 @@ export const MyCartPage = () => {
 			}
 		}
 
-		if (weightDelta < 0 && nextWeight <= 0) {
+		if (nextWeightDelta < 0 && nextWeight <= 0) {
 			resetCounterInput(item)
 
 			openModal(
@@ -413,7 +434,18 @@ export const MyCartPage = () => {
 				return
 			}
 
+			let isMaxWeightExceeded = nextValue > MAX_WEIGHT_GRAMS
+
 			nextValue = roundUpToMultiplicity(nextValue, weightStep)
+
+			if (nextValue > MAX_WEIGHT_GRAMS) {
+				isMaxWeightExceeded = true
+				nextValue = MAX_WEIGHT_GRAMS
+			}
+
+			if (isMaxWeightExceeded) {
+				toast.error(MAX_WEIGHT_ERROR)
+			}
 
 			if (nextValue === currentValue) {
 				setValue(counterName, String(currentValue), {
@@ -428,7 +460,9 @@ export const MyCartPage = () => {
 				shouldValidate: false,
 			})
 
-			await changeCartItemWeight(item, nextValue - currentValue, currentValue)
+			await changeCartItemWeight(item, nextValue - currentValue, currentValue, {
+				skipMaxWeightToast: true,
+			})
 			return
 		}
 

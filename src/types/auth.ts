@@ -22,7 +22,7 @@ export type FeedbackInfoResponse = {
 	telphone: string
 	email: string
 	text: string
-	topic: SelOption[]
+	message_themes: SelOption[]
 	topic_id: string
 }
 

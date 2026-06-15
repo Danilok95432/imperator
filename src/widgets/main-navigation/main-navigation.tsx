@@ -10,6 +10,18 @@ export const MainNavigation = () => {
 	const navigate = useNavigate()
 	const { data } = useGetCategoriesCatalogQuery(null)
 
+	const getSortedCatalogs = () => {
+		const catalogs = data?.catalogs ?? []
+		const novinki = catalogs.find((cat) => cat.title === 'Новинки')
+		const thematic = catalogs.find((cat) => cat.title === 'Тематическая серия')
+		const others = catalogs.filter(
+			(cat) => cat.title !== 'Новинки' && cat.title !== 'Тематическая серия',
+		)
+		return [...(novinki ? [novinki] : []), ...others, ...(thematic ? [thematic] : [])]
+	}
+
+	const sortedCatalogs = getSortedCatalogs()
+
 	const scrollToSection = (sectionId: string) => {
 		const element = document.getElementById(sectionId)
 		navigate(sectionId)
@@ -57,7 +69,7 @@ export const MainNavigation = () => {
 			<Container className={styles.navigationCont}>
 				<BurgerMenu />
 				<ul className={styles.navWrapper}>
-					{data?.catalogs.map((el, index) => (
+					{sortedCatalogs.map((el, index) => (
 						<button
 							key={index}
 							className={styles.navEl}

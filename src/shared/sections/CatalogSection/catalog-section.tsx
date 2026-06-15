@@ -13,6 +13,11 @@ import { useBreakPoint } from 'src/features/useBreakPoint/useBreakPoint'
 export const CatalogSection = () => {
 	const { data } = useGetCategoriesCatalogQuery(null)
 	const breakPoint = useBreakPoint()
+
+	const filteredCatalogs = (data?.catalogs ?? []).filter(
+		(el) => el.title !== 'Новинки' && el.title !== 'Тематическая серия',
+	)
+
 	return (
 		<Section className={styles.catalog}>
 			<Container>
@@ -20,11 +25,11 @@ export const CatalogSection = () => {
 					<h2>Каталог продукции</h2>
 				</FlexRow>
 				<FlexRow className={styles.catalogRow}>
-					{data?.catalogs.map((el) => {
+					{filteredCatalogs.map((el) => {
 						if (breakPoint === 'S')
 							return (
-								<Link to={`/catalog/${el.id}`} className={styles.catalogLinkWrapper}>
-									<FlexRow className={styles.catalogEl} key={el.id}>
+								<Link to={`/catalog/${el.id}`} className={styles.catalogLinkWrapper} key={el.id}>
+									<FlexRow className={styles.catalogEl}>
 										<div className={styles.imgWrapper}>
 											<img
 												src={el.img && el.img.length > 0 ? el.img[0].original : skeleton}
@@ -34,17 +39,15 @@ export const CatalogSection = () => {
 										<p className={styles.title}>{el.title}</p>
 										<FlexRow className={styles.bottomRow}>
 											<FlexRow className={styles.linksRow}>
-												{el.subcats?.map((elem) => {
-													return (
-														<Link
-															to={`/catalog/${el.id}/item/${elem.id}`}
-															key={elem.id}
-															className={styles.link}
-														>
-															{elem.title}
-														</Link>
-													)
-												})}
+												{el.subcats?.map((elem) => (
+													<Link
+														to={`/catalog/${el.id}/item/${elem.id}`}
+														key={elem.id}
+														className={styles.link}
+													>
+														{elem.title}
+													</Link>
+												))}
 											</FlexRow>
 											<Link to={`${AppRoute.Catalog}/${el.id}`} className={styles.catalogBtn}>
 												<p>{`В каталог "${el.title}"`}</p>
@@ -62,17 +65,15 @@ export const CatalogSection = () => {
 									<p className={styles.title}>{el.title}</p>
 									<FlexRow className={styles.bottomRow}>
 										<FlexRow className={styles.linksRow}>
-											{el.subcats?.map((elem) => {
-												return (
-													<Link
-														to={`/catalog/${el.id}/item/${elem.id}`}
-														key={elem.id}
-														className={styles.link}
-													>
-														{elem.title}
-													</Link>
-												)
-											})}
+											{el.subcats?.map((elem) => (
+												<Link
+													to={`/catalog/${el.id}/item/${elem.id}`}
+													key={elem.id}
+													className={styles.link}
+												>
+													{elem.title}
+												</Link>
+											))}
 										</FlexRow>
 										<Link to={`${AppRoute.Catalog}/${el.id}`} className={styles.catalogBtn}>
 											<p>{`В каталог "${el.title}"`}</p>

@@ -34,6 +34,9 @@ interface ChocolateCardProps {
 
 type CartResponse = {
 	item_count?: string
+	item_weight?: string
+	cart_weight?: string
+	weight?: string
 	status: string
 	errortext?: string
 }
@@ -69,6 +72,19 @@ const getCartCount = (item: WeightProductFields): number => {
 
 const formatPrice = (value: number): string => {
 	return `${Math.round(value).toLocaleString('ru-RU')} ₽`
+}
+
+const MAX_WEIGHT_GRAMS = 10000
+const MAX_WEIGHT_ERROR = 'Больше 10 000 гр. по весу нельзя'
+
+const getDefinedResponseWeight = (response: CartResponse | undefined): number | undefined => {
+	const responseWeight = response?.item_weight ?? response?.cart_weight ?? response?.weight
+
+	if (responseWeight === undefined || responseWeight === null || responseWeight === '') {
+		return undefined
+	}
+
+	return Math.max(0, getNumber(responseWeight))
 }
 
 export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCardProps) => {
@@ -213,16 +229,38 @@ export const ChocolateCard = ({ chocolate, className, smallCard }: ChocolateCard
 			return
 		}
 
+		const currentWeight = Math.min(weightDefault, MAX_WEIGHT_GRAMS)
+
+		if (weightDefault > MAX_WEIGHT_GRAMS) {
+			toast.error(MAX_WEIGHT_ERROR)
+		}
+
 		try {
 			setIsCartUpdating(true)
 
 			const response = (await addItemToCart(
-				createAddFormData('1', weightDefault) as unknown as FieldValues,
+				createAddFormData('1', currentWeight) as unknown as FieldValues,
 			).unwrap()) as CartResponse
 
 			if (response?.status === 'error') {
 				console.error('Ошибка при добавлении весового товара в корзину:', response.errortext)
 				return
+			}
+
+			const responseWeight = getDefinedResponseWeight(response)
+
+			if (responseWeight === undefined || responseWeight <= 0) {
+				const weightResponse = (await addItemToCart(
+					createAddFormData('0', currentWeight) as unknown as FieldValues,
+				).unwrap()) as CartResponse
+
+				if (weightResponse?.status === 'error') {
+					console.error(
+						'Ошибка при установке веса весового товара в корзине:',
+						weightResponse.errortext,
+					)
+					return
+				}
 			}
 
 			const nextCount = Number(response?.item_count)

@@ -85,7 +85,7 @@ export const authApi = createApi({
 			query: () => {
 				const token = localStorage.getItem('token')
 				return {
-					url: 'feedback/getinfo',
+					url: 'messages/getinfo',
 					headers: token ? { Authorization: `${token}` } : undefined,
 				}
 			},
@@ -94,7 +94,7 @@ export const authApi = createApi({
 			query: (formData) => {
 				const token = localStorage.getItem('token')
 				return {
-					url: 'feedback/save',
+					url: 'messages/save',
 					headers: token ? { Authorization: `${token}` } : undefined,
 					method: 'POST',
 					body: formData,
