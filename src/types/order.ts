@@ -28,6 +28,7 @@ export type CartUserListItem = {
 	item_name: string
 	item_count: string
 	item_price: string
+	category_id: string
 }
 
 export type OneItemOrder = {

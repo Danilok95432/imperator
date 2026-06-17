@@ -10,6 +10,7 @@ import {
 	type ILKInfoOrder,
 } from 'src/types/cardItem'
 import { type UserOrdersList } from 'src/types/order'
+import { type CreatePaymentResponse } from 'src/types/payments'
 
 type BaseMutationResponse = {
 	status: string
@@ -184,6 +185,7 @@ export const catalogApi = createApi({
 				method: 'POST',
 				body: formData,
 			}),
+			invalidatesTags: ['Cart'],
 		}),
 		getUserOrdersList: build.query<UserOrdersList, { idUser: string; type?: string }>({
 			query: ({ idUser, type }) => ({
@@ -204,6 +206,7 @@ export const catalogApi = createApi({
 					id,
 				},
 			}),
+			providesTags: ['Orders'],
 		}),
 		cancelOrderItem: build.mutation<UserOrdersList, string>({
 			query: (id) => ({
@@ -213,6 +216,13 @@ export const catalogApi = createApi({
 					id,
 				},
 				invalidatesTags: ['Orders'],
+			}),
+		}),
+		createPayment: build.mutation<CreatePaymentResponse, FieldValues>({
+			query: (body) => ({
+				url: '/payments/create',
+				method: 'POST',
+				body,
 			}),
 		}),
 	}),
@@ -236,4 +246,5 @@ export const {
 	useGetUserOrdersListQuery,
 	useGetUserOrdersListItemInfoQuery,
 	useCancelOrderItemMutation,
+	useCreatePaymentMutation,
 } = catalogApi

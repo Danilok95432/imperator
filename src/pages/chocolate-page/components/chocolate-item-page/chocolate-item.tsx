@@ -748,7 +748,9 @@ export const ChocolateItem = () => {
 									)}
 
 									{hasComposition && (
-										<p className={styles.composition}>{`Размер упаковки: ${'40х100х10 мм'}`}</p>
+										<p
+											className={styles.composition}
+										>{`Размер упаковки: ${chocolate.item_width}х${chocolate.item_height}х${chocolate.item_length} мм`}</p>
 									)}
 								</FlexRow>
 

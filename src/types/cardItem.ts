@@ -30,6 +30,9 @@ export interface CardItem {
 	weight_default: string
 	weight_one: string
 	weight_price_kg: string
+	item_width: string
+	item_length: string
+	item_height: string
 }
 
 export interface IFavotiteItem {
@@ -107,6 +110,7 @@ export interface CartListItem {
 	item_price: string
 	item_fullprice: string
 	category_id: string
+	use_weight: boolean
 }
 
 export interface CartListItemsResponse {

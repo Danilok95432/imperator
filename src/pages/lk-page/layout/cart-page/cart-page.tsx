@@ -95,7 +95,8 @@ export const CartPage = () => {
 
 	const itemsTotal = useMemo(() => {
 		return cartItems.reduce((acc, item) => {
-			return acc + Number(item.item_price) * Number(item.item_count)
+			if (item.use_weight) return acc + Number(item.item_fullprice)
+			else return acc + Number(item.item_price) * Number(item.item_count)
 		}, 0)
 	}, [cartItems])
 
@@ -422,27 +423,30 @@ export const CartPage = () => {
 													className={styles.input}
 													isPhone
 												/>
+												{values.deliveryId === '1' && (
+													<>
+														<ControlledInput
+															name='street'
+															label='Улица'
+															margin='0'
+															className={styles.input}
+														/>
 
-												<ControlledInput
-													name='street'
-													label='Улица'
-													margin='0'
-													className={styles.input}
-												/>
+														<ControlledInput
+															name='dom'
+															label='Дом'
+															margin='0'
+															className={styles.input}
+														/>
 
-												<ControlledInput
-													name='dom'
-													label='Дом'
-													margin='0'
-													className={styles.input}
-												/>
-
-												<ControlledInput
-													name='room'
-													label='Квартира / офис'
-													margin='0'
-													className={styles.input}
-												/>
+														<ControlledInput
+															name='room'
+															label='Квартира / офис'
+															margin='0'
+															className={styles.input}
+														/>
+													</>
+												)}
 
 												<ControlledInput
 													name='comment'
@@ -504,9 +508,11 @@ export const CartPage = () => {
 												<div className={styles.itemQty}>{item.item_count} шт.</div>
 
 												<div className={styles.itemPrice}>
-													{(Number(item.item_price) * Number(item.item_count)).toLocaleString(
-														'ru-RU',
-													)}{' '}
+													{item.use_weight
+														? Number(item.item_fullprice)
+														: (Number(item.item_price) * Number(item.item_count)).toLocaleString(
+																'ru-RU',
+															)}{' '}
 													₽
 												</div>
 											</div>
