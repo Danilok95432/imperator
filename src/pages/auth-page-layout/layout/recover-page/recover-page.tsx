@@ -55,9 +55,7 @@ export const RecoverPage = () => {
 			)
 			setStep('code')
 		} catch {
-			toast.success(
-				'Перейдите по ссылке, отправленной на почтовый ящик, для продолжения восстановления пароля',
-			)
+			toast.error('Ошибка. Введенный email не найден')
 		} finally {
 			setIsLoading(false)
 			navigate(`/auth`)

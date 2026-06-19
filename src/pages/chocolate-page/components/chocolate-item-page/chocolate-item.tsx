@@ -748,9 +748,13 @@ export const ChocolateItem = () => {
 									)}
 
 									{hasComposition && (
-										<p
-											className={styles.composition}
-										>{`Размер упаковки: ${chocolate.item_width}х${chocolate.item_height}х${chocolate.item_length} мм`}</p>
+										<p className={styles.composition}>
+											{chocolate.item_width !== '0' &&
+											chocolate.item_height !== '0' &&
+											chocolate.item_length !== '0'
+												? `Размер упаковки: ${chocolate.item_width}х${chocolate.item_height}х${chocolate.item_length} мм`
+												: `Размеры не указаны`}
+										</p>
 									)}
 								</FlexRow>
 

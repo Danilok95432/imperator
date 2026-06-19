@@ -110,7 +110,8 @@ export interface CartListItem {
 	item_price: string
 	item_fullprice: string
 	category_id: string
-	use_weight: boolean
+	use_weight: string
+	item_weight: string
 }
 
 export interface CartListItemsResponse {

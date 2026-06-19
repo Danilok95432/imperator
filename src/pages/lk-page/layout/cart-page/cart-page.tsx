@@ -114,13 +114,13 @@ export const CartPage = () => {
 	const isDeliveryFilled = Boolean(values.deliveryId)
 	const isPaymentFilled = Boolean(values.paymentId)
 
-	const isAddressRequired = selectedDelivery?.value !== '1'
+	const isAddressRequired = values.deliveryId === '1'
 
 	const isAddressFilled =
 		!isAddressRequired ||
-		(Boolean(!values.street?.trim()) &&
-			Boolean(!values.dom?.trim()) &&
-			Boolean(!values.room?.trim()) &&
+		(Boolean(values.street?.trim()) &&
+			Boolean(values.dom?.trim()) &&
+			Boolean(values.room?.trim()) &&
 			!errors.street &&
 			!errors.dom &&
 			!errors.room)
@@ -137,6 +137,7 @@ export const CartPage = () => {
 		isAddressFilled
 
 	const isOrderReady = isRegionFilled && isDeliveryFilled && isPaymentFilled && isCustomerFilled
+
 	const navigate = useNavigate()
 	const onSubmit: SubmitHandler<OrderInputs> = async (data) => {
 		const selectedCityValue = getSelectValue(data.citys)
@@ -505,7 +506,11 @@ export const CartPage = () => {
 											<div key={item.id_item} className={styles.itemRow}>
 												<div className={styles.itemName}>{item.item_name}</div>
 
-												<div className={styles.itemQty}>{item.item_count} шт.</div>
+												<div className={styles.itemQty}>
+													{item.use_weight === '1'
+														? `${item.item_weight} гр.`
+														: `${item.item_count} шт.`}
+												</div>
 
 												<div className={styles.itemPrice}>
 													{item.use_weight

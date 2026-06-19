@@ -29,6 +29,8 @@ export type CartUserListItem = {
 	item_count: string
 	item_price: string
 	category_id: string
+	use_weight: boolean
+	item_weight: string
 }
 
 export type OneItemOrder = {
@@ -71,4 +73,8 @@ export type EditSection = 'region' | 'delivery' | 'payment' | 'customer' | null
 
 export type UserOrdersList = {
 	orders: OrderItem[]
+}
+
+export type UserOrderResponse = {
+	order: OrderItem
 }

@@ -14,11 +14,13 @@ import 'react-datepicker/dist/react-datepicker.css'
 import './index.scss'
 import { store } from './app/store'
 import { Modal } from './features/modal/modal'
+import { AuthInitializer } from './widgets/Auth-Initializer/auth-Initializer'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 	<Provider store={store}>
 		<HelmetProvider>
 			<BrowserRouter>
+				<AuthInitializer />
 				<ToastContainer />
 				<App />
 				<Modal />

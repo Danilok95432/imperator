@@ -9,7 +9,7 @@ import {
 	type CartListItemsResponse,
 	type ILKInfoOrder,
 } from 'src/types/cardItem'
-import { type UserOrdersList } from 'src/types/order'
+import { type UserOrderResponse, type UserOrdersList } from 'src/types/order'
 import { type CreatePaymentResponse } from 'src/types/payments'
 
 type BaseMutationResponse = {
@@ -198,7 +198,7 @@ export const catalogApi = createApi({
 				providesTags: ['Orders'],
 			}),
 		}),
-		getUserOrdersListItemInfo: build.query<UserOrdersList, string>({
+		getUserOrdersListItemInfo: build.query<UserOrderResponse, string>({
 			query: (id) => ({
 				url: 'user_orders/item',
 				headers: getAuthHeaders(true),

@@ -13,17 +13,21 @@ import { ControlledInput } from 'src/widgets/controlled-input/controlled-input'
 import styles from './index.module.scss'
 import {
 	useGetPersonalInfoQuery,
+	useLogoutUserMutation,
 	useSavePersonalInfoMutation,
 } from 'src/features/auth/api/auth.api'
 import { useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { booleanToNumberString } from 'src/shared/helpers/utils'
 import { ControlledSelect } from 'src/widgets/controlled-select/controlled-select'
+import { useNavigate } from 'react-router-dom'
 
 export const InfoPage = () => {
 	const { data } = useGetPersonalInfoQuery(null)
+	const [logout] = useLogoutUserMutation()
 	const [savePersonalInfo] = useSavePersonalInfoMutation()
 	useAdditionalCrumbs('Личные данные')
+	const navigate = useNavigate()
 	const methods = useForm<LkInputs>({
 		mode: 'onBlur',
 		resolver: yupResolver(lkInputsSchema),
@@ -35,6 +39,7 @@ export const InfoPage = () => {
 	const onSubmit: SubmitHandler<LkInputs> = async (data) => {
 		const formData = new FormData()
 		formData.append('firstname', data.firstname)
+		formData.append('fathname', data.fathname ?? '')
 		formData.append('surname', data.surname)
 		formData.append('email', data.email)
 		formData.append('telphone', data.telphone)
@@ -55,6 +60,12 @@ export const InfoPage = () => {
 		const res = await savePersonalInfo(formData)
 		if (res && 'data' in res) {
 			toast.success('Данные успешно сохранены')
+			if (data.password && data.password2) {
+				await logout({})
+				localStorage.removeItem('token')
+				localStorage.removeItem('userID')
+				navigate('/auth')
+			}
 		} else {
 			toast.error('Ошибка при сохранении данных')
 		}
@@ -85,9 +96,9 @@ export const InfoPage = () => {
 						noValidate
 						autoComplete='off'
 					>
+						<ControlledInput name='surname' label='Фамилия*' margin='0 0 32px 0' />
 						<ControlledInput name='firstname' label='Имя*' margin='0 0 32px 0' />
 						<ControlledInput name='fathname' label='Отчество' margin='0 0 32px 0' />
-						<ControlledInput name='surname' label='Фамилия*' margin='0 0 32px 0' />
 						<ControlledInput name='email' label='Email*' margin='0 0 32px 0' />
 						<ControlledInput name='telphone' label='Телефон*' margin='0 0 32px 0' isPhone />
 						<ControlledCheckbox

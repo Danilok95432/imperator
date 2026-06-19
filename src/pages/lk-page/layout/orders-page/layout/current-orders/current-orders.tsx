@@ -11,7 +11,13 @@ export const CurrentOrders = () => {
 
 	const orders = Array.isArray(ordersData) ? ordersData : ordersData?.orders ?? []
 
-	const currentOrders = orders.filter((order) => order.status_keyword === 'created')
+	const currentOrders = orders.filter(
+		(order) =>
+			order.status_keyword === 'created' ||
+			order.status_keyword === 'payed' ||
+			order.status_keyword === 'delivery' ||
+			order.status_keyword === 'waiting',
+	)
 
 	return (
 		<Section className={styles.currentOrders}>

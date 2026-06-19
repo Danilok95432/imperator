@@ -16,9 +16,9 @@ export const DeliveryCard = ({ option, active, onClick }: Props) => {
 		<button type='button' className={clsx(styles.card, active && styles.active)} onClick={onClick}>
 			<FlexRow className={styles.infoRow}>
 				<div className={styles.title}>{option?.label}</div>
-				{option?.price !== '0.00' && (
+				{/* {option?.price !== '0.00' && (
 					<div className={styles.desc}>Стоимость: {option?.price} ₽</div>
-				)}
+				)} */}
 				{option?.address !== '' && <div className={styles.desc}>Адрес: {option?.address}</div>}
 				{option?.days && <div className={styles.meta}>Дней доставки: {option?.days}</div>}
 			</FlexRow>

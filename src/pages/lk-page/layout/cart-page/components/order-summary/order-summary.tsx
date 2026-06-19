@@ -14,10 +14,10 @@ export const OrderSummary = ({ itemsTotal, deliveryPrice, totalPrice }: Props) =
 				<p>{itemsTotal} ₽</p>
 			</div>
 
-			<div className={styles.row}>
+			{/* <div className={styles.row}>
 				<span>Доставка:</span>
 				<p>{deliveryPrice} ₽</p>
-			</div>
+			</div> */}
 
 			<div className={styles.divider} />
 

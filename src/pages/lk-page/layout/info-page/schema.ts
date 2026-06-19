@@ -4,6 +4,7 @@ import * as yup from 'yup'
 export type LkInputs = {
 	firstname: string
 	surname: string
+	fathname?: string
 	email: string
 	telphone: string
 	use_spam?: boolean

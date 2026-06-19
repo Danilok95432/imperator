@@ -151,7 +151,9 @@ export const OneOrder = ({ order }: OneOrderProps) => {
 											<div className={styles.itemRow}>
 												<div className={styles.itemName}>{item.item_name}</div>
 
-												<div className={styles.itemQty}>{item.item_count} шт.</div>
+												<div className={styles.itemQty}>
+													{item.use_weight ? `${item.item_weight} гр.` : `${item.item_count} шт.`}
+												</div>
 
 												<div className={styles.itemPrice}>{parseFloat(item.item_price)} ₽</div>
 											</div>
@@ -174,7 +176,9 @@ export const OneOrder = ({ order }: OneOrderProps) => {
 							>{`Доставим до: ${formatDate(order?.delivery_date ?? '')}`}</p>
 						</FlexRow>
 					</div>
-					{order?.status === 'Создан' && (
+					{(order?.status_keyword === 'created' ||
+						order?.status_keyword === 'delivery' ||
+						order?.status_keyword === 'waiting') && (
 						<FlexRow className={styles.submitRow}>
 							{/* <MainButton type='submit' className={styles.submitBtn}>
 								Изменить заказ
@@ -203,7 +207,7 @@ export const OneOrder = ({ order }: OneOrderProps) => {
 					<OrderSummary
 						itemsTotal={order?.price_items ?? '0.00'}
 						deliveryPrice={order?.price_delivery ?? '0.00'}
-						totalPrice={order?.price_total ?? '0.00'}
+						totalPrice={order?.price_items ?? '0.00'}
 					/>
 				</aside>
 			</FlexRow>
