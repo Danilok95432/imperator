@@ -14,19 +14,12 @@ import {
 	PaymentsFooterVisaSVG,
 } from '../icons/paymentsFooterSVG'
 import { autoSetYearCopyright } from 'src/shared/helpers/utils'
-import { useLocation } from 'react-use'
-import { useMemo } from 'react'
-import { useCheckAuthQuery } from 'src/features/auth/api/auth.api'
 import { AppRoute } from 'src/app/router/consts'
+import { useAppSelector } from 'src/app/store/hooks/store'
 
 export const Footer = () => {
 	const { data } = useGetSiteSettingsQuery(null)
-	const location = useLocation()
-	const { data: checkData } = useCheckAuthQuery(null)
-
-	const authorized = useMemo(() => {
-		return Boolean(checkData?.token && checkData?.user && localStorage.getItem('token') !== null)
-	}, [checkData, location.pathname])
+	const authorized = useAppSelector((state) => state.AUTH.isAuth)
 	const infoLinks = [
 		{ id: '1', title: 'О нас', link: '/about' },
 		{ id: '2', title: 'Контакты', link: '/about/contacts' },

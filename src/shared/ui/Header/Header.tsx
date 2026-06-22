@@ -1,5 +1,4 @@
-import { useMemo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Container } from '../Container/Container'
 import { FlexRow } from '../FlexRow/FlexRow'
 import { CartIconSVG } from '../icons/cartIconSVG'
@@ -7,22 +6,19 @@ import { PersonSVG } from '../icons/personSVG'
 import styles from './index.module.scss'
 import { MainNavigation } from 'src/widgets/main-navigation/main-navigation'
 import { LogoSVG } from '../icons/logoSVG'
-import { useCheckAuthQuery } from 'src/features/auth/api/auth.api'
 import { useGetCountItemsCartQuery } from 'src/features/catalog/api/catalog.api'
 
 export const Header = () => {
 	const navigate = useNavigate()
-	const location = useLocation()
-	const { data } = useCheckAuthQuery(null)
 
 	const token = localStorage.getItem('token')
 	const userId = localStorage.getItem('userID') ?? ''
 
-	const authorized = useMemo(() => {
-		return Boolean(data?.token && data?.user && token !== null)
-	}, [data, token, location.pathname])
+	const authorized = Boolean(token)
 
-	const { data: countCartData } = useGetCountItemsCartQuery(authorized && userId ? userId : '')
+	const { data: countCartData } = useGetCountItemsCartQuery(userId, {
+		skip: !authorized || !userId,
+	})
 
 	const cartItemsCount = Number(countCartData?.cart_items ?? 0)
 

@@ -32,6 +32,7 @@ import { SuccessPage } from 'src/pages/lk-page/layout/success-page/success-page'
 import { NotFoundPage } from 'src/pages/not-found-page/not-found-page'
 import { RecoverPage } from 'src/pages/auth-page-layout/layout/recover-page/recover-page'
 import { FeedbackPage } from 'src/pages/feedback-page/feedback-page'
+import { PrivateRoute } from './PrivateRoute'
 
 export const MainRoutes = () => {
 	return (
@@ -51,25 +52,27 @@ export const MainRoutes = () => {
 					/>
 				</Route>
 				<Route path={AppRoute.Feedback} element={<FeedbackPage />} />
-				<Route path={AppRoute.LK} element={<LkPageLayout />}>
-					<Route index element={<LkPage />} />
-					<Route path={`${AppRoute.LK}/${AppRoute.LKcart}/success`} element={<SuccessPage />} />
-					<Route path={`${AppRoute.LK}/${AppRoute.LKinfo}`} element={<InfoPage />} />
-					<Route path={`${AppRoute.LK}/${AppRoute.LKfavorite}`} element={<FavoriteItems />} />
-					<Route path={`${AppRoute.LK}/${AppRoute.LKorders}`} element={<OrdersPage />}>
-						<Route index element={<CurrentOrders />} />
-						<Route
-							path={`${AppRoute.LK}/${AppRoute.LKorders}/${AppRoute.Completed}`}
-							element={<CompletedOrders />}
-						/>
-						<Route
-							path={`${AppRoute.LK}/${AppRoute.LKorders}/${AppRoute.Canceled}`}
-							element={<CanceledOrders />}
-						/>
-						<Route path={`${AppRoute.LK}/${AppRoute.LKorders}/:id`} element={<OneOrderPage />} />
+				<Route element={<PrivateRoute />}>
+					<Route path={AppRoute.LK} element={<LkPageLayout />}>
+						<Route index element={<LkPage />} />
+						<Route path={`${AppRoute.LK}/${AppRoute.LKcart}/success`} element={<SuccessPage />} />
+						<Route path={`${AppRoute.LK}/${AppRoute.LKinfo}`} element={<InfoPage />} />
+						<Route path={`${AppRoute.LK}/${AppRoute.LKfavorite}`} element={<FavoriteItems />} />
+						<Route path={`${AppRoute.LK}/${AppRoute.LKorders}`} element={<OrdersPage />}>
+							<Route index element={<CurrentOrders />} />
+							<Route
+								path={`${AppRoute.LK}/${AppRoute.LKorders}/${AppRoute.Completed}`}
+								element={<CompletedOrders />}
+							/>
+							<Route
+								path={`${AppRoute.LK}/${AppRoute.LKorders}/${AppRoute.Canceled}`}
+								element={<CanceledOrders />}
+							/>
+							<Route path={`${AppRoute.LK}/${AppRoute.LKorders}/:id`} element={<OneOrderPage />} />
+						</Route>
+						<Route path={`${AppRoute.LK}/${AppRoute.LKcart}`} element={<CartPage />} />
+						<Route path={`${AppRoute.LK}/${AppRoute.MyCart}`} element={<MyCartPage />} />
 					</Route>
-					<Route path={`${AppRoute.LK}/${AppRoute.LKcart}`} element={<CartPage />} />
-					<Route path={`${AppRoute.LK}/${AppRoute.MyCart}`} element={<MyCartPage />} />
 				</Route>
 				<Route index element={<HomePage />} />
 				<Route path={AppRoute.Catalog} element={<ChocolatePage />}>
