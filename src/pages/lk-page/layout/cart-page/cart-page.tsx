@@ -17,6 +17,7 @@ import { OrderStep } from './components/order-step/order-step'
 import { OrderSummary } from './components/order-summary/order-summary'
 import { PaymentCard } from './components/payment-card/payment-card'
 import {
+	useCreatePaymentMutation,
 	useGetItemsCartQuery,
 	useGetLkInfoForOrderQuery,
 	useSaveOrderInfoMutation,
@@ -27,6 +28,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { AppRoute } from 'src/app/router/consts'
 import { FeedBackBlock } from 'src/widgets/feedback-block/feedback-block'
+import { useGetSearchCityQuery } from 'src/features/settings/api/settings.api'
+import { useDebounce } from 'src/shared/helpers/utils'
+import { loadYookassaWidget } from 'src/shared/helpers/loadYookassaWidget'
 
 const defaultValues: OrderInputs = {
 	citys: [],
@@ -68,6 +72,16 @@ const getSelectLabel = (value: SelectFieldValue, options: SelOption[] = []) => {
 export const CartPage = () => {
 	const { data } = useGetItemsCartQuery(userID)
 	const { data: orderData } = useGetLkInfoForOrderQuery(userID)
+	const [citySearch, setCitySearch] = useState('')
+
+	const debouncedCitySearch = useDebounce(citySearch.trim(), 400)
+
+	const { data: citysData, isFetching: isCitysFetching } = useGetSearchCityQuery(
+		debouncedCitySearch,
+		{
+			skip: debouncedCitySearch.length < 3,
+		},
+	)
 	const [saveOrder] = useSaveOrderInfoMutation()
 
 	const methods = useForm<OrderInputs>({
@@ -86,6 +100,7 @@ export const CartPage = () => {
 	} = methods
 
 	const [editingSection, setEditingSection] = useState<EditSection>('region')
+	const [createdOrderId, setCreatedOrderId] = useState<string | number | null>(null)
 
 	const values = useWatch({
 		control: methods.control,
@@ -108,7 +123,7 @@ export const CartPage = () => {
 	const selectedPayment = orderData?.payments.find((item) => item.value === values.paymentId)
 
 	const deliveryPrice = selectedDelivery?.price ? Number(selectedDelivery.price) : 0
-	const totalPrice = itemsTotal + deliveryPrice
+	const totalPrice = itemsTotal + 0
 
 	const isRegionFilled = Boolean(cityValue && cityValue !== '0')
 	const isDeliveryFilled = Boolean(values.deliveryId)
@@ -140,10 +155,9 @@ export const CartPage = () => {
 
 	const navigate = useNavigate()
 	const onSubmit: SubmitHandler<OrderInputs> = async (data) => {
-		const selectedCityValue = getSelectValue(data.citys)
-
 		const formData = new FormData()
-		formData.append('id_city', selectedCityValue)
+
+		formData.append('id_city', cityValue)
 		formData.append('id_order_payment', data.paymentId)
 		formData.append('id_order_delivery', data.deliveryId)
 		formData.append('surname', data.surname)
@@ -154,13 +168,80 @@ export const CartPage = () => {
 		formData.append('dom', data.dom ?? '')
 		formData.append('room', data.room ?? '')
 		formData.append('comment', data.comment)
+
 		try {
-			const res = await saveOrder(formData)
-			if (res) {
+			setCreatedOrderId(null)
+
+			const res = await saveOrder(formData).unwrap()
+
+			if (data.paymentId !== '1') {
+				toast.success('Заказ оформлен. Информацию о заказе можно найти в личном кабинете')
 				navigate(`${AppRoute.LK}/${AppRoute.LKcart}/success`)
+				return
 			}
+
+			const orderId = res.id
+
+			if (!orderId) {
+				toast.error('Заказ оформлен, но сервер не вернул id заказа')
+				return
+			}
+
+			setCreatedOrderId(orderId)
+			setEditingSection(null)
+			toast.success('Заказ оформлен. Доступна оплата заказа')
 		} catch (e) {
 			toast.error('Ошибка при попытке оформления заказа. Попробуйте ещё раз')
+		}
+	}
+
+	const [createPayment, { isLoading: isPaymentLoading }] = useCreatePaymentMutation()
+
+	const handlePayOrder = async (id?: string | number) => {
+		if (!id) return
+
+		try {
+			const formData = new FormData()
+			formData.append('id_order', String(id))
+
+			const payment = await createPayment(formData).unwrap()
+
+			await loadYookassaWidget()
+
+			if (!window.YooMoneyCheckoutWidget) {
+				throw new Error('Виджет ЮKassa не загружен')
+			}
+
+			const successUrl = `${window.location.origin}${AppRoute.LK}/${AppRoute.LKcart}/success?paid=true`
+
+			const checkout = new window.YooMoneyCheckoutWidget({
+				confirmation_token: payment.confirmation_token,
+
+				return_url: successUrl,
+
+				customization: {
+					modal: true,
+				},
+
+				error_callback: (error) => {
+					console.error('Ошибка виджета ЮKassa:', error)
+					toast.error('Ошибка при открытии формы оплаты')
+				},
+			})
+
+			checkout.on('success', () => {
+				checkout.destroy()
+				navigate(`${AppRoute.LK}/${AppRoute.LKcart}/success?paid=true`)
+			})
+
+			checkout.on('modal_close', () => {
+				checkout.destroy()
+			})
+
+			await checkout.render()
+		} catch (error) {
+			console.error('Ошибка при оплате заказа:', error)
+			toast.error('Ошибка при попытке оплаты заказа')
 		}
 	}
 
@@ -249,7 +330,9 @@ export const CartPage = () => {
 											name='citys'
 											label='Город доставки'
 											isRequired
-											selectOptions={orderData?.citys ?? [{ label: 'Не выбран', value: '0' }]}
+											selectOptions={debouncedCitySearch.length >= 3 ? citysData?.citys ?? [] : []}
+											onSearchChange={setCitySearch}
+											isLoading={isCitysFetching}
 											margin='0 0 24px 0'
 										/>
 
@@ -532,13 +615,27 @@ export const CartPage = () => {
 										type='button'
 										onClick={() => setEditingSection('customer')}
 										className={styles.backBtn}
+										disabled={Boolean(createdOrderId)}
 									>
 										Назад
 									</MainButton>
 
-									<MainButton type='submit' className={styles.submitBtn}>
-										Оформить заказ
-									</MainButton>
+									{createdOrderId && values.paymentId === '1' ? (
+										<MainButton
+											type='button'
+											className={styles.submitBtn}
+											onClick={() => {
+												void handlePayOrder(createdOrderId)
+											}}
+											disabled={isPaymentLoading}
+										>
+											{isPaymentLoading ? 'Открываем оплату...' : 'Оплатить заказ'}
+										</MainButton>
+									) : (
+										<MainButton type='submit' className={styles.submitBtn}>
+											Оформить заказ
+										</MainButton>
+									)}
 								</FlexRow>
 							)}
 						</div>

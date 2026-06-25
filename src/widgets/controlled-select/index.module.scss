@@ -23,6 +23,16 @@
 		background-blend-mode: luminosity;
 	}
 
+	.selectSearchInput {
+		width: 100%;
+		border: none;
+		outline: none;
+		background: transparent;
+		font: inherit;
+		color: inherit;
+		padding: 0;
+	}
+
 	:global {
 		.react-dropdown-select {
 			@include opensans-regular;
@@ -34,7 +44,25 @@
 			outline: 1px solid #ffffff4d;
 			border: none;
 			border-radius: 8px;
-
+			.react-dropdown-select-input {
+				font-family: 'Open Sans', sans-serif;
+				font-weight: 400;
+				font-size: 18px;
+				color: #fff;
+			}
+			input {
+				font-family: 'Open Sans', sans-serif;
+				font-weight: 400;
+				font-size: 18px;
+				color: #fff;
+				width: 100%;
+				height: 100%;
+				background: transparent;
+				border: none;
+				&:focus-visible {
+					outline: none;
+				}
+			}
 			&::placeholder {
 				color: #868686;
 			}
@@ -53,6 +81,27 @@
 			border: 1px solid #ffffff4d;
 			color: var(--main-theme-color-2);
 			border-radius: 8px;
+			&::-webkit-scrollbar {
+				width: 2px;
+			}
+
+			&::-webkit-scrollbar-track {
+				background: transparent;
+			}
+
+			&::-webkit-scrollbar-thumb {
+				background-color: var(--main-theme-color-2);
+			}
+
+			&::-webkit-scrollbar-thumb:hover {
+				background-color: rgba(192, 159, 61, 0.18);
+			}
+			input {
+				font-family: 'Open Sans', sans-serif;
+				font-weight: 400;
+				font-size: 18px;
+				color: #fff;
+			}
 			.react-dropdown-select-item {
 				border-bottom: none;
 				padding: 8px 16px;
@@ -66,7 +115,7 @@
 				}
 				&:hover {
 					color: var(--main-theme-color-2);
-					background-color: #C09F3D33;
+					background-color: #c09f3d33;
 				}
 			}
 			.react-dropdown-select-item-selected {
@@ -84,7 +133,8 @@
 					background-repeat: no-repeat;
 					background-position: center;
 					background-size: contain;
-					background-image: url("data:image/svg+xml,%3Csvg width='19' height='20' viewBox='0 0 19 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 8.44072C1.91454 10.1228 4.44419 16.161 4.78949 19.231L5.15919 19.253C7.51381 13.3437 12.3774 5.36255 18.5135 0.346207L18.3071 0C12.3785 3.70903 8.13318 8.97414 5.33571 13.4746C4.39092 11.9117 1.78628 8.85556 0.20959 8.05783L0 8.44072Z' fill='%23C09F3D'/%3E%3C/svg%3E%0A");}
+					background-image: url("data:image/svg+xml,%3Csvg width='19' height='20' viewBox='0 0 19 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 8.44072C1.91454 10.1228 4.44419 16.161 4.78949 19.231L5.15919 19.253C7.51381 13.3437 12.3774 5.36255 18.5135 0.346207L18.3071 0C12.3785 3.70903 8.13318 8.97414 5.33571 13.4746C4.39092 11.9117 1.78628 8.85556 0.20959 8.05783L0 8.44072Z' fill='%23C09F3D'/%3E%3C/svg%3E%0A");
+				}
 			}
 			.react-dropdown-select-no-data {
 				color: var(--main-theme-color-2);

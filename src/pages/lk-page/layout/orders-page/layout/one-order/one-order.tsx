@@ -43,7 +43,7 @@ export const OneOrder = ({ order }: OneOrderProps) => {
 				confirmation_token: payment.confirmation_token,
 
 				// Если хочешь, чтобы после оплаты пользователя перекинуло на страницу заказов:
-				return_url: `${window.location.origin}/lk/orders`,
+				return_url: `${window.location.origin}/lk/order/success?paid=true`,
 
 				customization: {
 					modal: true,
@@ -59,8 +59,6 @@ export const OneOrder = ({ order }: OneOrderProps) => {
 			})
 
 			await checkout.render()
-
-			console.log('YooKassa payment id:', payment.yoo_id)
 		} catch (error) {
 			console.error('Ошибка при оплате заказа:', error)
 		}

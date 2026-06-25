@@ -52,10 +52,9 @@ export const MainRoutes = () => {
 					/>
 				</Route>
 				<Route path={AppRoute.Feedback} element={<FeedbackPage />} />
-				<Route element={<PrivateRoute />}>
-					<Route path={AppRoute.LK} element={<LkPageLayout />}>
+				<Route path={AppRoute.LK} element={<LkPageLayout />}>
+					<Route element={<PrivateRoute />}>
 						<Route index element={<LkPage />} />
-						<Route path={`${AppRoute.LK}/${AppRoute.LKcart}/success`} element={<SuccessPage />} />
 						<Route path={`${AppRoute.LK}/${AppRoute.LKinfo}`} element={<InfoPage />} />
 						<Route path={`${AppRoute.LK}/${AppRoute.LKfavorite}`} element={<FavoriteItems />} />
 						<Route path={`${AppRoute.LK}/${AppRoute.LKorders}`} element={<OrdersPage />}>
@@ -70,9 +69,10 @@ export const MainRoutes = () => {
 							/>
 							<Route path={`${AppRoute.LK}/${AppRoute.LKorders}/:id`} element={<OneOrderPage />} />
 						</Route>
-						<Route path={`${AppRoute.LK}/${AppRoute.LKcart}`} element={<CartPage />} />
-						<Route path={`${AppRoute.LK}/${AppRoute.MyCart}`} element={<MyCartPage />} />
 					</Route>
+					<Route path={`${AppRoute.LK}/${AppRoute.LKcart}/success`} element={<SuccessPage />} />
+					<Route path={`${AppRoute.LK}/${AppRoute.LKcart}`} element={<CartPage />} />
+					<Route path={`${AppRoute.LK}/${AppRoute.MyCart}`} element={<MyCartPage />} />
 				</Route>
 				<Route index element={<HomePage />} />
 				<Route path={AppRoute.Catalog} element={<ChocolatePage />}>

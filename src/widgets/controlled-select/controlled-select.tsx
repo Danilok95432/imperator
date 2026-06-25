@@ -1,4 +1,5 @@
-import React, { type FC } from 'react'
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+import React, { type ChangeEvent, type FC, useEffect, useRef, useState } from 'react'
 import { type SelOption } from 'src/types/select'
 import { type FieldError, useController, useFormContext } from 'react-hook-form'
 import Select from 'react-dropdown-select'
@@ -17,6 +18,8 @@ type ControlledSelectProps = {
 	disabled?: boolean
 	isRequired?: boolean
 	bigFont?: boolean
+	isLoading?: boolean
+	onSearchChange?: (value: string) => void
 }
 
 export const ControlledSelect: FC<ControlledSelectProps> = ({
@@ -29,6 +32,8 @@ export const ControlledSelect: FC<ControlledSelectProps> = ({
 	disabled,
 	isRequired,
 	bigFont = false,
+	isLoading = false,
+	onSearchChange,
 	...props
 }) => {
 	const {
@@ -44,6 +49,40 @@ export const ControlledSelect: FC<ControlledSelectProps> = ({
 		defaultValue: [],
 	})
 
+	const selectedValue = Array.isArray(value) ? value : []
+	const selectedLabel = selectedValue[0]?.label ?? ''
+
+	const [inputValue, setInputValue] = useState(selectedLabel)
+
+	// Флаг нужен, чтобы отличать ручное редактирование от реального выбора/очистки
+	const isTypingRef = useRef(false)
+
+	useEffect(() => {
+		if (!isTypingRef.current) {
+			setInputValue(selectedLabel)
+		}
+	}, [selectedLabel])
+
+	// Нужно, чтобы при ручном редактировании выбранного города
+	// сброс value в RHF не очищал input целиком.
+	const skipNextEmptySyncRef = useRef(false)
+
+	useEffect(() => {
+		if (!selectedValue) {
+			if (skipNextEmptySyncRef.current) {
+				skipNextEmptySyncRef.current = false
+				return
+			}
+
+			setInputValue('')
+			onSearchChange?.('')
+			return
+		}
+
+		setInputValue(selectedLabel)
+		onSearchChange?.(selectedLabel)
+	}, [selectedValue, selectedLabel, onSearchChange])
+
 	return (
 		<div
 			className={cn(styles.selectWrapper, { [styles.selectHugeWrapper]: bigFont }, className)}
@@ -58,15 +97,69 @@ export const ControlledSelect: FC<ControlledSelectProps> = ({
 			<Select
 				{...props}
 				options={selectOptions}
-				values={Array.isArray(value) ? value : []}
-				onChange={(values) => onChange(values)}
+				values={selectedValue}
+				onChange={(values) => {
+					// ВАЖНО:
+					// если пользователь печатает/удаляет символы,
+					// а react-dropdown-select сам прислал values = [],
+					// не надо чистить input.
+					if (isTypingRef.current && values.length === 0) {
+						onChange([])
+						return
+					}
+
+					const nextLabel = values[0]?.label ?? ''
+
+					isTypingRef.current = false
+
+					onChange(values)
+					setInputValue(nextLabel)
+					onSearchChange?.(nextLabel)
+				}}
 				onDropdownClose={onBlur}
 				disabled={disabled}
 				className={cn({ [styles.disabled]: disabled })}
 				searchBy='label'
 				searchable
-				noDataLabel='Ничего не найдено'
+				loading={isLoading}
+				noDataLabel={
+					inputValue.trim().length < 3 ? 'Введите минимум 3 символа' : 'Ничего не найдено'
+				}
 				placeholder=''
+				searchFn={({ props }) => props.options}
+				contentRenderer={({ methods }) => (
+					<input
+						className={styles.selectSearchInput}
+						value={inputValue}
+						disabled={disabled}
+						placeholder=''
+						onClick={(event) => {
+							event.stopPropagation()
+							methods.dropDown('open')
+						}}
+						onFocus={() => methods.dropDown('open')}
+						onKeyDown={(event) => {
+							// Главное исправление.
+							// Не даём Backspace/Delete долететь до react-dropdown-select.
+							event.stopPropagation()
+						}}
+						onChange={(event: ChangeEvent<HTMLInputElement>) => {
+							const nextValue = event.target.value
+
+							isTypingRef.current = true
+
+							setInputValue(nextValue)
+							onSearchChange?.(nextValue)
+
+							// Сбрасываем выбранный id города, но НЕ сбрасываем текст input.
+							if (selectedValue.length && nextValue !== selectedLabel) {
+								onChange([])
+							}
+
+							methods.dropDown('open')
+						}}
+					/>
+				)}
 			/>
 
 			{dynamicError && <p className={styles.warningMessage}>{dynamicError.message}</p>}

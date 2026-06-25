@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { type FieldValues } from 'react-hook-form'
 
 export interface DateTimeFormatOptions {
@@ -42,6 +43,20 @@ export const getItemsWord = (count: number) => {
 export const autoSetYearCopyright = (): string => {
 	const currentYear = new Date().getFullYear()
 	return String(currentYear)
+}
+
+export const useDebounce = <T,>(value: T, delay = 400) => {
+	const [debouncedValue, setDebouncedValue] = useState(value)
+
+	useEffect(() => {
+		const timeout = setTimeout(() => {
+			setDebouncedValue(value)
+		}, delay)
+
+		return () => clearTimeout(timeout)
+	}, [value, delay])
+
+	return debouncedValue
 }
 
 export const setActive = (isActive: boolean, styles: string) => (isActive ? styles : '')

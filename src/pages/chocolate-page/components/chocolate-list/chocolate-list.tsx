@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from 'react'
+import { useMemo, useEffect } from 'react'
 import styles from './index.module.scss'
 import { Container } from 'src/shared/ui/Container/Container'
 import { ChocolateCard } from './components/chocolate-card/chocolate-card'
@@ -6,9 +6,10 @@ import { Pagination } from 'src/widgets/pagination/pagination'
 import { useBreakPoint } from 'src/features/useBreakPoint/useBreakPoint'
 import { useGetCatalogQuery } from 'src/features/catalog/api/catalog.api'
 import { Loader } from 'src/shared/ui/loader/loader'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { type FetchBaseQueryError } from '@reduxjs/toolkit/query'
+import { saveCatalogPosition } from 'src/shared/helpers/catalog-return'
 
 type ApiErrorResponse = {
 	status: 'error'
@@ -31,10 +32,19 @@ const getApiErrorMessage = (error: unknown): string => {
 	return 'Произошла ошибка при загрузке категории'
 }
 
+const getPageFromSearchParams = (searchParams: URLSearchParams): number => {
+	const page = Number(searchParams.get('page'))
+
+	return Number.isInteger(page) && page > 0 ? page : 1
+}
+
 export const ChocolateList = () => {
-	const [currentPage, setCurrentPage] = useState(1)
 	const { menuId = '' } = useParams()
 	const navigate = useNavigate()
+	const location = useLocation()
+	const [searchParams, setSearchParams] = useSearchParams()
+
+	const currentPage = getPageFromSearchParams(searchParams)
 	const breakPoint = useBreakPoint()
 
 	const userId = localStorage.getItem('userID') ?? ''
@@ -51,6 +61,10 @@ export const ChocolateList = () => {
 		step: String(currentPage),
 		userId,
 	})
+
+	useEffect(() => {
+		saveCatalogPosition(menuId, `${location.pathname}${location.search}`, currentPage)
+	}, [menuId, location.pathname, location.search, currentPage])
 
 	useEffect(() => {
 		if (!isNewsItemError) return
@@ -82,8 +96,39 @@ export const ChocolateList = () => {
 		}
 	}, [currentPage, data, itemsPerPage])
 
+	useEffect(() => {
+		if (!paginationData.totalPages) return
+		if (currentPage <= paginationData.totalPages) return
+
+		setSearchParams(
+			(prev) => {
+				const next = new URLSearchParams(prev)
+
+				if (paginationData.totalPages <= 1) {
+					next.delete('page')
+				} else {
+					next.set('page', String(paginationData.totalPages))
+				}
+
+				return next
+			},
+			{ replace: true },
+		)
+	}, [currentPage, paginationData.totalPages, setSearchParams])
+
 	const handlePageChange = (page: number) => {
-		setCurrentPage(page)
+		setSearchParams((prev) => {
+			const next = new URLSearchParams(prev)
+
+			if (page <= 1) {
+				next.delete('page')
+			} else {
+				next.set('page', String(page))
+			}
+
+			return next
+		})
+
 		window.scrollTo({ top: 0, behavior: 'smooth' })
 	}
 

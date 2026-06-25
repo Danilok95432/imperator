@@ -53,6 +53,7 @@ import { FullscreenGallery } from 'src/widgets/fullscreen-gallery/fullscreen-gal
 import { ControlledInput } from 'src/widgets/controlled-input/controlled-input'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { type OneItemInputs, oneItemInputsSchema } from './schema'
+import { getCatalogReturnUrl } from 'src/shared/helpers/catalog-return'
 
 type CartResponse = {
 	item_count?: string
@@ -298,6 +299,9 @@ export const ChocolateItem = () => {
 	}, [cartItemCount, cartItemWeight, defaultWeight, isWeightProduct, methods, weightProductFields])
 
 	const onSubmit: SubmitHandler<OneItemInputs> = async () => {}
+	const catalogReturnPath = useMemo(() => {
+		return getCatalogReturnUrl(menuId)
+	}, [menuId])
 
 	if (!data || isLoading) return <Loader />
 
@@ -687,6 +691,7 @@ export const ChocolateItem = () => {
 								]}
 								isCatalog
 								idLink={menuId}
+								catalogReturnPath={catalogReturnPath}
 							/>
 						</FlexRow>
 

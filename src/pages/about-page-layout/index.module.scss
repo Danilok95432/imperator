@@ -1,5 +1,8 @@
 .aboutSection {
   background: var(--main-theme-color);
+	a {
+		color: var(--main-theme-color-2);
+	}
 	.aboutCont {
     display: flex;
     justify-content: center;

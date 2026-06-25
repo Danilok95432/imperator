@@ -102,15 +102,24 @@
 				font-weight: 500;
 				color: var(--main-theme-color-2);
 				max-width: 268px;
-				max-height: 44px;
 				height: 44px;
-				line-clamp: 2;
+
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
 				-webkit-line-clamp: 2;
+				line-clamp: 2;
+
 				overflow: hidden;
 				text-overflow: ellipsis;
+
+				line-height: 22px;
+
 				@media (max-width: 768px) {
 					font-size: 14px;
+					height: 42px;
+					line-height: 21px;
 				}
+
 				@media (max-width: 650px) {
 					max-width: 152px;
 				}
@@ -188,7 +197,7 @@
 		.disabled {
 			background-color: var(--main-theme-color-2) !important;
 			p {
-				color: #000!important;
+				color: #000 !important;
 			}
 			svg {
 				filter: brightness(0);

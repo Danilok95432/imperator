@@ -1,3 +1,5 @@
+import { type SelOption } from './select'
+
 export type SettingsResponse = {
 	use_promo: boolean | string
 	use_awards: boolean | string
@@ -13,4 +15,8 @@ export type SettingsResponse = {
 	info_copyright: string
 	site_title: string
 	metric: string
+}
+
+export type CitysResponse = {
+	citys: SelOption[]
 }

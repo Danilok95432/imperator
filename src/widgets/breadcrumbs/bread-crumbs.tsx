@@ -16,6 +16,7 @@ type BreadCrumbsProps = {
 	isHeadNav?: boolean
 	isCatalog?: boolean
 	idLink?: string
+	catalogReturnPath?: string
 }
 
 export const BreadCrumbs: FC<BreadCrumbsProps> = ({
@@ -23,6 +24,7 @@ export const BreadCrumbs: FC<BreadCrumbsProps> = ({
 	isHeadNav = false,
 	isCatalog = false,
 	idLink = '',
+	catalogReturnPath,
 }) => {
 	const { pathname } = useLocation()
 	const [pathNames, setPathNames] = useState<string[]>([''])
@@ -110,7 +112,7 @@ export const BreadCrumbs: FC<BreadCrumbsProps> = ({
 
 				return (
 					<li key={pathEl} id={pathEl}>
-						<Link to={isCatalog ? `/${pathEl}/${idLink}` : `/${pathEl}`}>
+						<Link to={isCatalog ? catalogReturnPath ?? `/${pathEl}/${idLink}` : `/${pathEl}`}>
 							{defineLinkTitle(pathEl)}
 						</Link>
 						<SeparatorIconNavigationSVG />

@@ -15,6 +15,7 @@ import { type CreatePaymentResponse } from 'src/types/payments'
 type BaseMutationResponse = {
 	status: string
 	errortext?: string
+	id?: string
 }
 
 export type CartMutationResponse = BaseMutationResponse & {
@@ -195,8 +196,8 @@ export const catalogApi = createApi({
 					id_user: idUser,
 					type,
 				},
-				providesTags: ['Orders'],
 			}),
+			providesTags: ['Orders'],
 		}),
 		getUserOrdersListItemInfo: build.query<UserOrderResponse, string>({
 			query: (id) => ({
@@ -215,8 +216,8 @@ export const catalogApi = createApi({
 				params: {
 					id,
 				},
-				invalidatesTags: ['Orders'],
 			}),
+			invalidatesTags: ['Orders'],
 		}),
 		createPayment: build.mutation<CreatePaymentResponse, FieldValues>({
 			query: (body) => ({
