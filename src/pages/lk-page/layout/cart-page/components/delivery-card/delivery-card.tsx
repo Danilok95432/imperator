@@ -20,7 +20,7 @@ export const DeliveryCard = ({ option, active, onClick }: Props) => {
 					<div className={styles.desc}>Стоимость: {option?.price} ₽</div>
 				)} */}
 				{option?.address !== '' && <div className={styles.desc}>Адрес: {option?.address}</div>}
-				{option?.days && <div className={styles.meta}>Дней доставки: {option?.days}</div>}
+				{/* {option?.days && <div className={styles.meta}>Дней доставки: {option?.days}</div>} */}
 			</FlexRow>
 
 			<div className={styles.check}>{active ? <CheckCartSVG /> : ''}</div>
