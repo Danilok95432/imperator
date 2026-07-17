@@ -22,8 +22,8 @@ export const MainImgSection = () => {
 			<Container className={styles.mainCont}>
 				<FlexRow className={styles.sectionRow} style={sectionRowStyle}>
 					<FlexRow className={styles.welcomeBlock}>
-						<h1>{data?.block_name ?? 'Фабрика Император'}</h1>
-						<p>{data?.block_desc ?? 'Шоколад ручной работы без консервантов и пальмовых масел'}</p>
+						<h1>{data?.block_name && data?.block_name?.trim().length > 0 && data?.block_name}</h1>
+						<p>{data?.block_desc && data?.block_desc?.trim().length > 0 && data?.block_desc}</p>
 					</FlexRow>
 				</FlexRow>
 			</Container>
